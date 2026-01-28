@@ -1,0 +1,12 @@
+- No spec, no code.
+- Always create/update: SPEC + tests + docs per change.
+- Keep changes small and reviewable.
+- Validate all inputs. Never trust client input.
+- Centralized error handling with typed error codes.
+- All network calls: timeout + safe retries.
+- No secrets in repo. Use env vars.
+- Add logging with correlation IDs for every request.
+- Add basic rate limiting and abuse prevention for AI endpoints.
+- Every DB change must have migration and rollback.
+- Privacy-by-design: minimize data; plan export/delete.
+- Safety-by-design for training/nutrition advice (red flags -> recommend professional).
