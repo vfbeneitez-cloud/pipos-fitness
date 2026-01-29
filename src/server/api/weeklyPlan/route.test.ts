@@ -1,7 +1,8 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { prisma } from "@/src/server/db/prisma";
 import { createWeeklyPlan, getWeeklyPlan } from "./route";
-import { TrainingEnvironment } from "@prisma/client";
+
+type TrainingEnvironment = "GYM" | "HOME" | "CALISTHENICS" | "POOL" | "MIXED";
 
 const TEST_USER_ID = "test-user-id";
 
@@ -32,7 +33,7 @@ describe("weekly plan v0", () => {
     const createRes = await createWeeklyPlan(
       {
         weekStart: "2026-01-26",
-        environment: TrainingEnvironment.GYM,
+        environment: "GYM",
         daysPerWeek: 3,
         sessionMinutes: 45,
       },
@@ -149,7 +150,7 @@ describe("weekly plan authorization", () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           weekStart: "2026-01-26",
-          environment: TrainingEnvironment.GYM,
+          environment: "GYM",
           daysPerWeek: 3,
           sessionMinutes: 45,
         }),
@@ -179,7 +180,7 @@ describe("weekly plan authorization", () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           weekStart: "2026-01-26",
-          environment: TrainingEnvironment.GYM,
+          environment: "GYM",
           daysPerWeek: 3,
           sessionMinutes: 45,
         }),

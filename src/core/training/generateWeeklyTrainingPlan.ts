@@ -1,4 +1,4 @@
-import { TrainingEnvironment } from "@prisma/client";
+export type TrainingEnvironment = "GYM" | "HOME" | "CALISTHENICS" | "POOL" | "MIXED";
 
 export type TrainingSession = {
   dayIndex: number; // 0..6
@@ -49,7 +49,7 @@ export function generateWeeklyTrainingPlan(args: {
 function pickDays(daysPerWeek: number): number[] {
   // simple spacing: for 3 days -> [0,2,4], 4 -> [0,2,4,6], etc.
   const clamped = Math.min(Math.max(daysPerWeek, 1), 7);
-  if (clamped === 7) return [0,1,2,3,4,5,6];
+  if (clamped === 7) return [0, 1, 2, 3, 4, 5, 6];
   const step = Math.floor(7 / clamped);
   const out: number[] = [];
   let d = 0;

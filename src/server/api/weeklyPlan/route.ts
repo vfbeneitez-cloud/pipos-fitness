@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { prisma } from "@/src/server/db/prisma";
-import { TrainingEnvironment, Prisma } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { generateWeeklyTrainingPlan } from "@/src/core/training/generateWeeklyTrainingPlan";
 import { generateWeeklyNutritionPlan } from "@/src/core/nutrition/generateWeeklyNutritionPlan";
 
@@ -8,9 +8,11 @@ const GetQuery = z.object({
   weekStart: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
 });
 
+const TrainingEnvironmentSchema = z.enum(["GYM", "HOME", "CALISTHENICS", "POOL", "MIXED"]);
+
 const PostBody = z.object({
   weekStart: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-  environment: z.nativeEnum(TrainingEnvironment),
+  environment: TrainingEnvironmentSchema,
   daysPerWeek: z.number().int().min(1).max(7),
   sessionMinutes: z.number().int().min(15).max(180),
 });

@@ -1,15 +1,17 @@
 import { z } from "zod";
 import { prisma } from "@/src/server/db/prisma";
-import { TrainingEnvironment, ActivityLevel, CookingTime } from "@prisma/client";
+import { ActivityLevel, CookingTime } from "@prisma/client";
 
 const DEMO_EMAIL = "demo@pipos.local";
+
+const TrainingEnvironmentSchema = z.enum(["GYM", "HOME", "CALISTHENICS", "POOL", "MIXED"]);
 
 const SetupBody = z.object({
   goal: z.string().optional(),
   level: z.nativeEnum(ActivityLevel).optional(),
   daysPerWeek: z.number().int().min(1).max(7).optional(),
   sessionMinutes: z.number().int().min(15).max(180).optional(),
-  environment: z.nativeEnum(TrainingEnvironment).optional(),
+  environment: TrainingEnvironmentSchema.optional(),
   equipmentNotes: z.string().optional(),
   injuryNotes: z.string().optional(),
   dietaryStyle: z.string().optional(),
