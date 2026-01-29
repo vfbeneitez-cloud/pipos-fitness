@@ -159,10 +159,11 @@ model WeeklyPlan {
   weekStart DateTime
   status    PlanStatus @default(DRAFT)
 
-  trainingJson  Json
-  nutritionJson Json
+  trainingJson   Json
+  nutritionJson  Json
+  lastRationale  String?
+  lastGeneratedAt DateTime?
 
-  // ADD THESE:
   trainingLogs TrainingLog[]
   // (optional, but recommended symmetry)
   // nutritionLogs NutritionLog[]

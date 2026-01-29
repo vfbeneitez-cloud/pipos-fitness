@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 
 const links = [
   { href: "/week", label: "Semana" },
-  { href: "/onboarding", label: "Perfil" },
+  { href: "/profile", label: "Perfil" },
 ];
 
 export function Nav() {

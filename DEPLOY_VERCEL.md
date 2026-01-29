@@ -166,14 +166,30 @@ En **Vercel → Settings → Environment Variables → Preview** añade:
 2. Vercel generará automáticamente una URL de preview (ej: `https://pipos-fitness-git-feature-abc.vercel.app`)
 3. Esperar a que el build termine
 
-### Paso 4 — Verificación staging
+### Paso 4 — Cómo probar el Preview sin tocar la app
 
-En la URL de preview, verificar:
+Elige **una** opción:
 
-- [ ] `GET /api/health` → `{ ok: true, env: "production" }` (o "demo" si DEMO_MODE=true)
-- [ ] `GET /api/health/db` → `{ ok: true }`
-- [ ] `GET /api/_debug/sentry` → `200 { ok: true, message: "Test exception sent to Sentry (check Issues)" }`
-- [ ] En **Sentry** (proyecto staging) → **Issues**: debe aparecer el evento de prueba
+- **Opción A (recomendada): Navegador logueado en Vercel**
+  Abre la URL preview en Chrome; asegúrate de estar logueado en [Vercel](https://vercel.com) con tu cuenta. Ya podrás navegar y probar UI + auth.
+
+- **Opción B: Hacer el preview público**
+  Vercel → **Project → Settings → Deployment Protection**. Desactiva protection (o cambia a “Only Production protected”). Vuelves a probar desde cualquier navegador/curl.
+
+- **Opción C: Probar APIs con `vercel curl`**
+  Para endpoints de health/debug va perfecto:
+  ```bash
+  npx vercel curl /api/health --deployment "https://TU-PREVIEW-URL.vercel.app"
+  ```
+
+### Paso 5 — Checks staging (rápidos)
+
+En preview (usando navegador logueado en Vercel o desprotegiendo):
+
+- [ ] **GET /api/health** → 200, `env` debería ser `"preview"` (y `nodeEnv`, `vercelEnv` presentes)
+- [ ] **GET /api/health/db** → 200 `{ ok: true }`
+- [ ] **GET /api/\_debug/sentry** → 200 solo si en Preview env vars tienes **`SENTRY_DEBUG=true`**; si no, 404
+- [ ] En **Sentry** (staging): ver evento en **Issues**
 
 Si todo OK, staging está listo para probar cambios sin afectar producción.
 
@@ -278,8 +294,90 @@ curl https://tu-app.vercel.app/api/demo/session
 - Verificar `DEMO_MODE=false` en Production
 - Hacer redeploy después de cambiar variables
 
+## Paso 6 — Configurar el Cron en Vercel (clicks exactos)
+
+**Nota:** Vercel Cron funciona en Production (y según plan, a veces también en Preview/Pro). Si no te deja en Preview, usa un scheduler externo (GitHub Actions / UptimeRobot / cron-job.org) para staging.
+
+### Opción A — Vercel Cron (ideal)
+
+1. Ve a **Vercel Dashboard** → tu proyecto **pipos-fitness**
+2. Entra en **Settings** → **Cron Jobs** (o “Cron Jobs” en el menú lateral si aparece)
+3. Click **Add Cron Job**
+4. Configura:
+   - **Path:** `/api/cron/weekly-regenerate`
+   - **Schedule:** cada lunes a las 06:00 (Madrid). En UTC: `0 5 * * 1` (lunes 05:00 UTC = 06:00 Madrid invierno).
+   - **Secret:** Vercel añade `CRON_SECRET` a las invocaciones del cron en el header **Authorization**. Nuestro endpoint acepta ese header (Bearer o valor directo) y también **x-cron-secret** para schedulers externos. No hace falta configurar headers a mano si usas la variable `CRON_SECRET` en el proyecto.
+5. **Alternativa en repo:** ya existe `vercel.json` con el cron declarado (`path` y `schedule`). Si lo usas, el job se crea al hacer deploy; solo asegura `CRON_SECRET` y `CRON_WEEKLY_REGEN_ENABLED=true` en Production.
+6. Guarda.
+7. En **Settings → Environment Variables**, en **Production**:
+   - **`CRON_WEEKLY_REGEN_ENABLED`** = `true`
+   - **`CRON_SECRET`** = `<valor largo aleatorio>` (generar con `openssl rand -base64 32`)
+8. Deploy (si no se redeploya solo).
+
+**Verificación:**
+
+- Vercel → **Cron Jobs** → **Runs / Logs**: debe verse status **200** y un body con `{ ok: true, processed, ... }`
+- En DB: `lastGeneratedAt` y `lastRationale` actualizados en los planes.
+
+### Opción B — Scheduler externo (staging o si no tienes Cron en plan)
+
+Para **Preview/staging** o si tu plan Vercel no incluye Cron:
+
+- **GitHub Actions:** workflow que hace `curl -X POST -H "x-cron-secret: ${{ secrets.CRON_SECRET }}" https://tu-preview-url.vercel.app/api/cron/weekly-regenerate` (schedule: `0 6 * * 1`)
+- **UptimeRobot / cron-job.org:** crear job tipo “HTTP(s)” que llame a la URL con método POST y header `x-cron-secret`. Programar cada lunes 06:00.
+- En el proyecto de **Preview** en Vercel: definir **`CRON_WEEKLY_REGEN_ENABLED`** y **`CRON_SECRET`** en Environment Variables para Preview.
+
+## Paso 7 — Verificación operativa del cron (sin suposiciones)
+
+### 7.1 Verifica que el cron existe en Vercel
+
+- **Vercel Dashboard** → tu proyecto
+- **Cron Jobs** (o Deployments → el último deploy → “Cron”)
+- Debes ver una entrada:
+  - **Path:** `/api/cron/weekly-regenerate`
+  - **Schedule:** `0 5 * * 1`
+- Si no aparece: es que `vercel.json` no está en la raíz del proyecto o no se desplegó ese commit.
+
+### 7.2 Ejecuta una prueba manual inmediata (sin esperar al lunes)
+
+Como el endpoint está protegido por secret, prueba desde local contra producción o staging.
+
+**PowerShell (Authorization Bearer):**
+
+```powershell
+$headers = @{ Authorization = "Bearer $env:CRON_SECRET" }
+Invoke-RestMethod -Method Post -Uri "https://pipos-fitness.vercel.app/api/cron/weekly-regenerate" -Headers $headers
+```
+
+Si no tienes `CRON_SECRET` en tu env local, ponlo directo (solo para test local).
+
+**Esperado:** `{ "ok": true, "processed": N, "succeeded": M, "failed": K }`
+
+Si te devuelve **404:** te falta `CRON_WEEKLY_REGEN_ENABLED=true` en ese entorno.
+
+### 7.3 Verifica que realmente tocó DB (no solo 200)
+
+El 200 no basta. Confirma efecto:
+
+- Abre **Prisma Studio** en local apuntando a la misma DB (o consulta DB):
+  - `WeeklyPlan.lastGeneratedAt` debe cambiar a “ahora”
+  - `WeeklyPlan.lastRationale` debe existir/actualizarse
+- **Alternativa rápida vía app:** entra en `/week` y comprueba el panel “Última actualización del plan” con fecha reciente.
+
+### 7.4 Observabilidad: confirma que no hay fallos silenciosos
+
+- **Vercel** → Deployments → **Functions logs**: filtra por `/api/cron/weekly-regenerate`; busca statusCode=200 y duración.
+- **Sentry:** si `failed > 0`, idealmente debería haber eventos capturados (si en catch capturas excepción; si no, se puede añadir en un paso posterior).
+
 ## Próximos Pasos
 
 - Configurar dominio personalizado (opcional)
 - Configurar monitoreo continuo (UptimeRobot, Pingdom) usando `/api/health`
 - Revisar logs en Vercel Dashboard para errores
+
+### Siguiente paso realista de producto
+
+Con infra + auth + observabilidad cerrados, lo que más valor da:
+
+- **Página “Perfil” real** (no solo onboarding): editar preferencias → botón **“Regenerar plan semana”** → llama **`/api/agent/weekly-plan`**.
+- **Métrica simple**: adherencia semanal + “siguiente plan” generado.

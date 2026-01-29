@@ -214,12 +214,16 @@ Propón ajustes seguros basados en adherencia y perfil.`;
     dislikes: profile?.dislikes ?? null,
   });
 
+  const now = new Date();
+  const rationaleStr = rationale.trim();
   const plan = await prisma.weeklyPlan.upsert({
     where: { userId_weekStart: { userId, weekStart: weekStartDate } },
     update: {
       trainingJson: training as unknown as Prisma.InputJsonValue,
       nutritionJson: nutrition as unknown as Prisma.InputJsonValue,
       status: "DRAFT",
+      lastRationale: rationaleStr,
+      lastGeneratedAt: now,
     },
     create: {
       userId,
@@ -227,6 +231,8 @@ Propón ajustes seguros basados en adherencia y perfil.`;
       status: "DRAFT",
       trainingJson: training as unknown as Prisma.InputJsonValue,
       nutritionJson: nutrition as unknown as Prisma.InputJsonValue,
+      lastRationale: rationaleStr,
+      lastGeneratedAt: now,
     },
   });
 

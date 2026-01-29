@@ -56,6 +56,18 @@ describe("POST /api/agent/weekly-plan", () => {
     expect(body.plan).toBeDefined();
     expect(body.rationale).toBeDefined();
     expect(typeof body.rationale).toBe("string");
+
+    const plan = await prisma.weeklyPlan.findUnique({
+      where: {
+        userId_weekStart: {
+          userId: TEST_USER_ID,
+          weekStart: new Date("2026-01-26T00:00:00.000Z"),
+        },
+      },
+    });
+    expect(plan?.lastRationale).toBeDefined();
+    expect(plan?.lastRationale?.length).toBeGreaterThan(0);
+    expect(plan?.lastGeneratedAt).toBeDefined();
   });
 
   it("detects red flags and applies conservative adjustments", async () => {

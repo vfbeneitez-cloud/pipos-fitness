@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import Link from "next/link";
 import { getWeekStart, getTodayDayIndex, DAY_NAMES } from "@/src/app/lib/week";
 import { ErrorBanner } from "@/src/app/components/ErrorBanner";
@@ -32,6 +32,8 @@ type Plan = {
   status: string;
   trainingJson: { sessions: TrainingSession[] };
   nutritionJson: { days: NutritionDay[] };
+  lastRationale?: string | null;
+  lastGeneratedAt?: string | null;
 };
 
 export default function WeekPage() {
@@ -103,6 +105,9 @@ export default function WeekPage() {
 
       {plan && (
         <>
+          {plan.lastRationale != null && plan.lastRationale !== "" && (
+            <RationalePanel rationale={plan.lastRationale} generatedAt={plan.lastGeneratedAt} />
+          )}
           <section className="mb-8" aria-labelledby="training-heading">
             <h2 id="training-heading" className="mb-3 text-lg font-medium">
               Entrenamiento
@@ -156,6 +161,53 @@ export default function WeekPage() {
         </>
       )}
     </main>
+  );
+}
+
+function formatGeneratedAt(iso: string | null | undefined): string {
+  if (!iso) return "";
+  try {
+    const d = new Date(iso);
+    return d.toLocaleDateString("es-ES", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+  } catch {
+    return "";
+  }
+}
+
+function RationalePanel({
+  rationale,
+  generatedAt,
+}: {
+  rationale: string;
+  generatedAt: string | null | undefined;
+}) {
+  const [open, setOpen] = useState(false);
+  const formatted = useMemo(() => formatGeneratedAt(generatedAt), [generatedAt]);
+  return (
+    <section className="mb-6 rounded-lg border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-700 dark:bg-zinc-800/50">
+      <div className="flex items-center justify-between gap-2">
+        <h2 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          Última actualización del plan
+          {formatted ? ` — ${formatted}` : ""}
+        </h2>
+        <button
+          type="button"
+          onClick={() => setOpen((o) => !o)}
+          className="shrink-0 rounded border border-zinc-300 px-3 py-1 text-sm dark:border-zinc-600"
+        >
+          {open ? "Ocultar motivo" : "Ver motivo"}
+        </button>
+      </div>
+      {open && (
+        <p className="mt-3 whitespace-pre-wrap text-sm text-zinc-600 dark:text-zinc-400">
+          {rationale}
+        </p>
+      )}
+    </section>
   );
 }
 
