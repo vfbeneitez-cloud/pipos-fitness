@@ -3,7 +3,7 @@ import { prisma } from "@/src/server/db/prisma";
 import { getProvider } from "./getProvider";
 import { generateWeeklyTrainingPlan } from "@/src/core/training/generateWeeklyTrainingPlan";
 import { generateWeeklyNutritionPlan } from "@/src/core/nutrition/generateWeeklyNutritionPlan";
-import { Prisma } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 
 const BodySchema = z.object({
   weekStart: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),

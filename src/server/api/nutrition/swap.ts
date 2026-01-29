@@ -4,7 +4,7 @@ import {
   generateWeeklyNutritionPlan,
   type Meal,
 } from "@/src/core/nutrition/generateWeeklyNutritionPlan";
-import { CookingTime } from "@prisma/client";
+const DEFAULT_COOKING_TIME = "MIN_20" as const;
 
 const SwapBody = z.object({
   weekStart: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
@@ -46,7 +46,7 @@ export async function swapMeal(body: unknown, userId: string) {
 
   const newPlan = generateWeeklyNutritionPlan({
     mealsPerDay: profile?.mealsPerDay ?? 3,
-    cookingTime: profile?.cookingTime ?? CookingTime.MIN_20,
+    cookingTime: profile?.cookingTime ?? DEFAULT_COOKING_TIME,
     dietaryStyle: profile?.dietaryStyle ?? null,
     allergies: profile?.allergies ?? null,
     dislikes: profile?.dislikes ?? null,
