@@ -70,16 +70,22 @@ En Vercel: **Settings → Environment Variables**
    - Valor: `false`
    - Environment: ✅ Production
 
-6. **`EMAIL_SERVER`**
-   - Valor: Tu SMTP server (ej: `smtp://user:pass@smtp.resend.com:587`)
-   - Environment: ✅ Production
-   - Alternativa: Usar `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`
+6. **Email (magic link)** — una de las dos opciones:
 
-7. **`EMAIL_FROM`**
-   - Valor: Email remitente (ej: `noreply@yourdomain.com`)
-   - Environment: ✅ Production
+   **Opción A (recomendada):**
+   - **`EMAIL_SERVER`**: cadena SMTP completa, ej: `smtp://USER:PASSWORD@smtp.gmail.com:587` o `smtps://USER:PASSWORD@smtp.gmail.com:465`
+   - **`EMAIL_FROM`**: ej: `no-reply@tudominio.com` (o tu email verificado)
 
-8. **`OPENAI_API_KEY`** (opcional)
+   **Opción B (variables separadas):**
+   - **`SMTP_HOST`** (ej: `smtp.gmail.com`)
+   - **`SMTP_PORT`** (ej: `587` o `465`)
+   - **`SMTP_USER`**
+   - **`SMTP_PASSWORD`**
+   - **`EMAIL_FROM`**: ej: `no-reply@tudominio.com`
+
+   Environment: ✅ Production
+
+7. **`OPENAI_API_KEY`** (opcional)
    - Valor: Tu API key de OpenAI (solo si usas provider real)
    - Environment: ✅ Production
 
