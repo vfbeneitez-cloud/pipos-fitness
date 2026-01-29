@@ -2,7 +2,6 @@
 
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { setDemoUserId } from "@/src/app/lib/demo";
 import { getWeekStart } from "@/src/app/lib/week";
 import { ErrorBanner } from "@/src/app/components/ErrorBanner";
 
@@ -29,8 +28,6 @@ const COOKING_TIMES = [
 
 type Step = "welcome" | "training" | "nutrition" | "summary";
 
-const isDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE === "true";
-
 export default function OnboardingPage() {
   const router = useRouter();
   const [step, setStep] = useState<Step>("welcome");
@@ -48,24 +45,11 @@ export default function OnboardingPage() {
   const [allergies, setAllergies] = useState("");
   const [dislikes, setDislikes] = useState("");
 
-  const ensureUserId = useCallback(async (): Promise<string | null> => {
-    const res = await fetch("/api/demo/session");
-    if (!res.ok) return null;
-    const data = (await res.json()) as { userId: string };
-    return data.userId;
-  }, []);
-
   const handleSetupAndPlan = useCallback(async () => {
     setError(null);
     setLoading(true);
     try {
-      let userId = await ensureUserId();
-      if (!userId) {
-        setError("No se pudo obtener sesión demo.");
-        return;
-      }
-
-      const setupRes = await fetch("/api/demo/setup", {
+      const profileRes = await fetch("/api/profile", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -81,21 +65,17 @@ export default function OnboardingPage() {
           dislikes: dislikes || undefined,
         }),
       });
-      if (!setupRes.ok) {
-        const err = (await setupRes.json()) as { error?: string };
+      if (!profileRes.ok) {
+        const err = (await profileRes.json()) as { error?: string };
         setError(err.error ?? "Error al guardar perfil.");
         return;
       }
-      const setupData = (await setupRes.json()) as { userId: string };
-      userId = setupData.userId;
-      setDemoUserId(userId);
 
       const weekStart = getWeekStart(new Date(Date.now()));
       const planRes = await fetch("/api/weekly-plan", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          userId,
           weekStart,
           environment,
           daysPerWeek,
@@ -114,7 +94,6 @@ export default function OnboardingPage() {
       setLoading(false);
     }
   }, [
-    ensureUserId,
     goal,
     level,
     daysPerWeek,
@@ -127,19 +106,6 @@ export default function OnboardingPage() {
     dislikes,
     router,
   ]);
-
-  if (!isDemoMode) {
-    return (
-      <main className="mx-auto max-w-lg px-4 py-8">
-        <h1 className="mb-6 text-2xl font-semibold text-zinc-900 dark:text-zinc-100">
-          Pipos Fitness
-        </h1>
-        <p className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-amber-800 dark:border-amber-900 dark:bg-amber-950/50 dark:text-amber-200">
-          Auth required. Demo mode is disabled.
-        </p>
-      </main>
-    );
-  }
 
   return (
     <main className="mx-auto max-w-lg px-4 py-8">
@@ -424,4 +390,3 @@ export default function OnboardingPage() {
     </main>
   );
 }
-

@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { getDemoUserId } from "@/src/app/lib/demo";
 import { getWeekStart, getTodayDayIndex, DAY_NAMES } from "@/src/app/lib/week";
 import { ErrorBanner } from "@/src/app/components/ErrorBanner";
 import { LoadingSkeleton } from "@/src/app/components/LoadingSkeleton";
@@ -44,14 +43,10 @@ export default function WeekPage() {
   const todayIndex = getTodayDayIndex();
 
   const fetchPlan = useCallback(async () => {
-    const userId = getDemoUserId();
-    if (!userId) return;
     setError(null);
     setLoading(true);
     try {
-      const res = await fetch(
-        `/api/weekly-plan?userId=${encodeURIComponent(userId)}&weekStart=${weekStart}`,
-      );
+      const res = await fetch(`/api/weekly-plan?weekStart=${weekStart}`);
       if (!res.ok) {
         setError("Error al cargar el plan.");
         setPlan(null);
@@ -271,4 +266,3 @@ function SwapMealButton({
     </>
   );
 }
-

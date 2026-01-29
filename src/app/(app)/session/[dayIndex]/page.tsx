@@ -3,7 +3,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { getDemoUserId } from "@/src/app/lib/demo";
 import { getWeekStart } from "@/src/app/lib/week";
 import { DAY_NAMES } from "@/src/app/lib/week";
 import { ErrorBanner } from "@/src/app/components/ErrorBanner";
@@ -29,14 +28,10 @@ export default function SessionPage() {
   const weekStart = getWeekStart(new Date());
 
   const fetchPlan = useCallback(async () => {
-    const userId = getDemoUserId();
-    if (!userId) return;
     setError(null);
     setLoading(true);
     try {
-      const res = await fetch(
-        `/api/weekly-plan?userId=${encodeURIComponent(userId)}&weekStart=${weekStart}`,
-      );
+      const res = await fetch(`/api/weekly-plan?weekStart=${weekStart}`);
       if (!res.ok) {
         setError("Error al cargar el plan.");
         setPlan(null);
@@ -141,4 +136,3 @@ export default function SessionPage() {
     </main>
   );
 }
-
