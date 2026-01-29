@@ -1,4 +1,4 @@
-import { CookingTime } from "@prisma/client";
+export type CookingTime = "MIN_10" | "MIN_20" | "MIN_40" | "FLEXIBLE";
 
 export type Meal = {
   slot: "breakfast" | "lunch" | "dinner" | "snack";
