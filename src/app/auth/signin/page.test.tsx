@@ -10,4 +10,3 @@ describe("GET /auth/signin", () => {
     expect(html).toContain("Email address");
   });
 });
-

@@ -10,7 +10,7 @@ export default function SignInPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    await signIn("email", { email, redirect: false });
+    await signIn("email", { email, callbackUrl: "/week" });
     setIsLoading(false);
   };
 
@@ -56,4 +56,3 @@ export default function SignInPage() {
     </div>
   );
 }
-
