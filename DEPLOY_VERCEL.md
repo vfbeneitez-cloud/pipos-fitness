@@ -98,6 +98,49 @@ En Vercel: **Settings → Environment Variables**
 
 Repetir las mismas variables con valores de desarrollo/preview si quieres.
 
+---
+
+## Staging (Preview) bien montado
+
+Configura un entorno Preview en Vercel con su propia base de datos para probar sin tocar producción.
+
+### Paso 1 — Neon staging
+
+1. Ir a [Neon Console](https://console.neon.tech)
+2. En tu proyecto, crear un **nuevo branch** (ej: `staging`) o un **nuevo proyecto** dedicado a staging
+3. Copiar la **Connection string** de ese branch/proyecto (ej: `postgresql://user:pass@host.neon.tech/dbname?sslmode=require`)
+4. Guardar ese valor como **`DATABASE_URL`** para el entorno **Preview** en Vercel (Paso 2)
+
+### Paso 2 — Variables en Vercel (Preview)
+
+En **Vercel → Settings → Environment Variables → Preview** añade:
+
+- **`DATABASE_URL`** = `<staging-connection-string>` (del Paso 1)
+- **`SENTRY_DSN`** = `<DSN-staging>` (crear proyecto staging en Sentry o usar el mismo)
+- **`NEXT_PUBLIC_SENTRY_DSN`** = `<DSN-staging>` (mismo valor)
+- **`SENTRY_DEBUG`** = `true` (para activar `/api/_debug/sentry`)
+
+**Importante**: En **Production** NO pongas `SENTRY_DEBUG` (el endpoint devuelve 404 en prod).
+
+### Paso 3 — Deploy preview
+
+1. Crear un PR (Pull Request) en GitHub hacia `main`
+2. Vercel generará automáticamente una URL de preview (ej: `https://pipos-fitness-git-feature-abc.vercel.app`)
+3. Esperar a que el build termine
+
+### Paso 4 — Verificación staging
+
+En la URL de preview, verificar:
+
+- [ ] `GET /api/health` → `{ ok: true, env: "production" }` (o "demo" si DEMO_MODE=true)
+- [ ] `GET /api/health/db` → `{ ok: true }`
+- [ ] `GET /api/_debug/sentry` → `200 { ok: true, message: "Test exception sent to Sentry (check Issues)" }`
+- [ ] En **Sentry** (proyecto staging) → **Issues**: debe aparecer el evento de prueba
+
+Si todo OK, staging está listo para probar cambios sin afectar producción.
+
+---
+
 ## Paso 4: Deploy Inicial
 
 1. Click en **"Deploy"** en Vercel

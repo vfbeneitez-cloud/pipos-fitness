@@ -15,11 +15,11 @@
     "format:check": "prettier -c ."
   },
   "dependencies": {
-    "@sentry/nextjs": "^10.37.0",
     "@auth/prisma-adapter": "^2.11.1",
     "@neondatabase/serverless": "^1.0.2",
     "@prisma/adapter-neon": "^7.3.0",
     "@prisma/client": "^7.3.0",
+    "@sentry/nextjs": "^10.37.0",
     "next": "16.1.6",
     "next-auth": "^5.0.0-beta.30",
     "nodemailer": "^7.0.13",

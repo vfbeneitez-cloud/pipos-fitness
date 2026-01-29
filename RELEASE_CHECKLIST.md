@@ -166,6 +166,7 @@
 - [ ] Cuenta en [Sentry.io](https://sentry.io) y proyecto creado
 - [ ] En Vercel: `SENTRY_DSN` y `NEXT_PUBLIC_SENTRY_DSN` con el DSN del proyecto
 - [ ] Errores no manejados se envían a Sentry; en API routes usar `Sentry.captureException(error)` en catch de 500
+- [ ] Probar server-side: en staging/dev pon `SENTRY_DEBUG=true` y llama `GET /api/_debug/sentry` → debe aparecer un evento en Sentry Issues (en prod sin `SENTRY_DEBUG` ese endpoint devuelve 404)
 - [ ] (Opcional) `SENTRY_ORG` y `SENTRY_PROJECT` + `SENTRY_AUTH_TOKEN` en CI para subir source maps
 
 ### Uptime Monitoring (UptimeRobot u otro)
