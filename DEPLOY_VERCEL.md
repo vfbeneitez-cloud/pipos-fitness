@@ -42,6 +42,44 @@ Si tu código aún no está en GitHub/GitLab/Bitbucket:
 5. Click en **"Import"**
 6. Vercel detectará automáticamente Next.js y configurará el proyecto
 
+### 2.3. Conectar con Vercel vía CLI
+
+Si prefieres enlazar el proyecto desde la terminal:
+
+> **PowerShell:** Ejecuta **solo** los comandos que están dentro de los bloques de código (copiando línea por línea). No pegues en la terminal las frases de explicación (por ejemplo «Set up and deploy? → Yes»), o PowerShell intentará ejecutarlas y dará error.
+
+1. **Iniciar sesión en Vercel (una vez)** — desde la carpeta del proyecto. Ejecuta primero el `cd`, luego el login:
+
+   ```bash
+   cd "e:\app fitness\pipos_fitness"
+   ```
+
+   ```bash
+   npx vercel login
+   ```
+
+   Se abrirá el navegador o te pedirá el código/magic link.
+
+2. **Enlazar el proyecto.** Un solo comando:
+
+   ```bash
+   npx vercel link
+   ```
+
+   Responde en los prompts (no pegues estas líneas en la terminal; son solo referencia):
+   - Set up and deploy? → **Yes**
+   - Which scope? → tu cuenta/equipo (ej. benevi's projects)
+   - Link to existing project? → **Yes** si ya existe en el dashboard, **No** para crear uno nuevo
+   - Si elegiste Yes: nombre del proyecto (ej. `pipos-fitness`)
+
+3. **O enlazar sin prompts** (si ya sabes el nombre del proyecto en Vercel):
+
+   ```bash
+   npx vercel link --project pipos-fitness --yes
+   ```
+
+   Sustituye `pipos-fitness` por el nombre real del proyecto.
+
 ## Paso 3: Configurar Environment Variables
 
 En Vercel: **Settings → Environment Variables**
