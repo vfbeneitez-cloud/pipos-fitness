@@ -5,6 +5,9 @@ import { POST } from "./route";
 vi.mock("@/src/server/lib/requireAuth", () => ({
   requireAuth: vi.fn(),
 }));
+vi.mock("@/src/server/lib/withSensitiveRoute", () => ({
+  withSensitiveRoute: (_req: Request, handler: () => Promise<Response>) => handler(),
+}));
 vi.mock("@/src/server/api/profile/upsertProfile", () => ({
   upsertProfile: vi.fn().mockResolvedValue({ status: 200, body: { ok: true } }),
 }));

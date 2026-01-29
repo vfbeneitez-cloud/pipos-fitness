@@ -89,6 +89,11 @@ En Vercel: **Settings → Environment Variables**
    - Valor: Tu API key de OpenAI (solo si usas provider real)
    - Environment: ✅ Production
 
+8. **Sentry** (opcional, monitoreo de errores)
+   - `SENTRY_DSN` y `NEXT_PUBLIC_SENTRY_DSN`: DSN del proyecto en [Sentry.io](https://sentry.io)
+   - En API routes, para errores 500: `Sentry.captureException(error);`
+   - Ver RELEASE_CHECKLIST.md → Production Monitoring (Sentry + Uptime + Vercel)
+
 ### Variables para Preview/Development (opcional):
 
 Repetir las mismas variables con valores de desarrollo/preview si quieres.

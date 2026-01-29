@@ -6,7 +6,7 @@
 
 - [ ] `npm run lint` — sin errores
 - [ ] `npm run typecheck` — sin errores
-- [ ] `npm test` — todos los tests pasando (41 tests)
+- [ ] `npm test` — todos los tests pasando
 
 ### 2. Database
 
@@ -22,6 +22,7 @@
 
 - [ ] Verificar que `/api/demo/*` está bloqueado cuando `DEMO_MODE=false`
 - [ ] Test: `DEMO_MODE=false` → `/api/demo/session` debe devolver 403
+- [ ] En producción: comprobar que `/api/demo/*` no es accesible (403 en prod)
 
 ---
 
@@ -39,6 +40,7 @@
 - [ ] `EMAIL_SERVER` — SMTP server para magic links (ej: `smtp://user:pass@smtp.example.com:587`)
 - [ ] `EMAIL_FROM` — Email remitente (ej: `noreply@yourdomain.com`)
 - [ ] `OPENAI_API_KEY` — (opcional) Solo si se usa provider real de IA
+- [ ] `SENTRY_DSN` / `NEXT_PUBLIC_SENTRY_DSN` — (opcional) DSN de Sentry para errores en producción
 
 **Preview/Development:**
 
@@ -108,7 +110,8 @@
 ### 4. UI Checks
 
 - [ ] Landing page (`/`) redirige a `/auth/signin` (no a `/week`)
-- [ ] `/onboarding` muestra "Auth required" (no formulario demo)
+- [ ] Sin sesión: `/onboarding` redirige a `/auth/signin`
+- [ ] Con sesión: `/onboarding` muestra wizard y permite crear semana
 - [ ] `/auth/signin` carga correctamente
 
 ---
@@ -148,8 +151,37 @@
 
 - **DEMO_MODE**: Nunca debe estar en `true` en producción. Si ves `env: "demo"` en `/api/health`, hay un problema de configuración.
 - **AUTH_SECRET**: Debe ser único y secreto. Rotar si se compromete (ver README sección "How to rotate secrets").
+- **Rotate secrets if leaked**: Si AUTH_SECRET, DATABASE_URL o API keys se filtran, rotar de inmediato en Vercel/Neon y regenerar (ver README "How to rotate secrets").
+- **Verify /api/demo/\* not accessible in prod**: En producción, `GET /api/demo/session` y `POST /api/demo/setup` deben devolver 403 `DEMO_DISABLED`.
 - **DATABASE_URL**: Verificar que apunta a la base de datos correcta (no a desarrollo).
 - **Health endpoints**: Usar `/api/health` y `/api/health/db` para monitoreo continuo (ej: UptimeRobot, Pingdom).
+- **Middleware**: El matcher de `src/middleware.ts` excluye `/auth/*`, `/api/auth/*` y `_next` para no bloquear NextAuth ni assets.
+
+---
+
+## Production Monitoring (Sentry + Uptime + Vercel)
+
+### Sentry (errores frontend/backend)
+
+- [ ] Cuenta en [Sentry.io](https://sentry.io) y proyecto creado
+- [ ] En Vercel: `SENTRY_DSN` y `NEXT_PUBLIC_SENTRY_DSN` con el DSN del proyecto
+- [ ] Errores no manejados se envían a Sentry; en API routes usar `Sentry.captureException(error)` en catch de 500
+- [ ] (Opcional) `SENTRY_ORG` y `SENTRY_PROJECT` + `SENTRY_AUTH_TOKEN` en CI para subir source maps
+
+### Uptime Monitoring (UptimeRobot u otro)
+
+- [ ] Cuenta en [UptimeRobot](https://uptimerobot.com) (o similar)
+- [ ] Monitor HTTP para `GET https://tu-app.vercel.app/api/health` — intervalo 5 min, alerta si no 200
+- [ ] Monitor HTTP para `GET https://tu-app.vercel.app/api/health/db` — intervalo 5 min, alerta si no 200
+- [ ] Alertas por correo o Slack cuando un endpoint no responde o devuelve error
+
+### Vercel logs y alertas
+
+- [ ] En Vercel Dashboard: habilitar logs para Deployments
+- [ ] No imprimir en logs variables sensibles (`AUTH_SECRET`, `DATABASE_URL`, API keys); el logger actual no las incluye
+- [ ] (Opcional) Configurar alertas por correo en Vercel para fallos de deploy o errores
+
+---
 
 ## Scripts útiles
 
