@@ -1,0 +1,111 @@
+import { describe, it, expect, beforeEach, vi } from "vitest";
+import { prisma } from "@/src/server/db/prisma";
+import { createNutritionLog } from "./log";
+
+const TEST_USER_ID = "test-user-id";
+
+vi.mock("@/src/server/auth/getSession", () => ({
+  getUserIdFromSession: async () => TEST_USER_ID,
+}));
+
+describe("POST /api/nutrition/log", () => {
+  beforeEach(async () => {
+    await prisma.user.upsert({
+      where: { id: TEST_USER_ID },
+      update: {},
+      create: { id: TEST_USER_ID, email: "test@local.test" },
+    });
+  });
+  it("creates a nutrition log successfully", async () => {
+    const result = await createNutritionLog(
+      {
+        followedPlan: true,
+        hunger: "ok",
+        mealName: "lunch",
+      },
+      TEST_USER_ID,
+    );
+
+    expect(result.status).toBe(200);
+    const body = result.body as { id: string; userId: string; followedPlan: boolean };
+    expect(body.id).toBeDefined();
+    expect(body.userId).toBe(TEST_USER_ID);
+    expect(body.followedPlan).toBe(true);
+  });
+
+  it("creates log with minimal fields", async () => {
+    const result = await createNutritionLog(
+      {
+        followedPlan: false,
+      },
+      TEST_USER_ID,
+    );
+
+    expect(result.status).toBe(200);
+    const body = result.body as { followedPlan: boolean };
+    expect(body.followedPlan).toBe(false);
+  });
+
+  it("returns 400 for invalid body", async () => {
+    const result = await createNutritionLog(
+      {
+        followedPlan: "not-boolean" as unknown as boolean,
+        hunger: "invalid" as unknown as "low" | "ok" | "high",
+      },
+      TEST_USER_ID,
+    );
+
+    expect(result.status).toBe(400);
+    expect((result.body as { error: string }).error).toBe("INVALID_BODY");
+  });
+});
+
+describe("POST /api/nutrition/log authorization", () => {
+  beforeEach(async () => {
+    await prisma.user.upsert({
+      where: { id: TEST_USER_ID },
+      update: {},
+      create: { id: TEST_USER_ID, email: "test@local.test" },
+    });
+  });
+
+  it("returns 401 when no session", async () => {
+    vi.resetModules();
+    vi.doMock("@/src/server/auth/getSession", () => ({
+      getUserIdFromSession: async () => null,
+    }));
+    const { POST } = await import("@/src/app/api/nutrition/log/route");
+
+    const req = new Request("http://localhost/api/nutrition/log", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        followedPlan: true,
+      }),
+    });
+    const res = await POST(req);
+    const body = (await res.json()) as { error: string };
+
+    expect(res.status).toBe(401);
+    expect(body.error).toBe("UNAUTHORIZED");
+  });
+
+  it("returns 200 when session exists", async () => {
+    vi.resetModules();
+    vi.doMock("@/src/server/auth/getSession", () => ({
+      getUserIdFromSession: async () => TEST_USER_ID,
+    }));
+    const { POST } = await import("@/src/app/api/nutrition/log/route");
+
+    const req = new Request("http://localhost/api/nutrition/log", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        followedPlan: true,
+      }),
+    });
+    const res = await POST(req);
+
+    expect(res.status).toBe(200);
+  });
+});

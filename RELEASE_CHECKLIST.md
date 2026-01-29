@@ -1,0 +1,169 @@
+# Release Checklist
+
+## Pre-Release (Local)
+
+### 1. Code Quality
+
+- [ ] `npm run lint` — sin errores
+- [ ] `npm run typecheck` — sin errores
+- [ ] `npm test` — todos los tests pasando (41 tests)
+
+### 2. Database
+
+- [ ] `npx prisma migrate status` — verificar que no hay migraciones pendientes
+- [ ] `npx prisma db seed` (opcional) — si hay cambios en seed, probar localmente
+
+### 3. Environment Variables Review
+
+- [ ] `.env.example` está actualizado con todas las variables necesarias
+- [ ] Verificar que no hay secretos hardcodeados en código
+
+### 4. Demo Mode Security
+
+- [ ] Verificar que `/api/demo/*` está bloqueado cuando `DEMO_MODE=false`
+- [ ] Test: `DEMO_MODE=false` → `/api/demo/session` debe devolver 403
+
+---
+
+## Vercel Configuration
+
+### Environment Variables (Settings → Environment Variables)
+
+**Production:**
+
+- [ ] `DATABASE_URL` — Connection string de Neon (Production)
+- [ ] `AUTH_SECRET` — Secret generado (`openssl rand -base64 32`)
+- [ ] `AUTH_URL` — URL de producción (ej: `https://tu-app.vercel.app`)
+- [ ] `DEMO_MODE` — `false`
+- [ ] `NEXT_PUBLIC_DEMO_MODE` — `false`
+- [ ] `EMAIL_SERVER` — SMTP server para magic links (ej: `smtp://user:pass@smtp.example.com:587`)
+- [ ] `EMAIL_FROM` — Email remitente (ej: `noreply@yourdomain.com`)
+- [ ] `OPENAI_API_KEY` — (opcional) Solo si se usa provider real de IA
+
+**Preview/Development:**
+
+- [ ] Mismas variables con valores de desarrollo/preview
+
+### Build Settings
+
+- [ ] Framework Preset: Next.js
+- [ ] Build Command: `npm run build` (default)
+- [ ] Output Directory: `.next` (default)
+- [ ] Install Command: `npm install` (default)
+
+---
+
+## Post-Deploy
+
+### 1. Database Migrations
+
+- [ ] Ejecutar migraciones en producción:
+  ```bash
+  DATABASE_URL="<prod-url>" npx prisma migrate deploy
+  ```
+- [ ] Verificar que las migraciones se aplicaron correctamente
+
+### 2. Seed (Opcional, solo primera vez)
+
+- [ ] Si es necesario seed inicial:
+  ```bash
+  DATABASE_URL="<prod-url>" npx prisma db seed
+  ```
+
+### 3. Health Checks
+
+**Basic Health:**
+
+- [ ] `GET https://tu-app.vercel.app/api/health`
+  - Debe devolver `{ ok: true, version: "...", env: "production" }`
+  - `env` debe ser `"production"` (no `"demo"`)
+
+**Database Health:**
+
+- [ ] `GET https://tu-app.vercel.app/api/health/db`
+  - Debe devolver `{ ok: true }`
+  - Si falla → revisar `DATABASE_URL`
+
+**Public Endpoint:**
+
+- [ ] `GET https://tu-app.vercel.app/api/exercises`
+  - Debe devolver 200 con lista de ejercicios
+
+**Auth Endpoint:**
+
+- [ ] `GET https://tu-app.vercel.app/auth/signin`
+  - Debe mostrar página de sign in (no error 500)
+
+**Protected Endpoint (debe requerir auth):**
+
+- [ ] `GET https://tu-app.vercel.app/api/weekly-plan?weekStart=2026-01-26`
+  - Sin sesión → debe devolver 401 `UNAUTHORIZED`
+  - Con sesión válida → debe devolver 200 o null
+
+**Demo Endpoints (deben estar bloqueados):**
+
+- [ ] `GET https://tu-app.vercel.app/api/demo/session`
+  - Debe devolver 403 `DEMO_DISABLED`
+
+### 4. UI Checks
+
+- [ ] Landing page (`/`) redirige a `/auth/signin` (no a `/week`)
+- [ ] `/onboarding` muestra "Auth required" (no formulario demo)
+- [ ] `/auth/signin` carga correctamente
+
+---
+
+## Rollback Plan
+
+### Si hay problemas críticos:
+
+1. **Revert en Vercel:**
+   - Vercel Dashboard → Deployments → seleccionar deploy anterior → "Promote to Production"
+
+2. **Revert Database Migrations (si aplica):**
+
+   ```bash
+   # Ver migraciones aplicadas
+   DATABASE_URL="<prod-url>" npx prisma migrate status
+
+   # Si necesitas revertir manualmente, crear migración nueva que revierta cambios
+   # O restaurar backup de DB si está disponible
+   ```
+
+3. **Verificar Health:**
+   - `GET /api/health` debe seguir funcionando
+   - `GET /api/health/db` debe seguir funcionando
+
+---
+
+## Post-Rollback
+
+- [ ] Documentar qué falló y por qué
+- [ ] Crear issue/ticket para investigar
+- [ ] Actualizar checklist si se identificaron gaps
+
+---
+
+## Notes
+
+- **DEMO_MODE**: Nunca debe estar en `true` en producción. Si ves `env: "demo"` en `/api/health`, hay un problema de configuración.
+- **AUTH_SECRET**: Debe ser único y secreto. Rotar si se compromete (ver README sección "How to rotate secrets").
+- **DATABASE_URL**: Verificar que apunta a la base de datos correcta (no a desarrollo).
+- **Health endpoints**: Usar `/api/health` y `/api/health/db` para monitoreo continuo (ej: UptimeRobot, Pingdom).
+
+## Scripts útiles
+
+```bash
+# Verificar migraciones pendientes
+npx prisma migrate status
+
+# Aplicar migraciones en producción
+DATABASE_URL="<prod-url>" npx prisma migrate deploy
+
+# Seed en producción (solo primera vez)
+DATABASE_URL="<prod-url>" npx prisma db seed
+
+# Verificar health localmente
+curl http://localhost:3000/api/health
+curl http://localhost:3000/api/health/db
+```
