@@ -2,13 +2,13 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 /**
- * Middleware runs only on paths matched below. Excluded (never run):
+ * Proxy runs only on paths matched below. Excluded (never run):
  * - /auth/* (signin, verify)
  * - /api/auth/* (NextAuth)
  * - /_next/* (static, image, etc.)
  * Add any global logic here; auth routes stay untouched.
  */
-export function middleware(req: NextRequest) {
+export function proxy(req: NextRequest) {
   return NextResponse.next();
 }
 

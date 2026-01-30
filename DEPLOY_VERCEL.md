@@ -369,6 +369,92 @@ El 200 no basta. Confirma efecto:
 - **Vercel** → Deployments → **Functions logs**: filtra por `/api/cron/weekly-regenerate`; busca statusCode=200 y duración.
 - **Sentry:** si `failed > 0`, idealmente debería haber eventos capturados (si en catch capturas excepción; si no, se puede añadir en un paso posterior).
 
+## Paso 8 — Arreglar el build local de Sentry (Cannot find module '../instrument/globalError.js')
+
+El error suele venir de una inconsistencia en `@sentry/core` (solo publica ESM en `instrument/`, falta CJS). El proyecto incluye un parche automático (postinstall) como workaround; el objetivo es no depender de él (Paso 8.3).
+
+### Paso 8.1 — Recuperar entorno local reproducible (Windows)
+
+Ejecuta esto exacto en PowerShell, en la raíz del repo (`E:\app fitness\pipos_fitness`):
+
+```powershell
+# 1) limpieza total (seguro)
+Remove-Item -Recurse -Force node_modules -ErrorAction SilentlyContinue
+Remove-Item package-lock.json -ErrorAction SilentlyContinue
+
+# 2) instala dependencias (esto vuelve a crear node_modules)
+npm install
+
+# 3) genera prisma client (por si acaso)
+npx prisma generate
+
+# 4) build
+npm run build
+```
+
+**Resultado esperado:**
+
+- `npm install` crea `node_modules`
+- `npx prisma generate` ya funciona (no “prisma no se encuentra”)
+- `npm run build` pasa
+
+### Paso 8.2 — Si npm install falla o no crea node_modules
+
+Suele ser permisos/espacios/ruta con espacios. Prueba:
+
+- Verifica versión node/npm: `node -v` y `npm -v`
+- Reinstala con log: `npm install --verbose`
+- Si la ruta con espacio (`E:\app fitness\...`) da guerra, mueve temporalmente el repo a una ruta sin espacios (ej. `E:\pipos_fitness\`) y repite.
+
+**Sobre el `patch-sentry-cjs.cjs`:** Parchear `node_modules` para compilar no es lo ideal; puede romperse en cualquier update. Como workaround vale, pero el objetivo es fijar versiones compatibles (`@sentry/nextjs` + `next`) y no depender del parche.
+
+### Paso 8.3 (solo si quieres dejarlo fino)
+
+Después de que el build pase:
+
+- Quitar el postinstall patch
+- Fijar versiones correctas
+- Garantizar build reproducible sin hacks
+
+### Para pasar al Paso 9
+
+En cuanto ejecutes el bloque de **Paso 8.1**, indica:
+
+- **¿`npm run build` pasa?** (sí/no)
+- Si no, pega las 10 primeras líneas del error (sin secretos).
+
+## Paso 9 — Activar cron en Production y verificar que corre de verdad
+
+### 9.1 Añadir env vars en Vercel (Production)
+
+**Vercel** → Project → **Settings** → **Environment Variables** → **Production**:
+
+- **`CRON_WEEKLY_REGEN_ENABLED`** = `true`
+- **`CRON_SECRET`** = (un valor largo aleatorio, ej. `openssl rand -base64 32`)
+
+Luego **Redeploy** (o merge a `main` si prod auto-deploy).
+
+> El cron definido en `vercel.json` solo se aplica en deploys de **Production**.
+
+### 9.2 Prueba manual inmediata (sin esperar al lunes)
+
+En PowerShell (cambia el dominio al de prod):
+
+```powershell
+$headers = @{ Authorization = "Bearer TU_CRON_SECRET" }
+Invoke-RestMethod -Method Post -Uri "https://pipos-fitness.vercel.app/api/cron/weekly-regenerate" -Headers $headers
+```
+
+**Esperado:** `{ "ok": true, "processed": N, "succeeded": M, "failed": K }`
+
+- **404** → falta `CRON_WEEKLY_REGEN_ENABLED=true` en Production.
+- **401** → el secret no coincide o el header no llega.
+
+### 9.3 Verifica efecto real en DB/UI
+
+- En **`/week`** (con un usuario real): panel **“Última actualización del plan”** con fecha reciente.
+- O **Prisma Studio** contra la DB de prod: `WeeklyPlan.lastGeneratedAt` actualizado.
+
 ## Próximos Pasos
 
 - Configurar dominio personalizado (opcional)
