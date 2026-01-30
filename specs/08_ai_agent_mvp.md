@@ -77,3 +77,50 @@ POST `/api/agent/weekly-plan`
 - Red flags: detección y mensaje conservador.
 - Invalid input: 400.
 - User not found: 404.
+
+## Signals used by the agent (MVP)
+
+The agent bases its adjustments on 7-day trends, never on a single log.
+
+### Training signals
+
+- completion rate (sessions completed / planned)
+- perceived difficulty (easy / ok / hard)
+- pain presence (boolean)
+- recurring pain notes (text, pattern-based only)
+
+### Nutrition signals
+
+- adherence frequency (followedPlan true/false)
+- hunger trend (low / ok / high)
+- logging consistency
+
+### Ignored signals (MVP)
+
+- single-day failures
+- isolated missed sessions
+- isolated hunger spikes
+- free-text notes unless recurring
+
+## Decision mapping (signals -> adjustments)
+
+The agent applies deterministic rules based on 7-day trends.
+
+### Training decisions
+
+| Signal                                     | Interpretation      | Adjustment                       |
+| ------------------------------------------ | ------------------- | -------------------------------- |
+| >=80% sessions completed + difficulty = ok | Adequate load       | Maintain plan                    |
+| >=80% completed + difficulty = easy        | Understimulation    | +1 exercise in 1-2 sessions      |
+| <50% completed (no pain)                   | Logistical overload | -1 session or simplify           |
+| pain = true in >=2 logs                    | Risk                | Reduce volume / simpler variants |
+| Recurring painNotes pattern                | Localized risk      | Avoid related exercises          |
+
+### Nutrition decisions
+
+| Signal                              | Interpretation        | Adjustment                   |
+| ----------------------------------- | --------------------- | ---------------------------- |
+| followedPlan frequent + hunger = ok | Adequate plan         | Maintain                     |
+| hunger = high recurring             | Insufficient satiety  | Increase portions indirectly |
+| followedPlan low (no high hunger)   | Friction / complexity | Simplify meals               |
+| Inconsistent logs                   | Insufficient data     | Maintain plan                |

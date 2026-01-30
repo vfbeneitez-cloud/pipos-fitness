@@ -130,6 +130,16 @@ Plan actual: ${currentPlan ? "existe" : "no existe"}
 
 Propón ajustes seguros basados en adherencia y perfil.`;
 
+  /**
+   * Adjustment rules (MVP)
+   * - Based on 7-day trends only
+   * - Apply at most ONE category of change per regeneration:
+   *   training volume OR training intensity OR nutrition simplicity
+   * - Never adjust if data is insufficient
+   * - Pain signals override adherence
+   * See specs/08_ai_agent_mvp.md for the decision table
+   */
+  let adjustmentApplied = false;
   let rationale = "";
   let adjustments: {
     daysPerWeek?: number | null;
@@ -153,6 +163,7 @@ Propón ajustes seguros basados en adherencia y perfil.`;
         mealsPerDay: profile?.mealsPerDay ?? 3,
         cookingTime: profile?.cookingTime ?? "MIN_20",
       };
+      adjustmentApplied = true;
     } else {
       try {
         const parsed = JSON.parse(response.content) as {
@@ -160,18 +171,39 @@ Propón ajustes seguros basados en adherencia y perfil.`;
           adjustments?: typeof adjustments;
         };
         rationale = parsed.rationale ?? "Ajustes aplicados según adherencia y perfil.";
-        adjustments = parsed.adjustments ?? {};
+        const raw = parsed.adjustments ?? {};
+        const hasTraining =
+          raw.daysPerWeek != null || raw.sessionMinutes != null || raw.environment != null;
+        if (hasTraining && !adjustmentApplied) {
+          adjustments = {
+            daysPerWeek: raw.daysPerWeek ?? undefined,
+            sessionMinutes: raw.sessionMinutes ?? undefined,
+            environment: raw.environment ?? undefined,
+          };
+          adjustmentApplied = true;
+        } else if (!adjustmentApplied) {
+          const hasNutrition = raw.mealsPerDay != null || raw.cookingTime != null;
+          if (hasNutrition) {
+            adjustments = {
+              mealsPerDay: raw.mealsPerDay ?? undefined,
+              cookingTime: raw.cookingTime ?? undefined,
+            };
+            adjustmentApplied = true;
+          }
+        }
       } catch {
         rationale =
           adherence.training < 0.5 || adherence.nutrition < 0.5
             ? "He reducido la complejidad del plan para facilitar la adherencia."
             : "He aplicado ajustes menores basados en tu progreso.";
-        if (adherence.training < 0.5) {
+        if (!adjustmentApplied && adherence.training < 0.5) {
           adjustments.daysPerWeek = Math.max(1, (profile?.daysPerWeek ?? 3) - 1);
+          adjustmentApplied = true;
         }
-        if (adherence.nutrition < 0.5) {
+        if (!adjustmentApplied && adherence.nutrition < 0.5) {
           adjustments.mealsPerDay = Math.max(2, (profile?.mealsPerDay ?? 3) - 1);
           adjustments.cookingTime = "MIN_10";
+          adjustmentApplied = true;
         }
       }
     }

@@ -6,15 +6,32 @@ import Link from "next/link";
 import { getDemoUserId } from "@/src/app/lib/demo";
 import { ErrorBanner } from "@/src/app/components/ErrorBanner";
 
+const DIFFICULTY_OPTIONS: { value: "easy" | "ok" | "hard"; label: string; emoji: string }[] = [
+  { value: "easy", label: "Fácil", emoji: "😌" },
+  { value: "ok", label: "Normal", emoji: "🙂" },
+  { value: "hard", label: "Duro", emoji: "😣" },
+];
+
 export default function LogTrainingPage() {
   const router = useRouter();
-  const [completed, setCompleted] = useState(true);
+  const [done, setDone] = useState<boolean | null>(null);
   const [difficulty, setDifficulty] = useState<"easy" | "ok" | "hard">("ok");
   const [pain, setPain] = useState(false);
   const [painNotes, setPainNotes] = useState("");
-  const [sessionName, setSessionName] = useState("");
+  const [optionalNotes, setOptionalNotes] = useState("");
+  const [optionalNotesVisible, setOptionalNotesVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const canSubmit = done === false || (done === true && difficulty != null);
+
+  // MVP: painNotes combina detalle de dolor + notas generales (deuda técnica: valorar separar en sprint futuro)
+  const buildPainNotesPayload = (): string | undefined => {
+    const parts: string[] = [];
+    if (pain && painNotes.trim()) parts.push(painNotes.trim());
+    if (optionalNotes.trim()) parts.push(optionalNotes.trim());
+    return parts.length ? parts.join("\n") : undefined;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,19 +40,20 @@ export default function LogTrainingPage() {
       setError("Sesión no encontrada.");
       return;
     }
+    if (!canSubmit) return;
     setError(null);
     setLoading(true);
     try {
+      const completed = done === true;
       const res = await fetch("/api/training/log", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           userId,
           completed,
-          difficulty,
-          pain,
-          painNotes: painNotes || undefined,
-          sessionName: sessionName || undefined,
+          difficulty: completed ? difficulty : undefined,
+          pain: completed ? pain : false,
+          painNotes: completed ? buildPainNotesPayload() : undefined,
         }),
       });
       if (!res.ok) {
@@ -59,7 +77,7 @@ export default function LogTrainingPage() {
         </Link>
       </nav>
       <h1 className="mb-6 text-2xl font-semibold text-zinc-900 dark:text-zinc-100">
-        Log entrenamiento
+        Registrar entrenamiento
       </h1>
 
       {error && (
@@ -68,90 +86,134 @@ export default function LogTrainingPage() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label htmlFor="sessionName" className="block text-sm text-zinc-600 dark:text-zinc-400">
-            Nombre sesión (opcional)
-          </label>
-          <input
-            id="sessionName"
-            type="text"
-            value={sessionName}
-            onChange={(e) => setSessionName(e.target.value)}
-            className="mt-1 w-full rounded border border-zinc-300 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-800"
-          />
-        </div>
-        <div className="flex items-center gap-2">
-          <input
-            id="completed"
-            type="checkbox"
-            checked={completed}
-            onChange={(e) => setCompleted(e.target.checked)}
-            className="h-4 w-4 rounded border-zinc-300"
-          />
-          <label htmlFor="completed" className="text-sm">
-            Sesión hecha
-          </label>
-        </div>
-        <div>
-          <span className="block text-sm text-zinc-600 dark:text-zinc-400">Dificultad</span>
-          <div className="mt-1 flex gap-2">
-            {(["easy", "ok", "hard"] as const).map((d) => (
-              <label key={d} className="flex items-center gap-1">
-                <input
-                  type="radio"
-                  name="difficulty"
-                  value={d}
-                  checked={difficulty === d}
-                  onChange={() => setDifficulty(d)}
-                  className="h-4 w-4"
-                />
-                <span className="text-sm capitalize">{d}</span>
-              </label>
-            ))}
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <input
-            id="pain"
-            type="checkbox"
-            checked={pain}
-            onChange={(e) => setPain(e.target.checked)}
-            className="h-4 w-4 rounded border-zinc-300"
-          />
-          <label htmlFor="pain" className="text-sm">
-            Dolor o molestia
-          </label>
-        </div>
-        {pain && (
-          <div>
-            <label htmlFor="painNotes" className="block text-sm text-zinc-600 dark:text-zinc-400">
-              Notas (zona, etc.)
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <fieldset>
+          <legend className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+            ¿Has entrenado hoy?
+          </legend>
+          <div className="mt-2 flex gap-4">
+            <label className="flex items-center gap-2">
+              <input
+                type="radio"
+                name="done"
+                checked={done === true}
+                onChange={() => setDone(true)}
+                className="h-4 w-4"
+              />
+              <span>Sí</span>
             </label>
-            <input
-              id="painNotes"
-              type="text"
-              value={painNotes}
-              onChange={(e) => setPainNotes(e.target.value)}
-              className="mt-1 w-full rounded border border-zinc-300 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-800"
-            />
+            <label className="flex items-center gap-2">
+              <input
+                type="radio"
+                name="done"
+                checked={done === false}
+                onChange={() => setDone(false)}
+                className="h-4 w-4"
+              />
+              <span>No</span>
+            </label>
+          </div>
+        </fieldset>
+
+        {done === true && (
+          <>
+            <fieldset>
+              <legend className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                ¿Cómo se sintió el entrenamiento?
+              </legend>
+              <div className="mt-2 flex flex-wrap gap-3">
+                {DIFFICULTY_OPTIONS.map((opt) => (
+                  <label
+                    key={opt.value}
+                    className="flex cursor-pointer items-center gap-2 rounded-lg border border-zinc-300 px-4 py-2 has-[:checked]:border-zinc-900 has-[:checked]:bg-zinc-100 dark:border-zinc-600 dark:has-[:checked]:border-zinc-100 dark:has-[:checked]:bg-zinc-800"
+                  >
+                    <input
+                      type="radio"
+                      name="difficulty"
+                      value={opt.value}
+                      checked={difficulty === opt.value}
+                      onChange={() => setDifficulty(opt.value)}
+                      className="sr-only"
+                    />
+                    <span aria-hidden>{opt.emoji}</span>
+                    <span>{opt.label}</span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                ¿Sentiste dolor o molestias?
+              </legend>
+              <div className="mt-2 flex gap-4">
+                <label className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="pain"
+                    checked={!pain}
+                    onChange={() => setPain(false)}
+                    className="h-4 w-4"
+                  />
+                  <span>No</span>
+                </label>
+                <label className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="pain"
+                    checked={pain}
+                    onChange={() => setPain(true)}
+                    className="h-4 w-4"
+                  />
+                  <span>Sí</span>
+                </label>
+              </div>
+              {pain && (
+                <div className="mt-3">
+                  <textarea
+                    value={painNotes}
+                    onChange={(e) => setPainNotes(e.target.value)}
+                    placeholder="¿Dónde o qué tipo de molestia?"
+                    rows={2}
+                    className="mt-1 w-full rounded border border-zinc-300 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-800"
+                  />
+                </div>
+              )}
+            </fieldset>
+
+            <div>
+              {!optionalNotesVisible ? (
+                <button
+                  type="button"
+                  onClick={() => setOptionalNotesVisible(true)}
+                  className="text-sm text-zinc-600 underline dark:text-zinc-400"
+                >
+                  Añadir nota (opcional)
+                </button>
+              ) : (
+                <textarea
+                  value={optionalNotes}
+                  onChange={(e) => setOptionalNotes(e.target.value)}
+                  placeholder="Energía, tiempo, sensaciones…"
+                  rows={2}
+                  className="mt-1 w-full rounded border border-zinc-300 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-800"
+                />
+              )}
+            </div>
+          </>
+        )}
+
+        {done !== null && (
+          <div className="pt-2">
+            <button
+              type="submit"
+              disabled={!canSubmit || loading}
+              className="w-full rounded-lg bg-zinc-900 px-4 py-3 text-white disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900"
+            >
+              {loading ? "Guardando…" : "Guardar entrenamiento"}
+            </button>
           </div>
         )}
-        <div className="flex gap-2 pt-4">
-          <Link
-            href="/week"
-            className="rounded-lg border border-zinc-300 px-4 py-2 dark:border-zinc-600"
-          >
-            Cancelar
-          </Link>
-          <button
-            type="submit"
-            disabled={loading}
-            className="rounded-lg bg-zinc-900 px-4 py-2 text-white disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900"
-          >
-            {loading ? "Guardando…" : "Guardar"}
-          </button>
-        </div>
       </form>
     </main>
   );

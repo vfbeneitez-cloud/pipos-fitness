@@ -6,14 +6,23 @@ import Link from "next/link";
 import { getDemoUserId } from "@/src/app/lib/demo";
 import { ErrorBanner } from "@/src/app/components/ErrorBanner";
 
+const HUNGER_OPTIONS: { value: "low" | "ok" | "high"; label: string }[] = [
+  { value: "low", label: "Poca" },
+  { value: "ok", label: "Normal" },
+  { value: "high", label: "Mucha" },
+];
+
 export default function LogNutritionPage() {
   const router = useRouter();
-  const [followedPlan, setFollowedPlan] = useState(true);
+  const [followedMenu, setFollowedMenu] = useState<boolean | null>(null);
   const [hunger, setHunger] = useState<"low" | "ok" | "high">("ok");
-  const [mealName, setMealName] = useState("");
   const [notes, setNotes] = useState("");
+  const [notesVisible, setNotesVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const canSubmit =
+    followedMenu !== null && (followedMenu === false || (followedMenu === true && hunger != null));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,6 +31,7 @@ export default function LogNutritionPage() {
       setError("Sesión no encontrada.");
       return;
     }
+    if (!canSubmit) return;
     setError(null);
     setLoading(true);
     try {
@@ -30,10 +40,9 @@ export default function LogNutritionPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           userId,
-          followedPlan,
-          hunger,
-          mealName: mealName || undefined,
-          notes: notes || undefined,
+          followedPlan: followedMenu,
+          hunger: followedMenu ? hunger : undefined,
+          notes: notes.trim() || undefined,
         }),
       });
       if (!res.ok) {
@@ -56,7 +65,9 @@ export default function LogNutritionPage() {
           ← Semana
         </Link>
       </nav>
-      <h1 className="mb-6 text-2xl font-semibold text-zinc-900 dark:text-zinc-100">Log comida</h1>
+      <h1 className="mb-6 text-2xl font-semibold text-zinc-900 dark:text-zinc-100">
+        Registrar comida
+      </h1>
 
       {error && (
         <div className="mb-4">
@@ -64,77 +75,94 @@ export default function LogNutritionPage() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label htmlFor="mealName" className="block text-sm text-zinc-600 dark:text-zinc-400">
-            Comida (opcional)
-          </label>
-          <input
-            id="mealName"
-            type="text"
-            value={mealName}
-            onChange={(e) => setMealName(e.target.value)}
-            placeholder="desayuno, comida, cena..."
-            className="mt-1 w-full rounded border border-zinc-300 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-800"
-          />
-        </div>
-        <div className="flex items-center gap-2">
-          <input
-            id="followedPlan"
-            type="checkbox"
-            checked={followedPlan}
-            onChange={(e) => setFollowedPlan(e.target.checked)}
-            className="h-4 w-4 rounded border-zinc-300"
-          />
-          <label htmlFor="followedPlan" className="text-sm">
-            Comida realizada según plan
-          </label>
-        </div>
-        <div>
-          <span className="block text-sm text-zinc-600 dark:text-zinc-400">Hambre / saciedad</span>
-          <div className="mt-1 flex gap-2">
-            {(["low", "ok", "high"] as const).map((h) => (
-              <label key={h} className="flex items-center gap-1">
-                <input
-                  type="radio"
-                  name="hunger"
-                  value={h}
-                  checked={hunger === h}
-                  onChange={() => setHunger(h)}
-                  className="h-4 w-4"
-                />
-                <span className="text-sm capitalize">{h}</span>
-              </label>
-            ))}
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <fieldset>
+          <legend className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+            ¿Has seguido el menú de hoy?
+          </legend>
+          <div className="mt-2 flex gap-4">
+            <label className="flex items-center gap-2">
+              <input
+                type="radio"
+                name="followedMenu"
+                checked={followedMenu === true}
+                onChange={() => setFollowedMenu(true)}
+                className="h-4 w-4"
+              />
+              <span>Sí</span>
+            </label>
+            <label className="flex items-center gap-2">
+              <input
+                type="radio"
+                name="followedMenu"
+                checked={followedMenu === false}
+                onChange={() => setFollowedMenu(false)}
+                className="h-4 w-4"
+              />
+              <span>No</span>
+            </label>
           </div>
-        </div>
-        <div>
-          <label htmlFor="notes" className="block text-sm text-zinc-600 dark:text-zinc-400">
-            Notas (opcional)
-          </label>
-          <input
-            id="notes"
-            type="text"
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            className="mt-1 w-full rounded border border-zinc-300 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-800"
-          />
-        </div>
-        <div className="flex gap-2 pt-4">
-          <Link
-            href="/week"
-            className="rounded-lg border border-zinc-300 px-4 py-2 dark:border-zinc-600"
-          >
-            Cancelar
-          </Link>
-          <button
-            type="submit"
-            disabled={loading}
-            className="rounded-lg bg-zinc-900 px-4 py-2 text-white disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900"
-          >
-            {loading ? "Guardando…" : "Guardar"}
-          </button>
-        </div>
+        </fieldset>
+
+        {followedMenu !== null && (
+          <>
+            <fieldset>
+              <legend className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                Sensación de hambre
+              </legend>
+              <div className="mt-2 flex flex-wrap gap-3">
+                {HUNGER_OPTIONS.map((opt) => (
+                  <label
+                    key={opt.value}
+                    className="flex cursor-pointer items-center gap-2 rounded-lg border border-zinc-300 px-4 py-2 has-[:checked]:border-zinc-900 has-[:checked]:bg-zinc-100 dark:border-zinc-600 dark:has-[:checked]:border-zinc-100 dark:has-[:checked]:bg-zinc-800"
+                  >
+                    <input
+                      type="radio"
+                      name="hunger"
+                      value={opt.value}
+                      checked={hunger === opt.value}
+                      onChange={() => setHunger(opt.value)}
+                      className="sr-only"
+                    />
+                    <span>{opt.label}</span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+
+            <div>
+              {!notesVisible ? (
+                <button
+                  type="button"
+                  onClick={() => setNotesVisible(true)}
+                  className="text-sm text-zinc-600 underline dark:text-zinc-400"
+                >
+                  Añadir nota (opcional)
+                </button>
+              ) : (
+                <textarea
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  placeholder="Energía, saciedad, antojos…"
+                  rows={2}
+                  className="mt-1 w-full rounded border border-zinc-300 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-800"
+                />
+              )}
+            </div>
+          </>
+        )}
+
+        {followedMenu !== null && (
+          <div className="pt-2">
+            <button
+              type="submit"
+              disabled={!canSubmit || loading}
+              className="w-full rounded-lg bg-zinc-900 px-4 py-3 text-white disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900"
+            >
+              {loading ? "Guardando…" : "Guardar comida"}
+            </button>
+          </div>
+        )}
       </form>
     </main>
   );
