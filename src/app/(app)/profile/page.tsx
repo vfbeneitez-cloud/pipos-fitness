@@ -63,6 +63,7 @@ export default function ProfilePage() {
   const [saveLoading, setSaveLoading] = useState(false);
   const [regenModalOpen, setRegenModalOpen] = useState(false);
   const [regenLoading, setRegenLoading] = useState(false);
+  const [loadKey, setLoadKey] = useState(0);
 
   const [goal, setGoal] = useState("");
   const [level, setLevel] = useState("BEGINNER");
@@ -79,16 +80,18 @@ export default function ProfilePage() {
 
   useEffect(() => {
     let cancelled = false;
+    setError(null);
     (async () => {
       try {
         const res = await fetch("/api/profile");
+        const data = (await res.json()) as { profile?: UserProfile | null; error?: string };
+        if (cancelled) return;
         if (!res.ok) {
-          if (!cancelled) setProfile(null);
+          setError(data.error ?? "No se pudo cargar el perfil.");
+          setProfile(null);
           return;
         }
-        const data = (await res.json()) as { profile: UserProfile | null };
-        if (cancelled) return;
-        setProfile(data.profile);
+        setProfile(data.profile ?? null);
         if (data.profile) {
           setGoal(data.profile.goal ?? "");
           setLevel(data.profile.level);
@@ -104,13 +107,16 @@ export default function ProfilePage() {
           setDislikes(data.profile.dislikes ?? "");
         }
       } catch {
-        if (!cancelled) setProfile(null);
+        if (!cancelled) {
+          setError("Error de red. Reintenta.");
+          setProfile(null);
+        }
       }
     })();
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [loadKey]);
 
   const handleSave = useCallback(async () => {
     setError(null);
@@ -193,6 +199,22 @@ export default function ProfilePage() {
       <main className="mx-auto max-w-lg px-4 py-8 pb-20">
         <h1 className="mb-6 text-2xl font-semibold text-zinc-900 dark:text-zinc-100">Perfil</h1>
         <LoadingSkeleton />
+      </main>
+    );
+  }
+
+  if (profile === null && error) {
+    return (
+      <main className="mx-auto max-w-lg px-4 py-8 pb-20">
+        <h1 className="mb-6 text-2xl font-semibold text-zinc-900 dark:text-zinc-100">Perfil</h1>
+        <ErrorBanner
+          message={error}
+          onRetry={() => {
+            setError(null);
+            setProfile("loading");
+            setLoadKey((k) => k + 1);
+          }}
+        />
       </main>
     );
   }
