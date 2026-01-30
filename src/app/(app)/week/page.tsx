@@ -117,7 +117,7 @@ export default function WeekPage() {
                   id="hoy-heading"
                   className="mb-3 text-lg font-medium text-zinc-900 dark:text-zinc-100"
                 >
-                  HOY · {DAY_NAMES[todayIndex]}
+                  HOY · {todaySession ? DAY_NAMES[todayIndex] : "Día de descanso"}
                 </h2>
                 {todaySession ? (
                   <>
@@ -131,13 +131,23 @@ export default function WeekPage() {
                   </>
                 ) : (
                   <>
-                    <p className="mb-3 text-zinc-600 dark:text-zinc-400">Hoy es día libre</p>
-                    <Link
-                      href="/week"
-                      className="inline-block rounded-lg border border-zinc-300 px-4 py-2 hover:bg-zinc-100 dark:border-zinc-600 dark:hover:bg-zinc-800"
-                    >
-                      Ver semana
-                    </Link>
+                    <p className="mb-3 text-zinc-600 dark:text-zinc-400">
+                      El descanso es parte del plan. No hay sesión programada para hoy.
+                    </p>
+                    <div className="flex flex-wrap items-center gap-3">
+                      <Link
+                        href="/week"
+                        className="inline-block rounded-lg border border-zinc-300 px-4 py-2 hover:bg-zinc-100 dark:border-zinc-600 dark:hover:bg-zinc-800"
+                      >
+                        Ver semana
+                      </Link>
+                      <Link
+                        href="/log/training"
+                        className="text-sm text-zinc-600 underline dark:text-zinc-400"
+                      >
+                        Registrar entrenamiento igualmente
+                      </Link>
+                    </div>
                   </>
                 )}
               </section>
@@ -162,13 +172,7 @@ export default function WeekPage() {
                 </li>
               ))}
             </ul>
-            <div className="mt-3 flex gap-2">
-              <Link
-                href={`/session/${todayIndex}`}
-                className="rounded-lg bg-zinc-900 px-4 py-2 text-sm text-white dark:bg-zinc-100 dark:text-zinc-900"
-              >
-                Ver sesión de hoy
-              </Link>
+            <div className="mt-3">
               <Link
                 href={`/log/training`}
                 className="rounded-lg border border-zinc-300 px-4 py-2 text-sm dark:border-zinc-600"
