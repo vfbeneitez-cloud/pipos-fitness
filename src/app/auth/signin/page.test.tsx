@@ -4,9 +4,9 @@ import { renderToString } from "react-dom/server";
 import SignInPage from "./page";
 
 describe("GET /auth/signin", () => {
-  it("renderiza el formulario de signin (no redirige)", () => {
+  it("renderiza el título y el botón Continuar con Google", () => {
     const html = renderToString(<SignInPage />);
     expect(html).toContain("Sign in to your account");
-    expect(html).toContain("Email address");
+    expect(html).toContain("Continuar con Google");
   });
 });

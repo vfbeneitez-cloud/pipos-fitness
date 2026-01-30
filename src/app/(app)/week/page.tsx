@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback, useMemo } from "react";
 import Link from "next/link";
-import { getWeekStart, getTodayDayIndex, DAY_NAMES } from "@/src/app/lib/week";
+import { getWeekStart, DAY_NAMES } from "@/src/app/lib/week";
 import { ErrorBanner } from "@/src/app/components/ErrorBanner";
 import { LoadingSkeleton } from "@/src/app/components/LoadingSkeleton";
 
@@ -42,7 +42,7 @@ export default function WeekPage() {
   const [loading, setLoading] = useState(true);
 
   const weekStart = getWeekStart(new Date());
-  const todayIndex = getTodayDayIndex();
+  const todayIndex = (new Date().getDay() + 6) % 7;
 
   const fetchPlan = useCallback(async () => {
     setError(null);
@@ -105,6 +105,44 @@ export default function WeekPage() {
 
       {plan && (
         <>
+          {(() => {
+            const sessions = plan.trainingJson?.sessions ?? [];
+            const todaySession = sessions.find((s) => s.dayIndex === todayIndex);
+            return (
+              <section
+                className="mb-6 rounded-lg border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-700 dark:bg-zinc-800/50"
+                aria-labelledby="hoy-heading"
+              >
+                <h2
+                  id="hoy-heading"
+                  className="mb-3 text-lg font-medium text-zinc-900 dark:text-zinc-100"
+                >
+                  HOY · {DAY_NAMES[todayIndex]}
+                </h2>
+                {todaySession ? (
+                  <>
+                    <p className="mb-3 text-zinc-700 dark:text-zinc-300">{todaySession.name}</p>
+                    <Link
+                      href={`/session/${todayIndex}`}
+                      className="inline-block rounded-lg bg-zinc-900 px-4 py-2 text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+                    >
+                      Empezar entrenamiento
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <p className="mb-3 text-zinc-600 dark:text-zinc-400">Hoy es día libre</p>
+                    <Link
+                      href="/week"
+                      className="inline-block rounded-lg border border-zinc-300 px-4 py-2 hover:bg-zinc-100 dark:border-zinc-600 dark:hover:bg-zinc-800"
+                    >
+                      Ver semana
+                    </Link>
+                  </>
+                )}
+              </section>
+            );
+          })()}
           {plan.lastRationale != null && plan.lastRationale !== "" && (
             <RationalePanel rationale={plan.lastRationale} generatedAt={plan.lastGeneratedAt} />
           )}

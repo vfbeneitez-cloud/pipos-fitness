@@ -455,6 +455,25 @@ Invoke-RestMethod -Method Post -Uri "https://pipos-fitness.vercel.app/api/cron/w
 - En **`/week`** (con un usuario real): panel **“Última actualización del plan”** con fecha reciente.
 - O **Prisma Studio** contra la DB de prod: `WeeklyPlan.lastGeneratedAt` actualizado.
 
+## Paso A3.1.1 — DATABASE_URL en Preview y redeploy
+
+### 1) Verificar DATABASE_URL en Vercel para Preview
+
+1. **Vercel** → proyecto **pipos-fitness** → **Settings** → **Environment Variables**
+2. Busca **DATABASE_URL**
+3. Comprueba:
+   - Tiene un valor definido para **Preview** (no vacío)
+   - Ese valor es la connection string del branch **staging** de Neon (el host/endpoint no suele coincidir con el de producción)
+4. Guarda cambios si has editado algo
+
+### 2) Redeploy del Preview
+
+1. **Vercel** → **Deployments**
+2. Abre el último deployment del PR (Preview)
+3. **Redeploy**
+
+(O desde CLI: `npx vercel --yes` en la rama de preview genera un nuevo deployment que usa las variables actuales.)
+
 ## Próximos Pasos
 
 - Configurar dominio personalizado (opcional)
