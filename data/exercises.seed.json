@@ -1,0 +1,1702 @@
+[
+  {
+    "slug": "gym-leg-press-0",
+    "name": "Leg Press",
+    "environment": "GYM",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/gym-leg-press-0.png"
+      }
+    ]
+  },
+  {
+    "slug": "gym-bench-press-1",
+    "name": "Bench Press 2",
+    "environment": "GYM",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/gym-bench-press-1.png"
+      }
+    ]
+  },
+  {
+    "slug": "gym-deadlift-2",
+    "name": "Deadlift 3",
+    "environment": "GYM",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/gym-deadlift-2.png"
+      }
+    ]
+  },
+  {
+    "slug": "gym-dumbbell-row-3",
+    "name": "Dumbbell Row 4",
+    "environment": "GYM",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/gym-dumbbell-row-3.png"
+      }
+    ]
+  },
+  {
+    "slug": "gym-squat-4",
+    "name": "Squat 5",
+    "environment": "GYM",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/gym-squat-4.png"
+      }
+    ]
+  },
+  {
+    "slug": "gym-overhead-press-5",
+    "name": "Overhead Press 6",
+    "environment": "GYM",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/gym-overhead-press-5.png"
+      }
+    ]
+  },
+  {
+    "slug": "gym-lat-pulldown-6",
+    "name": "Lat Pulldown 7",
+    "environment": "GYM",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/gym-lat-pulldown-6.png"
+      }
+    ]
+  },
+  {
+    "slug": "gym-cable-fly-7",
+    "name": "Cable Fly 8",
+    "environment": "GYM",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/gym-cable-fly-7.png"
+      }
+    ]
+  },
+  {
+    "slug": "gym-leg-curl-8",
+    "name": "Leg Curl 9",
+    "environment": "GYM",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/gym-leg-curl-8.png"
+      }
+    ]
+  },
+  {
+    "slug": "gym-calf-raise-9",
+    "name": "Calf Raise 10",
+    "environment": "GYM",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/gym-calf-raise-9.png"
+      }
+    ]
+  },
+  {
+    "slug": "gym-barbell-row-10",
+    "name": "Barbell Row 11",
+    "environment": "GYM",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/gym-barbell-row-10.png"
+      }
+    ]
+  },
+  {
+    "slug": "gym-incline-press-11",
+    "name": "Incline Press 12",
+    "environment": "GYM",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/gym-incline-press-11.png"
+      }
+    ]
+  },
+  {
+    "slug": "gym-tricep-pushdown-12",
+    "name": "Tricep Pushdown 13",
+    "environment": "GYM",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/gym-tricep-pushdown-12.png"
+      }
+    ]
+  },
+  {
+    "slug": "gym-bicep-curl-13",
+    "name": "Bicep Curl 14",
+    "environment": "GYM",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/gym-bicep-curl-13.png"
+      }
+    ]
+  },
+  {
+    "slug": "gym-leg-extension-14",
+    "name": "Leg Extension 15",
+    "environment": "GYM",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/gym-leg-extension-14.png"
+      }
+    ]
+  },
+  {
+    "slug": "gym-chest-press-15",
+    "name": "Chest Press 16",
+    "environment": "GYM",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/gym-chest-press-15.png"
+      }
+    ]
+  },
+  {
+    "slug": "gym-seated-row-16",
+    "name": "Seated Row 17",
+    "environment": "GYM",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/gym-seated-row-16.png"
+      }
+    ]
+  },
+  {
+    "slug": "gym-lateral-raise-17",
+    "name": "Lateral Raise 18",
+    "environment": "GYM",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/gym-lateral-raise-17.png"
+      }
+    ]
+  },
+  {
+    "slug": "gym-romanian-deadlift-18",
+    "name": "Romanian Deadlift 19",
+    "environment": "GYM",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/gym-romanian-deadlift-18.png"
+      }
+    ]
+  },
+  {
+    "slug": "gym-hack-squat-19",
+    "name": "Hack Squat 20",
+    "environment": "GYM",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/gym-hack-squat-19.png"
+      }
+    ]
+  },
+  {
+    "slug": "home-push-up-20",
+    "name": "Push-up",
+    "environment": "HOME",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/home-push-up-20.png"
+      }
+    ]
+  },
+  {
+    "slug": "home-bodyweight-squat-21",
+    "name": "Bodyweight Squat 2",
+    "environment": "HOME",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/home-bodyweight-squat-21.png"
+      }
+    ]
+  },
+  {
+    "slug": "home-plank-22",
+    "name": "Plank 3",
+    "environment": "HOME",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/home-plank-22.png"
+      }
+    ]
+  },
+  {
+    "slug": "home-lunges-23",
+    "name": "Lunges 4",
+    "environment": "HOME",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/home-lunges-23.png"
+      }
+    ]
+  },
+  {
+    "slug": "home-glute-bridge-24",
+    "name": "Glute Bridge 5",
+    "environment": "HOME",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/home-glute-bridge-24.png"
+      }
+    ]
+  },
+  {
+    "slug": "home-mountain-climber-25",
+    "name": "Mountain Climber 6",
+    "environment": "HOME",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/home-mountain-climber-25.png"
+      }
+    ]
+  },
+  {
+    "slug": "home-burpee-26",
+    "name": "Burpee 7",
+    "environment": "HOME",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/home-burpee-26.png"
+      }
+    ]
+  },
+  {
+    "slug": "home-jumping-jack-27",
+    "name": "Jumping Jack 8",
+    "environment": "HOME",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/home-jumping-jack-27.png"
+      }
+    ]
+  },
+  {
+    "slug": "home-squat-jump-28",
+    "name": "Squat Jump 9",
+    "environment": "HOME",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/home-squat-jump-28.png"
+      }
+    ]
+  },
+  {
+    "slug": "home-wall-sit-29",
+    "name": "Wall Sit 10",
+    "environment": "HOME",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/home-wall-sit-29.png"
+      }
+    ]
+  },
+  {
+    "slug": "home-crunches-30",
+    "name": "Crunches 11",
+    "environment": "HOME",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/home-crunches-30.png"
+      }
+    ]
+  },
+  {
+    "slug": "home-bicycle-crunch-31",
+    "name": "Bicycle Crunch 12",
+    "environment": "HOME",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/home-bicycle-crunch-31.png"
+      }
+    ]
+  },
+  {
+    "slug": "home-superman-32",
+    "name": "Superman 13",
+    "environment": "HOME",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/home-superman-32.png"
+      }
+    ]
+  },
+  {
+    "slug": "home-bird-dog-33",
+    "name": "Bird Dog 14",
+    "environment": "HOME",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/home-bird-dog-33.png"
+      }
+    ]
+  },
+  {
+    "slug": "home-dead-bug-34",
+    "name": "Dead Bug 15",
+    "environment": "HOME",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/home-dead-bug-34.png"
+      }
+    ]
+  },
+  {
+    "slug": "home-hip-thrust-35",
+    "name": "Hip Thrust 16",
+    "environment": "HOME",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/home-hip-thrust-35.png"
+      }
+    ]
+  },
+  {
+    "slug": "home-step-up-36",
+    "name": "Step-up 17",
+    "environment": "HOME",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/home-step-up-36.png"
+      }
+    ]
+  },
+  {
+    "slug": "home-inchworm-37",
+    "name": "Inchworm 18",
+    "environment": "HOME",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/home-inchworm-37.png"
+      }
+    ]
+  },
+  {
+    "slug": "home-bear-crawl-38",
+    "name": "Bear Crawl 19",
+    "environment": "HOME",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/home-bear-crawl-38.png"
+      }
+    ]
+  },
+  {
+    "slug": "home-high-knees-39",
+    "name": "High Knees 20",
+    "environment": "HOME",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/home-high-knees-39.png"
+      }
+    ]
+  },
+  {
+    "slug": "calisthenics-pull-up-40",
+    "name": "Pull-up",
+    "environment": "CALISTHENICS",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/calisthenics-pull-up-40.png"
+      }
+    ]
+  },
+  {
+    "slug": "calisthenics-push-up-41",
+    "name": "Push-up 2",
+    "environment": "CALISTHENICS",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/calisthenics-push-up-41.png"
+      }
+    ]
+  },
+  {
+    "slug": "calisthenics-dip-42",
+    "name": "Dip 3",
+    "environment": "CALISTHENICS",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/calisthenics-dip-42.png"
+      }
+    ]
+  },
+  {
+    "slug": "calisthenics-l-sit-43",
+    "name": "L-Sit 4",
+    "environment": "CALISTHENICS",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/calisthenics-l-sit-43.png"
+      }
+    ]
+  },
+  {
+    "slug": "calisthenics-handstand-44",
+    "name": "Handstand 5",
+    "environment": "CALISTHENICS",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/calisthenics-handstand-44.png"
+      }
+    ]
+  },
+  {
+    "slug": "calisthenics-muscle-up-45",
+    "name": "Muscle-up 6",
+    "environment": "CALISTHENICS",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/calisthenics-muscle-up-45.png"
+      }
+    ]
+  },
+  {
+    "slug": "calisthenics-pistol-squat-46",
+    "name": "Pistol Squat 7",
+    "environment": "CALISTHENICS",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/calisthenics-pistol-squat-46.png"
+      }
+    ]
+  },
+  {
+    "slug": "calisthenics-front-lever-47",
+    "name": "Front Lever 8",
+    "environment": "CALISTHENICS",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/calisthenics-front-lever-47.png"
+      }
+    ]
+  },
+  {
+    "slug": "calisthenics-planche-48",
+    "name": "Planche 9",
+    "environment": "CALISTHENICS",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/calisthenics-planche-48.png"
+      }
+    ]
+  },
+  {
+    "slug": "calisthenics-back-lever-49",
+    "name": "Back Lever 10",
+    "environment": "CALISTHENICS",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/calisthenics-back-lever-49.png"
+      }
+    ]
+  },
+  {
+    "slug": "calisthenics-hanging-leg-raise-50",
+    "name": "Hanging Leg Raise 11",
+    "environment": "CALISTHENICS",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/calisthenics-hanging-leg-raise-50.png"
+      }
+    ]
+  },
+  {
+    "slug": "calisthenics-diamond-push-up-51",
+    "name": "Diamond Push-up 12",
+    "environment": "CALISTHENICS",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/calisthenics-diamond-push-up-51.png"
+      }
+    ]
+  },
+  {
+    "slug": "calisthenics-archer-push-up-52",
+    "name": "Archer Push-up 13",
+    "environment": "CALISTHENICS",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/calisthenics-archer-push-up-52.png"
+      }
+    ]
+  },
+  {
+    "slug": "calisthenics-chin-up-53",
+    "name": "Chin-up 14",
+    "environment": "CALISTHENICS",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/calisthenics-chin-up-53.png"
+      }
+    ]
+  },
+  {
+    "slug": "calisthenics-pike-push-up-54",
+    "name": "Pike Push-up 15",
+    "environment": "CALISTHENICS",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/calisthenics-pike-push-up-54.png"
+      }
+    ]
+  },
+  {
+    "slug": "calisthenics-hollow-hold-55",
+    "name": "Hollow Hold 16",
+    "environment": "CALISTHENICS",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/calisthenics-hollow-hold-55.png"
+      }
+    ]
+  },
+  {
+    "slug": "calisthenics-skin-the-cat-56",
+    "name": "Skin the Cat 17",
+    "environment": "CALISTHENICS",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/calisthenics-skin-the-cat-56.png"
+      }
+    ]
+  },
+  {
+    "slug": "calisthenics-human-flag-57",
+    "name": "Human Flag 18",
+    "environment": "CALISTHENICS",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/calisthenics-human-flag-57.png"
+      }
+    ]
+  },
+  {
+    "slug": "calisthenics-front-roll-58",
+    "name": "Front Roll 19",
+    "environment": "CALISTHENICS",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/calisthenics-front-roll-58.png"
+      }
+    ]
+  },
+  {
+    "slug": "calisthenics-back-roll-59",
+    "name": "Back Roll 20",
+    "environment": "CALISTHENICS",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/calisthenics-back-roll-59.png"
+      }
+    ]
+  },
+  {
+    "slug": "pool-freestyle-60",
+    "name": "Freestyle",
+    "environment": "POOL",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/pool-freestyle-60.png"
+      }
+    ]
+  },
+  {
+    "slug": "pool-backstroke-61",
+    "name": "Backstroke 2",
+    "environment": "POOL",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/pool-backstroke-61.png"
+      }
+    ]
+  },
+  {
+    "slug": "pool-breaststroke-62",
+    "name": "Breaststroke 3",
+    "environment": "POOL",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/pool-breaststroke-62.png"
+      }
+    ]
+  },
+  {
+    "slug": "pool-butterfly-63",
+    "name": "Butterfly 4",
+    "environment": "POOL",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/pool-butterfly-63.png"
+      }
+    ]
+  },
+  {
+    "slug": "pool-kickboard-64",
+    "name": "Kickboard 5",
+    "environment": "POOL",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/pool-kickboard-64.png"
+      }
+    ]
+  },
+  {
+    "slug": "pool-water-tread-65",
+    "name": "Water Tread 6",
+    "environment": "POOL",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/pool-water-tread-65.png"
+      }
+    ]
+  },
+  {
+    "slug": "pool-pool-run-66",
+    "name": "Pool Run 7",
+    "environment": "POOL",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/pool-pool-run-66.png"
+      }
+    ]
+  },
+  {
+    "slug": "pool-aqua-jog-67",
+    "name": "Aqua Jog 8",
+    "environment": "POOL",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/pool-aqua-jog-67.png"
+      }
+    ]
+  },
+  {
+    "slug": "pool-sculling-68",
+    "name": "Sculling 9",
+    "environment": "POOL",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/pool-sculling-68.png"
+      }
+    ]
+  },
+  {
+    "slug": "pool-streamline-69",
+    "name": "Streamline 10",
+    "environment": "POOL",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/pool-streamline-69.png"
+      }
+    ]
+  },
+  {
+    "slug": "pool-flip-turn-70",
+    "name": "Flip Turn 11",
+    "environment": "POOL",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/pool-flip-turn-70.png"
+      }
+    ]
+  },
+  {
+    "slug": "pool-open-turn-71",
+    "name": "Open Turn 12",
+    "environment": "POOL",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/pool-open-turn-71.png"
+      }
+    ]
+  },
+  {
+    "slug": "pool-side-stroke-72",
+    "name": "Side Stroke 13",
+    "environment": "POOL",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/pool-side-stroke-72.png"
+      }
+    ]
+  },
+  {
+    "slug": "pool-elementary-back-73",
+    "name": "Elementary Back 14",
+    "environment": "POOL",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/pool-elementary-back-73.png"
+      }
+    ]
+  },
+  {
+    "slug": "pool-water-polo-drill-74",
+    "name": "Water Polo Drill 15",
+    "environment": "POOL",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/pool-water-polo-drill-74.png"
+      }
+    ]
+  },
+  {
+    "slug": "pool-lap-swim-75",
+    "name": "Lap Swim 16",
+    "environment": "POOL",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/pool-lap-swim-75.png"
+      }
+    ]
+  },
+  {
+    "slug": "pool-sprint-76",
+    "name": "Sprint 17",
+    "environment": "POOL",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/pool-sprint-76.png"
+      }
+    ]
+  },
+  {
+    "slug": "pool-drill-set-77",
+    "name": "Drill Set 18",
+    "environment": "POOL",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/pool-drill-set-77.png"
+      }
+    ]
+  },
+  {
+    "slug": "pool-cool-down-78",
+    "name": "Cool Down 19",
+    "environment": "POOL",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/pool-cool-down-78.png"
+      }
+    ]
+  },
+  {
+    "slug": "pool-warm-up-swim-79",
+    "name": "Warm Up Swim 20",
+    "environment": "POOL",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/pool-warm-up-swim-79.png"
+      }
+    ]
+  },
+  {
+    "slug": "mixed-circuit-a-80",
+    "name": "Circuit A",
+    "environment": "MIXED",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/mixed-circuit-a-80.png"
+      }
+    ]
+  },
+  {
+    "slug": "mixed-circuit-b-81",
+    "name": "Circuit B 2",
+    "environment": "MIXED",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/mixed-circuit-b-81.png"
+      }
+    ]
+  },
+  {
+    "slug": "mixed-hiit-block-82",
+    "name": "HIIT Block 3",
+    "environment": "MIXED",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/mixed-hiit-block-82.png"
+      }
+    ]
+  },
+  {
+    "slug": "mixed-tabata-83",
+    "name": "Tabata 4",
+    "environment": "MIXED",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/mixed-tabata-83.png"
+      }
+    ]
+  },
+  {
+    "slug": "mixed-amrap-84",
+    "name": "AMRAP 5",
+    "environment": "MIXED",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/mixed-amrap-84.png"
+      }
+    ]
+  },
+  {
+    "slug": "mixed-emom-85",
+    "name": "EMOM 6",
+    "environment": "MIXED",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/mixed-emom-85.png"
+      }
+    ]
+  },
+  {
+    "slug": "mixed-chipper-86",
+    "name": "Chipper 7",
+    "environment": "MIXED",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/mixed-chipper-86.png"
+      }
+    ]
+  },
+  {
+    "slug": "mixed-metcon-87",
+    "name": "Metcon 8",
+    "environment": "MIXED",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/mixed-metcon-87.png"
+      }
+    ]
+  },
+  {
+    "slug": "mixed-wod-88",
+    "name": "WOD 9",
+    "environment": "MIXED",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/mixed-wod-88.png"
+      }
+    ]
+  },
+  {
+    "slug": "mixed-finisher-89",
+    "name": "Finisher 10",
+    "environment": "MIXED",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/mixed-finisher-89.png"
+      }
+    ]
+  },
+  {
+    "slug": "mixed-warm-up-set-90",
+    "name": "Warm-up Set 11",
+    "environment": "MIXED",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/mixed-warm-up-set-90.png"
+      }
+    ]
+  },
+  {
+    "slug": "mixed-cool-down-set-91",
+    "name": "Cool-down Set 12",
+    "environment": "MIXED",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/mixed-cool-down-set-91.png"
+      }
+    ]
+  },
+  {
+    "slug": "mixed-mobility-block-92",
+    "name": "Mobility Block 13",
+    "environment": "MIXED",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/mixed-mobility-block-92.png"
+      }
+    ]
+  },
+  {
+    "slug": "mixed-stretch-sequence-93",
+    "name": "Stretch Sequence 14",
+    "environment": "MIXED",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/mixed-stretch-sequence-93.png"
+      }
+    ]
+  },
+  {
+    "slug": "mixed-recovery-run-94",
+    "name": "Recovery Run 15",
+    "environment": "MIXED",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/mixed-recovery-run-94.png"
+      }
+    ]
+  },
+  {
+    "slug": "mixed-cross-train-95",
+    "name": "Cross Train 16",
+    "environment": "MIXED",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/mixed-cross-train-95.png"
+      }
+    ]
+  },
+  {
+    "slug": "mixed-combo-session-96",
+    "name": "Combo Session 17",
+    "environment": "MIXED",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/mixed-combo-session-96.png"
+      }
+    ]
+  },
+  {
+    "slug": "mixed-hybrid-97",
+    "name": "Hybrid 18",
+    "environment": "MIXED",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/mixed-hybrid-97.png"
+      }
+    ]
+  },
+  {
+    "slug": "mixed-fusion-workout-98",
+    "name": "Fusion Workout 19",
+    "environment": "MIXED",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/mixed-fusion-workout-98.png"
+      }
+    ]
+  },
+  {
+    "slug": "mixed-mixed-block-99",
+    "name": "Mixed Block 20",
+    "environment": "MIXED",
+    "primaryMuscle": "Full body",
+    "description": null,
+    "cues": "Form first.",
+    "commonMistakes": "Rushing.",
+    "regressions": null,
+    "progressions": null,
+    "media": [
+      {
+        "type": "image",
+        "url": "https://example.com/mixed-mixed-block-99.png"
+      }
+    ]
+  }
+]

@@ -21,6 +21,7 @@
     "@prisma/adapter-neon": "^7.3.0",
     "@prisma/client": "^7.3.0",
     "@sentry/nextjs": "10.38.0",
+    "@upstash/redis": "^1.36.1",
     "next": "16.1.6",
     "next-auth": "^5.0.0-beta.30",
     "nodemailer": "^7.0.13",
@@ -30,13 +31,13 @@
     "ws": "^8.19.0"
   },
   "devDependencies": {
-    "effect": "^3.18.4",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/ws": "^8.18.1",
     "dotenv": "^17.2.3",
+    "effect": "^3.18.4",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
     "jsdom": "^27.4.0",

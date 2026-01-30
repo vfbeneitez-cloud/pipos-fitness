@@ -1,13 +1,12 @@
 /**
- * In-memory rate limit by IP. For production use Upstash Redis or similar (see specs/07).
+ * Rate limit by IP (and route when using Redis). Uses Upstash Redis when env vars
+ * are set (distributed); otherwise in-memory per instance (see specs/07).
  */
 
-const WINDOW_MS = 60 * 1000; // 1 minute
-const MAX_REQUESTS = 30; // per window per IP
+const WINDOW_SEC = 60;
+const MAX_REQUESTS = 30;
 
-type Entry = { count: number; resetAt: number };
-
-const store = new Map<string, Entry>();
+type Result = { ok: boolean; retryAfter?: number };
 
 function getClientIp(req: Request): string {
   const forwarded = req.headers.get("x-forwarded-for");
@@ -17,19 +16,32 @@ function getClientIp(req: Request): string {
   return "unknown";
 }
 
-export function checkRateLimit(req: Request): { ok: boolean; retryAfter?: number } {
-  const ip = getClientIp(req);
+function getRoute(req: Request): string {
+  try {
+    return new URL(req.url).pathname;
+  } catch {
+    return "/";
+  }
+}
+
+// In-memory fallback
+type Entry = { count: number; resetAt: number };
+const store = new Map<string, Entry>();
+
+function checkInMemory(route: string, ip: string): Result {
+  const key = `rl:${route}:${ip}`;
   const now = Date.now();
-  let entry = store.get(ip);
+  const windowMs = WINDOW_SEC * 1000;
+  let entry = store.get(key);
 
   if (!entry) {
-    store.set(ip, { count: 1, resetAt: now + WINDOW_MS });
+    store.set(key, { count: 1, resetAt: now + windowMs });
     return { ok: true };
   }
 
   if (now >= entry.resetAt) {
-    entry = { count: 1, resetAt: now + WINDOW_MS };
-    store.set(ip, entry);
+    entry = { count: 1, resetAt: now + windowMs };
+    store.set(key, entry);
     return { ok: true };
   }
 
@@ -38,4 +50,35 @@ export function checkRateLimit(req: Request): { ok: boolean; retryAfter?: number
     return { ok: false, retryAfter: Math.ceil((entry.resetAt - now) / 1000) };
   }
   return { ok: true };
+}
+
+async function checkRedis(route: string, ip: string): Promise<Result> {
+  const { Redis } = await import("@upstash/redis");
+  const url = process.env.UPSTASH_REDIS_REST_URL;
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+  if (!url || !token) return checkInMemory(route, ip);
+
+  const redis = new Redis({ url, token });
+  const key = `rl:${route}:${ip}`;
+  const count = await redis.incr(key);
+  if (count === 1) {
+    await redis.expire(key, WINDOW_SEC);
+  }
+  if (count > MAX_REQUESTS) {
+    const ttl = await redis.ttl(key);
+    return { ok: false, retryAfter: Math.max(1, ttl) };
+  }
+  return { ok: true };
+}
+
+export async function checkRateLimit(req: Request): Promise<Result> {
+  const route = getRoute(req);
+  const ip = getClientIp(req);
+
+  const url = process.env.UPSTASH_REDIS_REST_URL;
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+  if (url && token) {
+    return checkRedis(route, ip);
+  }
+  return Promise.resolve(checkInMemory(route, ip));
 }

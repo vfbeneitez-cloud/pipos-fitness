@@ -163,6 +163,8 @@ model WeeklyPlan {
   nutritionJson  Json
   lastRationale  String?
   lastGeneratedAt DateTime?
+  regenLockId    String?
+  regenLockedAt  DateTime?
 
   trainingLogs TrainingLog[]
   // (optional, but recommended symmetry)

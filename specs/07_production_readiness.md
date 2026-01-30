@@ -20,7 +20,7 @@
 - [ ] Rate limit por IP en endpoints sensibles: POST `/api/weekly-plan`, POST `/api/nutrition/swap`, POST `/api/training/log`, POST `/api/nutrition/log`.
 - [ ] Implementación MVP: in-memory (30 req/min por IP). Límite y ventana configurables en código.
 - [ ] Respuesta 429 `RATE_LIMIT_EXCEEDED` con header `Retry-After`.
-- [ ] **Producción**: sustituir por Upstash Redis o Redis externo para límites compartidos entre instancias y persistencia (in-memory no comparte estado entre múltiples instancias de Vercel). Documentar en ADR cuando se decida.
+- [ ] **Producción**: Upstash Redis opcional. Si `UPSTASH_REDIS_REST_URL` y `UPSTASH_REDIS_REST_TOKEN` están configurados → rate limit distribuido (compartido entre instancias). Si no → fallback in-memory por instancia (30 req/min por IP y ruta). Ver `.env.example`.
 
 ## 4) Seguridad Next
 

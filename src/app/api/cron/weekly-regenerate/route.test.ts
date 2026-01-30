@@ -8,9 +8,8 @@ vi.mock("@/src/server/lib/withSensitiveRoute", () => ({
 }));
 vi.mock("@/src/server/db/prisma", () => ({
   prisma: {
-    userProfile: {
-      findMany: vi.fn(),
-    },
+    userProfile: { findMany: vi.fn() },
+    weeklyPlan: { updateMany: vi.fn() },
   },
 }));
 vi.mock("@/src/server/ai/agentWeeklyPlan", () => ({
@@ -19,13 +18,20 @@ vi.mock("@/src/server/ai/agentWeeklyPlan", () => ({
 vi.mock("@/src/app/lib/week", () => ({
   getWeekStart: () => "2026-01-27",
 }));
+vi.mock("@sentry/nextjs", () => ({
+  captureMessage: vi.fn(),
+}));
 
 const { prisma } = await import("@/src/server/db/prisma");
 const { adjustWeeklyPlan } = await import("@/src/server/ai/agentWeeklyPlan");
+const Sentry = await import("@sentry/nextjs");
 
 describe("POST /api/cron/weekly-regenerate", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
+    vi.mocked(Sentry.captureMessage).mockClear();
+    vi.mocked(prisma.weeklyPlan.updateMany).mockClear();
+    vi.mocked(adjustWeeklyPlan).mockClear();
     process.env = { ...originalEnv };
   });
 
@@ -97,9 +103,10 @@ describe("POST /api/cron/weekly-regenerate", () => {
     });
     const res = await POST(req);
     expect(res.status).toBe(200);
-    const body = (await res.json()) as { ok: boolean; processed: number };
+    const body = (await res.json()) as { ok: boolean; processed: number; skippedLocked: number };
     expect(body.ok).toBe(true);
     expect(body.processed).toBe(0);
+    expect(body.skippedLocked).toBe(0);
   });
 
   it("returns 200 with summary when valid secret and flag", async () => {
@@ -109,6 +116,7 @@ describe("POST /api/cron/weekly-regenerate", () => {
       { userId: "user-1" },
       { userId: "user-2" },
     ] as never[]);
+    vi.mocked(prisma.weeklyPlan.updateMany).mockResolvedValue({ count: 1 });
     vi.mocked(adjustWeeklyPlan)
       .mockResolvedValueOnce({
         status: 200,
@@ -130,11 +138,13 @@ describe("POST /api/cron/weekly-regenerate", () => {
       processed: number;
       succeeded: number;
       failed: number;
+      skippedLocked: number;
     };
     expect(body.ok).toBe(true);
     expect(body.processed).toBe(2);
     expect(body.succeeded).toBe(1);
     expect(body.failed).toBe(1);
+    expect(body.skippedLocked).toBe(0);
   });
 
   it("returns 200 with processed 0 when no users have profile", async () => {
@@ -153,17 +163,20 @@ describe("POST /api/cron/weekly-regenerate", () => {
       processed: number;
       succeeded: number;
       failed: number;
+      skippedLocked: number;
     };
     expect(body.ok).toBe(true);
     expect(body.processed).toBe(0);
     expect(body.succeeded).toBe(0);
     expect(body.failed).toBe(0);
+    expect(body.skippedLocked).toBe(0);
   });
 
   it("increments failed when adjustWeeklyPlan throws", async () => {
     process.env.CRON_WEEKLY_REGEN_ENABLED = "true";
     process.env.CRON_SECRET = "cron-secret";
     vi.mocked(prisma.userProfile.findMany).mockResolvedValue([{ userId: "user-1" }] as never[]);
+    vi.mocked(prisma.weeklyPlan.updateMany).mockResolvedValue({ count: 1 });
     vi.mocked(adjustWeeklyPlan).mockRejectedValueOnce(new Error("db error"));
 
     const req = new Request("http://localhost/api/cron/weekly-regenerate", {
@@ -177,10 +190,115 @@ describe("POST /api/cron/weekly-regenerate", () => {
       processed: number;
       succeeded: number;
       failed: number;
+      skippedLocked: number;
     };
     expect(body.ok).toBe(true);
     expect(body.processed).toBe(1);
     expect(body.succeeded).toBe(0);
     expect(body.failed).toBe(1);
+    expect(body.skippedLocked).toBe(0);
+    expect(Sentry.captureMessage).toHaveBeenCalledTimes(1);
+    expect(Sentry.captureMessage).toHaveBeenCalledWith("cron.weekly-regenerate partial failure", {
+      level: "error",
+      extra: { processed: 1, succeeded: 0, failed: 1, skippedLocked: 0 },
+    });
+  });
+
+  it("calls captureMessage with warning when partial failure (some succeed, some fail)", async () => {
+    process.env.CRON_WEEKLY_REGEN_ENABLED = "true";
+    process.env.CRON_SECRET = "cron-secret";
+    vi.mocked(prisma.userProfile.findMany).mockResolvedValue([
+      { userId: "user-1" },
+      { userId: "user-2" },
+    ] as never[]);
+    vi.mocked(prisma.weeklyPlan.updateMany).mockResolvedValue({ count: 1 });
+    vi.mocked(adjustWeeklyPlan)
+      .mockResolvedValueOnce({ status: 200, body: {} as never } as never)
+      .mockRejectedValueOnce(new Error("db error"));
+
+    const req = new Request("http://localhost/api/cron/weekly-regenerate", {
+      method: "POST",
+      headers: { "x-cron-secret": "cron-secret" },
+    });
+    const res = await POST(req);
+    expect(res.status).toBe(200);
+    expect(Sentry.captureMessage).toHaveBeenCalledTimes(1);
+    expect(Sentry.captureMessage).toHaveBeenCalledWith("cron.weekly-regenerate partial failure", {
+      level: "warning",
+      extra: { processed: 2, succeeded: 1, failed: 1, skippedLocked: 0 },
+    });
+  });
+
+  it("does not call captureMessage when all succeed", async () => {
+    process.env.CRON_WEEKLY_REGEN_ENABLED = "true";
+    process.env.CRON_SECRET = "cron-secret";
+    vi.mocked(prisma.userProfile.findMany).mockResolvedValue([
+      { userId: "user-1" },
+      { userId: "user-2" },
+    ] as never[]);
+    vi.mocked(prisma.weeklyPlan.updateMany).mockResolvedValue({ count: 1 });
+    vi.mocked(adjustWeeklyPlan)
+      .mockResolvedValueOnce({ status: 200, body: {} as never } as never)
+      .mockResolvedValueOnce({ status: 200, body: {} as never } as never);
+
+    const req = new Request("http://localhost/api/cron/weekly-regenerate", {
+      method: "POST",
+      headers: { "x-cron-secret": "cron-secret" },
+    });
+    await POST(req);
+    expect(Sentry.captureMessage).not.toHaveBeenCalled();
+  });
+
+  it("when lock not acquired, skippedLocked increments and adjustWeeklyPlan not called", async () => {
+    process.env.CRON_WEEKLY_REGEN_ENABLED = "true";
+    process.env.CRON_SECRET = "cron-secret";
+    vi.mocked(prisma.userProfile.findMany).mockResolvedValue([{ userId: "user-1" }] as never[]);
+    vi.mocked(prisma.weeklyPlan.updateMany).mockResolvedValue({ count: 0 });
+
+    const req = new Request("http://localhost/api/cron/weekly-regenerate", {
+      method: "POST",
+      headers: { "x-cron-secret": "cron-secret" },
+    });
+    const res = await POST(req);
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as {
+      ok: boolean;
+      processed: number;
+      succeeded: number;
+      failed: number;
+      skippedLocked: number;
+    };
+    expect(body.processed).toBe(1);
+    expect(body.skippedLocked).toBe(1);
+    expect(body.succeeded).toBe(0);
+    expect(body.failed).toBe(0);
+    expect(adjustWeeklyPlan).not.toHaveBeenCalled();
+    expect(prisma.weeklyPlan.updateMany).toHaveBeenCalledTimes(1);
+  });
+
+  it("when lock acquired, adjustWeeklyPlan called and release attempted", async () => {
+    process.env.CRON_WEEKLY_REGEN_ENABLED = "true";
+    process.env.CRON_SECRET = "cron-secret";
+    vi.mocked(prisma.userProfile.findMany).mockResolvedValue([{ userId: "user-1" }] as never[]);
+    vi.mocked(prisma.weeklyPlan.updateMany).mockResolvedValue({ count: 1 });
+    vi.mocked(adjustWeeklyPlan).mockResolvedValue({ status: 200, body: {} as never } as never);
+
+    const req = new Request("http://localhost/api/cron/weekly-regenerate", {
+      method: "POST",
+      headers: { "x-cron-secret": "cron-secret" },
+    });
+    const res = await POST(req);
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as {
+      ok: boolean;
+      processed: number;
+      succeeded: number;
+      failed: number;
+      skippedLocked: number;
+    };
+    expect(body.succeeded).toBe(1);
+    expect(body.skippedLocked).toBe(0);
+    expect(adjustWeeklyPlan).toHaveBeenCalledTimes(1);
+    expect(prisma.weeklyPlan.updateMany).toHaveBeenCalledTimes(2);
   });
 });

@@ -10,7 +10,7 @@ export async function withSensitiveRoute(
   const start = Date.now();
   const path = new URL(req.url).pathname;
 
-  const limit = checkRateLimit(req);
+  const limit = await checkRateLimit(req);
   if (!limit.ok) {
     logWarn(requestId, "rate limit exceeded", { path });
     return NextResponse.json(
