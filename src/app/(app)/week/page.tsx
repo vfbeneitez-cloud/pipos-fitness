@@ -177,7 +177,7 @@ export default function WeekPage() {
                 href={`/log/training`}
                 className="rounded-lg border border-zinc-300 px-4 py-2 text-sm dark:border-zinc-600"
               >
-                Log entrenamiento
+                Registrar entrenamiento
               </Link>
             </div>
           </section>
