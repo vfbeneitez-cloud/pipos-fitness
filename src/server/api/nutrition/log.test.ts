@@ -46,6 +46,18 @@ describe("POST /api/nutrition/log", () => {
     expect(body.followedPlan).toBe(false);
   });
 
+  it("returns 200 when no menu for day (comida libre)", async () => {
+    const result = await createNutritionLog(
+      {
+        followedPlan: false,
+      },
+      TEST_USER_ID,
+    );
+    expect(result.status).toBe(200);
+    const body = result.body as { id: string };
+    expect(body.id).toBeDefined();
+  });
+
   it("returns 400 for invalid body", async () => {
     const result = await createNutritionLog(
       {

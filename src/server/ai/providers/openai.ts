@@ -1,7 +1,10 @@
+import * as Sentry from "@sentry/nextjs";
 import type { AIProvider, AgentMessage, AgentResponse } from "../provider";
 
 const OPENAI_TIMEOUT_MS = 12_000;
 const CHAT_ENDPOINT = "https://api.openai.com/v1/chat/completions";
+const RATE_LIMIT_BACKOFF_MS_MIN = 500;
+const RATE_LIMIT_BACKOFF_MS_MAX = 1500;
 
 export function buildOpenAIPayload(
   endpoint: "chat" | "responses",
@@ -36,15 +39,21 @@ const TRANSIENT_STATUSES = [500, 502, 503];
 
 function isTransientError(err: unknown, status?: number): boolean {
   if (status !== undefined && TRANSIENT_STATUSES.includes(status)) return true;
+  if (status === 429) return true;
   if (err instanceof Error) {
     if (err.name === "AbortError") return true;
     if (
       err.message.startsWith("OpenAI API error: ") &&
-      TRANSIENT_STATUSES.some((s) => err.message.includes(String(s)))
+      (TRANSIENT_STATUSES.some((s) => err.message.includes(String(s))) ||
+        err.message.includes("429"))
     )
       return true;
   }
   return false;
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 /**
@@ -86,9 +95,21 @@ export class OpenAIProvider implements AIProvider {
         clearTimeout(timeoutId);
         lastStatus = res.status;
         if (!res.ok) {
+          if (res.status === 401) {
+            Sentry.captureMessage("OpenAI unauthorized", {
+              tags: { fallback_type: "provider_error" },
+            });
+            throw new Error("OpenAI unauthorized");
+          }
           const err = new Error(`OpenAI API error: ${res.status}`);
           if (attempt === 0 && isTransientError(err, res.status)) {
             lastError = err;
+            if (res.status === 429) {
+              const backoff =
+                RATE_LIMIT_BACKOFF_MS_MIN +
+                Math.random() * (RATE_LIMIT_BACKOFF_MS_MAX - RATE_LIMIT_BACKOFF_MS_MIN);
+              await sleep(Math.round(backoff));
+            }
             continue;
           }
           throw err;
@@ -98,6 +119,7 @@ export class OpenAIProvider implements AIProvider {
       } catch (err) {
         clearTimeout(timeoutId);
         lastError = err;
+        if (err instanceof Error && err.message === "OpenAI unauthorized") throw err;
         if (
           attempt === 0 &&
           ((err instanceof Error && err.name === "AbortError") || isTransientError(err, lastStatus))

@@ -35,7 +35,11 @@ export default function LogTrainingPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [plan, setPlan] = useState<Plan | null | undefined>(undefined);
-  const [dayIndex, setDayIndex] = useState<number>(getTodayDayIndex());
+  const idxParam = searchParams.get("dayIndex");
+  const parsedIdx = idxParam !== null ? parseInt(idxParam, 10) : NaN;
+  const initialDayIndex =
+    !Number.isNaN(parsedIdx) && parsedIdx >= 0 && parsedIdx <= 6 ? parsedIdx : getTodayDayIndex();
+  const [dayIndex, setDayIndex] = useState<number>(initialDayIndex);
 
   const session = plan?.trainingJson?.sessions?.find((s) => s.dayIndex === dayIndex);
   const hasNoSession = plan !== undefined && (plan === null || !session);

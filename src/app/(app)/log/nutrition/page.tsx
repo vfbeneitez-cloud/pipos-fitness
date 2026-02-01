@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, useCallback } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { getDemoUserId } from "@/src/app/lib/demo";
 import { ErrorBanner } from "@/src/app/components/ErrorBanner";
 import { getErrorMessage } from "@/src/app/lib/errorMessage";
+import { getWeekStart, getTodayDayIndex } from "@/src/app/lib/week";
 
 const HUNGER_OPTIONS: { value: "low" | "ok" | "high"; label: string }[] = [
   { value: "low", label: "Poca" },
@@ -13,14 +14,54 @@ const HUNGER_OPTIONS: { value: "low" | "ok" | "high"; label: string }[] = [
   { value: "high", label: "Mucha" },
 ];
 
+type NutritionDay = { dayIndex: number };
+type Plan = {
+  id?: string;
+  nutritionJson?: { days?: NutritionDay[] };
+};
+
 export default function LogNutritionPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const idxParam = searchParams.get("dayIndex");
+  const parsedIdx = idxParam !== null ? parseInt(idxParam, 10) : NaN;
+  const initialDayIndex =
+    !Number.isNaN(parsedIdx) && parsedIdx >= 0 && parsedIdx <= 6 ? parsedIdx : getTodayDayIndex();
+  const [dayIndex, setDayIndex] = useState<number>(initialDayIndex);
+  const [plan, setPlan] = useState<Plan | null | undefined>(undefined);
   const [followedMenu, setFollowedMenu] = useState<boolean | null>(null);
   const [hunger, setHunger] = useState<"low" | "ok" | "high">("ok");
   const [notes, setNotes] = useState("");
   const [notesVisible, setNotesVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const nutritionDay = plan?.nutritionJson?.days?.find((d) => d.dayIndex === dayIndex);
+  const hasNoMenu = plan !== undefined && (plan === null || !nutritionDay);
+
+  const weekStart = getWeekStart(new Date());
+  const fetchPlan = useCallback(async () => {
+    try {
+      const res = await fetch(`/api/weekly-plan?weekStart=${weekStart}`);
+      const data = (await res.json()) as Plan | null;
+      if (res.ok) setPlan(data);
+      else setPlan(null);
+    } catch {
+      setPlan(null);
+    }
+  }, [weekStart]);
+
+  useEffect(() => {
+    const idx = searchParams.get("dayIndex");
+    if (idx !== null) {
+      const n = parseInt(idx, 10);
+      if (!Number.isNaN(n) && n >= 0 && n <= 6) setDayIndex(n);
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
+    void fetchPlan();
+  }, [fetchPlan]);
 
   const canSubmit =
     followedMenu !== null && (followedMenu === false || (followedMenu === true && hunger != null));
@@ -73,6 +114,12 @@ export default function LogNutritionPage() {
       <h1 className="mb-6 text-2xl font-semibold text-zinc-900 dark:text-zinc-100">
         Registrar comida
       </h1>
+
+      {hasNoMenu && (
+        <p className="mb-4 text-sm text-zinc-600 dark:text-zinc-400">
+          Hoy no había menú programado. Registraré la comida igualmente.
+        </p>
+      )}
 
       {error && (
         <div className="mb-4">

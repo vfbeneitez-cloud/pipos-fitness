@@ -23,6 +23,29 @@
     ]
   },
   {
+    "slug": "prensa-de-piernas",
+    "name": "Prensa de piernas (leg press)",
+    "environment": "GYM",
+    "primaryMuscle": "Cuádriceps, glúteos, isquiotibiales",
+    "description": "Empuje de piernas en máquina para trabajar cuádriceps (principal) y también glúteos/isquios según postura y rango. Muy útil en MVP por ser estándar en gym y fácil de registrar.\n\nTécnica: Ajusta el asiento para que, abajo, tengas un rango cómodo sin que la cadera se despegue del respaldo. Pies a anchura cómoda en la plataforma; rodillas siguen la dirección de los pies. Baja controlado hasta donde mantengas espalda pegada al respaldo y control de rodillas (sin colapsar hacia dentro). Sube empujando la plataforma y sin bloquear las rodillas de forma agresiva. Repite con ritmo estable (sin rebotes).",
+    "cues": "Espalda pegada al respaldo\nRodillas siguen a los pies\nBaja controlado sin que la cadera se despegue\nSube sin bloquear fuerte las rodillas\nSin rebote",
+    "commonMistakes": "Bajar demasiado y que la cadera se levante: recorta rango (prioridad: control).\nBloquear rodillas arriba: deja una micro-flexión.\nRebotar para mover más peso: baja carga y controla.\nRodillas colapsan hacia dentro.",
+    "regressions": "Menos carga + rango más corto (perfecto control)\nPausa 1s abajo sin rebote",
+    "progressions": "Tempo: bajada 2–3s\nPausa 1s abajo manteniendo postura\nMás carga manteniendo el mismo control",
+    "media": [
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/0/0c/Leg-press-1-1024x670.png",
+        "thumbnailUrl": null
+      },
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=K5n2vg3oZa4",
+        "thumbnailUrl": "https://img.youtube.com/vi/K5n2vg3oZa4/hqdefault.jpg"
+      }
+    ]
+  },
+  {
     "slug": "gym-bench-press-1",
     "name": "Bench Press",
     "environment": "GYM",
@@ -42,6 +65,29 @@
         "type": "youtube",
         "url": "https://www.youtube.com/watch?v=gRVjAtPip0Y",
         "thumbnailUrl": "https://img.youtube.com/vi/gRVjAtPip0Y/hqdefault.jpg"
+      }
+    ]
+  },
+  {
+    "slug": "press-pecho-mancuernas-banco-plano",
+    "name": "Press de pecho con mancuernas (banco plano)",
+    "environment": "GYM",
+    "primaryMuscle": "Pectorales, deltoides anterior, tríceps",
+    "description": "Empuje horizontal en banco plano para trabajar pecho, con participación de tríceps y hombro anterior. Con mancuernas suele ser más fácil ajustar el agarre y el recorrido a un rango cómodo.\n\nTécnica: Túmbate en banco plano con pies firmes. Mancuernas a los lados del pecho con muñecas rectas. Escápulas atrás y abajo, sin encogerlas. Baja controlado con codos a ~45–60° respecto al torso. Sube vertical sobre el pecho.",
+    "cues": "Pies firmes y postura estable\nMuñecas rectas: mancuerna encima del antebrazo\nHombros atrás y abajo (sin encoger)\nCodos a ~45–60°\nBaja controlado, sube vertical sobre el pecho",
+    "commonMistakes": "Codos demasiado abiertos: más estrés de hombro; ajusta a 45–60°.\nMuñecas dobladas: alinea mancuerna con antebrazo.\nRebotar abajo o perder tensión: tempo 2–3s bajada.\nPerder la postura del hombro y encoger.",
+    "regressions": "Press en el suelo (floor press): limita el rango y suele ser más amable con hombros.\nMenos carga + pausa corta abajo (control).\nMáquina de chest press si falta estabilidad.",
+    "progressions": "Más carga manteniendo forma.\nPausa 1s abajo o tempo (bajada 2–3s).\nPress inclinado con mancuernas (más énfasis parte superior).",
+    "media": [
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/2/2e/Dumbbell-bench-press-1.png",
+        "thumbnailUrl": null
+      },
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=Vc63DPUoA40",
+        "thumbnailUrl": "https://img.youtube.com/vi/Vc63DPUoA40/hqdefault.jpg"
       }
     ]
   },
@@ -92,6 +138,29 @@
     ]
   },
   {
+    "slug": "remo-mancuerna-una-mano-banco",
+    "name": "Remo con mancuerna a una mano (banco)",
+    "environment": "GYM",
+    "primaryMuscle": "Dorsales, romboides, bíceps",
+    "description": "Tirón horizontal unilateral para trabajar espalda (especialmente dorsales) con apoyo en banco para ganar estabilidad y reducir trampas de balanceo. Dorsal ancho y musculatura de la espalda media (romboides/trapecio) como protagonistas; bíceps como asistente; core como estabilizador.\n\nTécnica: Apoyo estable (mano y rodilla del mismo lado en el banco; otro pie firme). Espalda larga y neutral, torso inclinado sin redondear. Brazo de trabajo colgando; tira llevando el codo hacia atrás (cerca del costado) sin girar el tronco. Baja controlado hasta estirar el brazo.",
+    "cues": "Codo hacia la cadera, cerca del costado\nHombro lejos de la oreja\nNo gires el tronco: controla la postura\nSube fuerte, baja lento",
+    "commonMistakes": "Rotar el tronco para ayudar: baja peso y limita el rango.\nEncoger el hombro al tirar: piensa hombro abajo y atrás.\nTirar con la mano en vez de guiar con el codo: cue codo atrás.\nRebotar abajo: controla la bajada 2–3s.",
+    "regressions": "Menos peso + pausa 1s arriba (mejor control)\nRemo con apoyo de pecho (banco inclinado) si cuesta estabilizar\nRecorrido más corto si hay compensación",
+    "progressions": "Más carga manteniendo cero rotación\nTempo: bajada 2–3s o pausa abajo con control\nVariante sin apoyo (solo con técnica sólida)",
+    "media": [
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/6/67/DumbbellBentOverRow.JPG",
+        "thumbnailUrl": null
+      },
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=jO5gv181MGg",
+        "thumbnailUrl": "https://img.youtube.com/vi/jO5gv181MGg/hqdefault.jpg"
+      }
+    ]
+  },
+  {
     "slug": "gym-squat-4",
     "name": "Squat",
     "environment": "GYM",
@@ -115,15 +184,38 @@
     ]
   },
   {
+    "slug": "sentadilla-goblet",
+    "name": "Sentadilla goblet",
+    "environment": "GYM",
+    "primaryMuscle": "Cuádriceps, glúteos, isquiotibiales, core",
+    "description": "Sentadilla con carga frontal (mancuerna o kettlebell pegada al pecho). Es una progresión lógica desde sentadilla sin peso: ayuda a mantener el torso más vertical y suele ser más fácil de sentir la técnica sin necesitar barra.\n\nTécnica: Sujeta la mancuerna/kettlebell a la altura del pecho, cerca del cuerpo. Pies a anchura cómoda, puntas ligeramente abiertas. Baja en sentadilla manteniendo el peso repartido en todo el pie. Rodillas siguen la dirección de los pies. Llega a la profundidad que puedas sin perder control (sin redondear la espalda al final). Sube empujando el suelo, manteniendo el pecho estable.",
+    "cues": "Peso pegado al pecho\nTrípode del pie: talón y bases de los dedos\nRodillas siguen a los pies\nBaja controlado, sube sólido",
+    "commonMistakes": "Colapsar rodillas hacia dentro: reduce carga y piensa abre el suelo.\nLevantar talones: ajusta postura/anchura y baja hasta donde controles.\nRedondear al fondo: recorta profundidad.\nBajar sin control y rebotar.",
+    "regressions": "Goblet a caja (box squat) para limitar profundidad\nMenos peso + pausa 1s abajo con control\nSentadilla sin peso si hace falta volver atrás",
+    "progressions": "Más carga manteniendo forma\nTempo: bajada 3s\nPausa 1–2s abajo",
+    "media": [
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/1/1b/Goblet_squat.png",
+        "thumbnailUrl": null
+      },
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=MeIiIdhvXT4",
+        "thumbnailUrl": "https://img.youtube.com/vi/MeIiIdhvXT4/hqdefault.jpg"
+      }
+    ]
+  },
+  {
     "slug": "gym-overhead-press-5",
     "name": "Overhead Press",
     "environment": "GYM",
     "primaryMuscle": "Deltoides, tríceps, trapecio superior",
-    "description": "Prensa de hombros con barra. Ejercicio fundamental para desarrollar fuerza de empuje vertical.",
-    "cues": "Agarre algo más ancho que hombros.\nCodos ligeramente hacia adelante.\nEmpuja en línea recta sobre la cabeza.\nCore y glúteos tensos.",
-    "commonMistakes": "Arquear la espalda en exceso.\nIniciar el movimiento con las piernas.\nDejar caer la barra tras la cabeza.\nNo bloquear completamente arriba.",
-    "regressions": "Press con mancuernas sentado, landmine press.",
-    "progressions": "Press estricto, push press, jerk.",
+    "description": "La prensa de hombros con barra (overhead press) es el ejercicio fundamental de empuje vertical.\n\nDesarrolla deltoides, tríceps y trapecio superior de forma compuesta, y exige un core estable para evitar arquear la espalda.\n\nSe puede ejecutar de pie (mayor implicación del core) o sentado (más aislamiento de hombros).\n\nEs uno de los patrones básicos de fuerza: empuje por encima de la cabeza, trasladable a la vida diaria y al rendimiento deportivo.\n\nPermite progresar con carga de forma sistemática cuando la técnica es correcta.",
+    "cues": "Agarre algo más ancho que los hombros; pulgares alrededor de la barra.\nBarra apoyada en la parte alta del pecho o clavícula al inicio.\nCodos ligeramente hacia adelante (no en línea con la barra).\nEmpuja la barra en línea recta sobre la cabeza, sin dejarla ir hacia atrás.\nCore y glúteos tensos; evita arquear la lumbar en exceso.\nBloquea los codos arriba con la barra sobre la línea de la cabeza.",
+    "commonMistakes": "Arquear la espalda en exceso (hiperextensión lumbar): sobrecarga lumbar.\nIniciar el movimiento con las piernas (push press cuando buscas press estricto): no cuenta como repetición estricta.\nDejar caer la barra detrás de la cabeza: estrés innecesario en hombros.\nNo bloquear completamente arriba: rango incompleto.\nCodos que se abren en exceso: puede provocar pinzamiento.\nBarra que se desvía hacia delante o atrás: trabaja la estabilidad.",
+    "regressions": "Press con mancuernas sentado (mayor libertad de muñeca).\nLandmine press (ángulo fijo, menor exigencia).\nPress con barra desde soportes a la altura de los hombros.",
+    "progressions": "Press estricto con pausa en la parte inferior.\nPush press (ayuda de piernas) para más carga.\nJerk para atletas avanzados.",
     "media": [
       {
         "type": "image",
@@ -138,15 +230,38 @@
     ]
   },
   {
+    "slug": "press-hombros-mancuernas-sentado",
+    "name": "Press de hombros con mancuernas (sentado)",
+    "environment": "GYM",
+    "primaryMuscle": "Deltoides, tríceps, trapecio superior",
+    "description": "Empuje vertical sentado para fortalecer hombros y tríceps con técnica estable y controlada.",
+    "cues": "Costillas abajo y abdomen firme\nMuñecas rectas: mancuerna encima del antebrazo\nCodos un pelín delante (no completamente abiertos)\nSube vertical, no hacia delante\nBaja controlado sin perder postura",
+    "commonMistakes": "Arquear la zona lumbar para ayudar\nEmpujar hacia delante en lugar de vertical\nMuñecas dobladas hacia atrás\nSubir a tirones o rebotar abajo\nIgnorar dolor/pinzamiento en el hombro",
+    "regressions": "Menos peso y rango cómodo manteniendo control\nAgarre neutro (palmas mirándose)\nMáquina de press de hombros",
+    "progressions": "Más carga manteniendo costillas abajo\nPausa arriba o bajada lenta\nVersión de pie",
+    "media": [
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/1/15/Dumbbell-shoulder-press-1.png",
+        "thumbnailUrl": null
+      },
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=poD_-zaG9hk",
+        "thumbnailUrl": "https://img.youtube.com/vi/poD_-zaG9hk/hqdefault.jpg"
+      }
+    ]
+  },
+  {
     "slug": "gym-lat-pulldown-6",
     "name": "Lat Pulldown",
     "environment": "GYM",
     "primaryMuscle": "Dorsales, bíceps, romboides",
-    "description": "Jalón al pecho en polea para desarrollar la espalda y mejorar la fuerza de tracción vertical.",
-    "cues": "Agarre según objetivo (ancho/estrecho).\nTira de los codos hacia las costillas.\nPecho hacia adelante, omóplatos juntos.\nEvita balancear el torso.",
-    "commonMistakes": "Tirar con los brazos en lugar de la espalda.\nInclinar el torso demasiado hacia atrás.\nEncoger los hombros.\nRango de movimiento incompleto.",
-    "regressions": "Remo con banda a la altura del pecho.",
-    "progressions": "Pull-up asistido, jalón con pausa.",
+    "description": "El jalón al pecho en polea (lat pulldown) es el ejercicio de tracción vertical por excelencia en el gimnasio.\n\nDesarrolla dorsales, bíceps y romboides con menor exigencia técnica que las dominadas, por lo que es ideal para principiantes o para trabajar la espalda con carga controlada.\n\nEl agarre (ancho, estrecho, prono o neutro) modula la implicación de dorsal y bíceps.\n\nPermite progresar en fuerza de tracción antes de dominar las dominadas con peso corporal.\n\nEs fundamental mantener el pecho alto y conducir el movimiento con los codos, no con los brazos.",
+    "cues": "Siéntate con los muslos sujetos por el rodillo; agarre según objetivo (ancho para más dorsal, estrecho para más bíceps).\nPecho hacia adelante, hombros deprimidos (omóplatos hacia abajo) al inicio.\nTira de la barra llevando los codos hacia las costillas o el lateral del torso.\nSiente la contracción en el dorsal, no solo en los brazos.\nBaja la barra hasta la parte alta del pecho o la clavícula.\nSube con control hasta extensión completa de brazos sin dejar que los hombros se encajen.",
+    "commonMistakes": "Tirar con los brazos en lugar de conducir con los codos: menos trabajo de espalda.\nInclinar el torso demasiado hacia atrás: se convierte en un remo y quita tensión al dorsal.\nEncoger los hombros hacia las orejas al subir: sobrecarga del trapecio y riesgo de lesión.\nRango incompleto: no bajar lo suficiente o no estirar del todo arriba.\nBalancear el torso para impulsar: reduce la efectividad y puede lesionar la lumbar.",
+    "regressions": "Remo con banda anclada a la altura del pecho.\nLat pulldown con menor peso hasta dominar el patrón.\nAustralian pull-up o remo invertido en barra baja.",
+    "progressions": "Jalón con pausa de 1-2 segundos en la contracción.\nPull-up asistido con banda para transición a peso corporal.\nJalón con agarre neutro o con triángulo para variar el estímulo.",
     "media": [
       {
         "type": "image",
@@ -157,6 +272,75 @@
         "type": "youtube",
         "url": "https://www.youtube.com/watch?v=OcFCHdQHjVU",
         "thumbnailUrl": "https://img.youtube.com/vi/OcFCHdQHjVU/hqdefault.jpg"
+      }
+    ]
+  },
+  {
+    "slug": "jalon-al-pecho",
+    "name": "Jalón al pecho (lat pulldown)",
+    "environment": "GYM",
+    "primaryMuscle": "Dorsales, bíceps, romboides",
+    "description": "Tirón vertical en máquina para trabajar espalda (sobre todo dorsales) con un setup fácil de estandarizar. La clave es hacerlo sin comprometer hombro ni zona lumbar.\n\nTécnica (ACE Fitness): Ajusta el pad de muslos para quedar bien anclado. Brace (abdomen firme) y evita arquear la zona lumbar. Empieza con brazos arriba y escápulas abajo y atrás. Inicia tirando primero bajando escápulas y luego lleva la barra hacia la parte alta/media del pecho, con los codos bajando hacia el suelo. Para cuando los codos dejan de bajar y empiezan a ir hacia atrás. Sube controlado hasta extensión de codos.",
+    "cues": "Costillas abajo: abdomen firme\nHombros abajo y atrás antes de tirar\nCodos hacia el suelo\nBarra al pecho alto/medio sin balanceo\nSube controlado",
+    "commonMistakes": "Tirar con balanceo o exceso de inclinación: baja peso y controla el torso.\nHombros a las orejas al inicio: piensa en bajar escápulas primero.\nPasarte del rango y seguir tirando cuando el codo ya va hacia atrás: recorta ahí.\nSubir de golpe sin control.",
+    "regressions": "Menos carga + recorrido perfecto\nAgarres/handles más cómodos (neutro) si el hombro lo agradece\nJalón con banda para aprender patrón",
+    "progressions": "Pausa 1–2s abajo\nTempo: subida controlada 2–3s\nMás carga manteniendo forma",
+    "media": [
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/7/7d/Close-grip-front-lat-pull-down-1.png",
+        "thumbnailUrl": null
+      },
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=SALxEARiMkw",
+        "thumbnailUrl": "https://img.youtube.com/vi/SALxEARiMkw/hqdefault.jpg"
+      }
+    ]
+  },
+  {
+    "slug": "remo-sentado-polea",
+    "name": "Remo sentado en polea (seated cable row)",
+    "environment": "GYM",
+    "primaryMuscle": "Dorsales, romboides, bíceps",
+    "description": "Tirón horizontal en polea (agarre estrecho o triángulo) para trabajar espalda media y dorsales, con un patrón fácil de estandarizar en gimnasio.\n\nTécnica: Siéntate con pies firmes en la plataforma y rodillas ligeramente flexionadas. Pecho orgulloso, cuello largo, abdomen firme. Empieza con brazos estirados sin redondear la espalda. Inicia el tirón llevando hombros abajo y atrás (sin encoger) y luego codos hacia atrás. Termina cuando el agarre llega al torso y sigues estable (sin echarte hacia atrás). Vuelve lento al inicio, manteniendo postura.",
+    "cues": "Pecho alto y abdomen firme\nHombros lejos de las orejas\nTira con codos, sin encoger\nCero balanceo: controla ida y vuelta",
+    "commonMistakes": "Balanceo (tirar con la espalda baja): baja peso y recorta el rango.\nEncoger hombros al tirar: piensa hombros abajo.\nRedondear al estirar: llega al final con control, sin colapsar.\nSoltar la vuelta sin control.",
+    "regressions": "Menos carga + pausa 1s con escápulas colocadas\nRecorrido algo más corto si pierdes postura\nAgarre neutro si es más cómodo",
+    "progressions": "Tempo: vuelta 2–3s\nPausa 1–2s al final sin balanceo\nMás carga manteniendo técnica",
+    "media": [
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/2/2d/Cable-seated-rows-1.png",
+        "thumbnailUrl": null
+      },
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=7o2oolbmzeI",
+        "thumbnailUrl": "https://img.youtube.com/vi/7o2oolbmzeI/hqdefault.jpg"
+      }
+    ]
+  },
+  {
+    "slug": "face-pull-polea",
+    "name": "Face pull en polea",
+    "environment": "GYM",
+    "primaryMuscle": "Deltoides posteriores, trapecio, romboides",
+    "description": "Tirón hacia la cara con cuerda para trabajar deltoide posterior y musculatura de la espalda alta (rotación externa / estabilidad escapular). Muy útil como complemento de empujes y para equilibrar hombros.\n\nTécnica: Polea alta con cuerda. Postura estable, abdomen suave activo, sin arquear lumbar. Empieza con brazos extendidos y hombros abajo. Tira llevando las manos hacia la cara/ojos y separando puntas de la cuerda al final. Codos altos pero sin subir hombros a las orejas. Vuelve lento al inicio.",
+    "cues": "Hombros lejos de orejas\nTira hacia la cara\nSepara la cuerda al final\nVuelve lento y controlado",
+    "commonMistakes": "Encoger hombros: baja peso, piensa hombros abajo.\nConvertirlo en remo (codos pegados abajo): codos más altos.\nArqueo lumbar o balanceo: reduce peso y fija postura.\nSoltar la vuelta sin control.",
+    "regressions": "Menos peso + pausa 1s al final\nRango más corto si molesta",
+    "progressions": "Pausa 1–2s al final\nTempo: vuelta 2–3s\nMás carga sin encoger hombros",
+    "media": [
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/4/4a/Cable-face-pull-1.png",
+        "thumbnailUrl": null
+      },
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=rep-qVOkqgk",
+        "thumbnailUrl": "https://img.youtube.com/vi/rep-qVOkqgk/hqdefault.jpg"
       }
     ]
   },
@@ -184,6 +368,29 @@
     ]
   },
   {
+    "slug": "aperturas-peck-deck",
+    "name": "Aperturas en máquina (peck deck)",
+    "environment": "GYM",
+    "primaryMuscle": "Pectorales",
+    "description": "Apertura de brazos en máquina para trabajar pectorales con recorrido guiado. Útil en MVP: estándar en gym, fácil de registrar, menos fricción técnica que cable fly.\n\nTécnica: Ajusta asiento para que las manos queden a una altura cómoda (aprox. a la altura del pecho). Espalda apoyada y costillas tranquilas (sin arquear lumbar). Empieza con un rango que no te tire del hombro al abrir. Junta los brazos sin encoger hombros y sin perder el apoyo de la espalda. Vuelve lento: controla la apertura, sin rebote.",
+    "cues": "Hombros lejos de orejas\nEspalda apoyada y pecho estable\nRango cómodo: no fuerces la apertura\nCierra controlado, vuelve lento",
+    "commonMistakes": "Abrir demasiado y sentir pinchazo/tensión rara en hombro: recorta rango.\nEncoger hombros al cerrar: baja peso y hombros abajo.\nRebotar o soltar la vuelta: tempo lento.\nArquear la zona lumbar para hacer fuerza.",
+    "regressions": "Menos peso + rango parcial limpio\nPausa 1s al cerrar con poco peso",
+    "progressions": "Tempo: apertura 2–3s\nPausa 1s al cerrar sin encoger\nMás carga manteniendo el mismo rango controlado",
+    "media": [
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/8/87/Butterfly-machine-2.png",
+        "thumbnailUrl": null
+      },
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=Z57CtFmRMxA",
+        "thumbnailUrl": "https://img.youtube.com/vi/Z57CtFmRMxA/hqdefault.jpg"
+      }
+    ]
+  },
+  {
     "slug": "gym-leg-curl-8",
     "name": "Leg Curl",
     "environment": "GYM",
@@ -207,6 +414,29 @@
     ]
   },
   {
+    "slug": "curl-femoral-sentado",
+    "name": "Curl femoral sentado (máquina)",
+    "environment": "GYM",
+    "primaryMuscle": "Isquiotibiales",
+    "description": "Aísla la flexión de rodilla para trabajar isquiosurales con un setup muy estable. Útil para progresar sin depender tanto de la técnica de bisagra (RDL) cuando quieres trabajo directo de isquios.\n\nTécnica: Ajusta el asiento para que la rodilla quede alineada con el eje/pivote de la máquina. Coloca el rodillo inferior justo por encima del tobillo (no en el pie). Espalda apoyada, abdomen firme, agarre en las asas. Flexiona llevando los talones hacia abajo/atrás (según máquina) sin levantar la cadera del asiento. Pausa breve al final si puedes mantener el control; vuelve lento al inicio sin soltar.",
+    "cues": "Rodilla alineada con el pivote\nCadera pegada al asiento\nRecorrido controlado, sin tirones\nVuelta lenta y controlada",
+    "commonMistakes": "Cadera se despega al tirar fuerte: baja peso y recorta el rango.\nRodillo demasiado alto/bajo: ajusta cerca del tobillo, sin presionar el talón.\nRebotar en el inicio o al final: controla (sobre todo la vuelta).\nSoltar la vuelta sin control.",
+    "regressions": "Menos peso + rango perfecto (aunque sea más corto)\nPausa 1s al final con poco peso para aprender control",
+    "progressions": "Tempo: vuelta 2–3s\nPausa 1–2s al final manteniendo cadera pegada\nMás carga sin perder alineación",
+    "media": [
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/3/3e/Seated-leg-curl-1.png",
+        "thumbnailUrl": null
+      },
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=_2Kd0d-JEUM",
+        "thumbnailUrl": "https://img.youtube.com/vi/_2Kd0d-JEUM/hqdefault.jpg"
+      }
+    ]
+  },
+  {
     "slug": "gym-calf-raise-9",
     "name": "Calf Raise",
     "environment": "GYM",
@@ -226,6 +456,52 @@
         "type": "youtube",
         "url": "https://www.youtube.com/watch?v=3R0SOJ3alTA",
         "thumbnailUrl": "https://img.youtube.com/vi/3R0SOJ3alTA/hqdefault.jpg"
+      }
+    ]
+  },
+  {
+    "slug": "abduccion-cadera-maquina",
+    "name": "Abducción de cadera en máquina (hip abductor)",
+    "environment": "GYM",
+    "primaryMuscle": "Glúteos",
+    "description": "Máquina sentada para separar las rodillas hacia fuera, enfocada en glúteo medio y estabilizadores de cadera. Es fácil de estandarizar y registrar en MVP.\n\nTécnica: Ajusta el asiento para que estés estable y agarres las asas. Coloca las piernas contra las almohadillas; empieza en un rango cómodo. Abre las piernas sin despegar la cadera del asiento y sin rebotar. Pausa breve si mantienes control, vuelve lento.",
+    "cues": "Cadera quieta, sin balanceo\nAbre controlado, vuelve lento\nRango cómodo > rango forzado\nSin rebote",
+    "commonMistakes": "Balanceo del tronco para mover más peso: baja carga.\nRebotar al cerrar/abrir: controla (sobre todo la vuelta).\nForzar un rango que te hace perder control: recorta rango.\nDespegar la cadera del asiento.",
+    "regressions": "Menos peso + rango cómodo\nPausa 1s en el punto final con poco peso",
+    "progressions": "Tempo: vuelta 2–3s\nPausa 1–2s en el punto final con control\nMás carga sin perder postura",
+    "media": [
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Hip_abductor_machine.jpg/500px-Hip_abductor_machine.jpg",
+        "thumbnailUrl": null
+      },
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=b-cxonq03vQ",
+        "thumbnailUrl": "https://img.youtube.com/vi/b-cxonq03vQ/hqdefault.jpg"
+      }
+    ]
+  },
+  {
+    "slug": "calf-raise",
+    "name": "Elevación de talones (calf raises)",
+    "environment": "MIXED",
+    "primaryMuscle": "Gemelos (pantorrilla)",
+    "description": "La elevación de talones fortalece los gemelos y mejora la resistencia del tobillo. El valor está en el rango completo y el control: subir alto, bajar lento y no rebotar.\n\nObjetivo: mover el tobillo (plantarflexión) sin colapsar el pie hacia dentro/afuera y sin impulsos.",
+    "cues": "• De pie, pies a anchura de cadera, peso repartido (talón + base dedo gordo + base meñique).\n• Sujétate a una pared o silla si necesitas equilibrio (mejor técnica > equilibrio).\n• Sube lentamente hasta puntillas, sin girar los tobillos.\n• Arriba: pausa 1s y aprieta gemelos.\n• Baja lento 2–3s hasta apoyar el talón por completo.\n• Mantén rodillas estables (ligeramente flexionadas o extendidas, pero sin bloquear con tensión).\n\nCalidad recomendada: 10–20 reps controladas o series de 20–40s con tempo.",
+    "commonMistakes": "• Rebotar rápido: reduce reps y usa tempo (sube 2s, baja 3s).\n• Tobillos se van hacia fuera/dentro: distribuye peso en el 'trípode' del pie.\n• Subir poco rango: busca máxima altura controlable.\n• Perder equilibrio y compensar: usa apoyo con mano.\n• Dolor en tendón de Aquiles: reduce rango/volumen y evita rebotes; si persiste, parar.\n\nSEGURIDAD: si hay dolor agudo, inflamación o sensación rara en tobillo/Aquiles, detén y ajusta.",
+    "regressions": "REGRESIONES (más fácil)\n• Calf raise con apoyo (mano en pared/silla).\n• Rango parcial sin dolor (si hay sensibilidad).\n• Series más cortas (6–10 reps perfectas) con descansos.",
+    "progressions": "PROGRESIONES (más difícil)\n• A una pierna (single-leg calf raise) manteniendo tobillo estable.\n• En escalón para mayor rango (bajar talón por debajo del escalón) solo si no molesta el Aquiles.\n• Pausa arriba 2s + tempo lento.\n• Añadir carga (mancuerna) cuando la técnica sea sólida.",
+    "media": [
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=YMmgqO8Jo-k",
+        "thumbnailUrl": "https://img.youtube.com/vi/YMmgqO8Jo-k/hqdefault.jpg"
+      },
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/4/4c/Calf_raise.gif",
+        "thumbnailUrl": null
       }
     ]
   },
@@ -299,6 +575,29 @@
     ]
   },
   {
+    "slug": "extension-triceps-polea",
+    "name": "Extensión de tríceps en polea (pushdown)",
+    "environment": "GYM",
+    "primaryMuscle": "Tríceps",
+    "description": "Ejercicio simple en polea para trabajar tríceps con control. Muy fácil de escalar en carga y registrar.\n\nTécnica: Ajusta la polea alta y elige cuerda o barra. Postura estable: pies firmes, abdomen suave activo, torso ligeramente inclinado si hace falta. Codos pegados al cuerpo y hombros abajo (sin encoger). Empieza con antebrazos flexionados y extiende el codo hacia abajo hasta estirar sin bloquear agresivo. Sube controlado sin que los codos se vayan hacia delante.",
+    "cues": "Codos pegados y quietos\nHombros abajo: no encoger\nEmpuja hacia el suelo\nSube lento sin mover codos",
+    "commonMistakes": "Balanceo del torso para mover peso: baja carga.\nCodos se abren o se van al frente: reduce peso y fija codos.\nHombros encogidos: hombros lejos de orejas.\nSoltar la subida sin control.",
+    "regressions": "Menos peso + pausa 1s abajo\nBarra en vez de cuerda si coordinar cuerda cuesta",
+    "progressions": "Cuerda (más rango) con control\nTempo: subida 2–3s\nMás carga manteniendo codos estables",
+    "media": [
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/9/9e/Cable-triceps-pushdown-1.png",
+        "thumbnailUrl": null
+      },
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=2-LAMcpzODU",
+        "thumbnailUrl": "https://img.youtube.com/vi/2-LAMcpzODU/hqdefault.jpg"
+      }
+    ]
+  },
+  {
     "slug": "gym-bicep-curl-13",
     "name": "Bicep Curl",
     "environment": "GYM",
@@ -322,6 +621,52 @@
     ]
   },
   {
+    "slug": "curl-biceps-mancuernas",
+    "name": "Curl de bíceps con mancuernas (de pie)",
+    "environment": "GYM",
+    "primaryMuscle": "Bíceps",
+    "description": "Flexión de codo con mancuernas para trabajar bíceps con un patrón muy simple. En MVP conviene por ser universal y fácil de registrar.\n\nTécnica: De pie, pies firmes, abdomen suave pero activo (sin arquear). Brazos a los lados, codos cerca del torso. Sube la mancuerna flexionando el codo sin balancear el cuerpo. Muñeca neutra. Baja lento hasta estirar el codo sin soltar la carga.",
+    "cues": "Codos cerca del cuerpo\nSin balanceo: torso estable\nMuñeca neutra\nSube controlado, baja lento",
+    "commonMistakes": "Balanceo para mover más peso: baja carga.\nCodos que se van hacia delante: vuelve a codos al lado.\nMuñecas dobladas: neutras.\nSoltar la bajada sin control.",
+    "regressions": "Menos peso + tempo (bajada 2–3s)\nCurl alterno (una mancuerna cada vez) si coordinar ambas cuesta",
+    "progressions": "Pausa 1s arriba\nTempo más lento en la bajada\nCurl inclinado (opcional futuro)",
+    "media": [
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/8/86/Dumbbell-biceps-curl-1.png",
+        "thumbnailUrl": null
+      },
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=ykJmrZ5v0Oo",
+        "thumbnailUrl": "https://img.youtube.com/vi/ykJmrZ5v0Oo/hqdefault.jpg"
+      }
+    ]
+  },
+  {
+    "slug": "curl-biceps-barra-z",
+    "name": "Curl de bíceps con barra Z",
+    "environment": "GYM",
+    "primaryMuscle": "Bíceps",
+    "description": "Curl con barra Z para trabajar bíceps con un agarre que suele ser más cómodo para muñeca/codo que una barra recta. Muy estándar en gym.\n\nTécnica: De pie, pies firmes, abdomen suave activo (sin arquear lumbar). Agarre en la barra Z a anchura cómoda. Codos cerca del cuerpo; sube flexionando codos sin balancear el torso. Muñecas neutras (la barra Z lo facilita). Baja lento hasta extensión controlada (sin soltar).",
+    "cues": "Codos quietos cerca del cuerpo\nSin balanceo del torso\nMuñecas neutras\nSube controlado, baja lento",
+    "commonMistakes": "Balancear el cuerpo para subir: baja peso.\nCodos se van hacia delante: vuelve a codos al lado.\nSoltar la bajada: controla.\nAgarre demasiado cerrado o incómodo.",
+    "regressions": "Menos peso + tempo (bajada 2–3s)\nRecorrido más corto si pierdes control\nCurl en polea (más tensión constante) si mola más — opcional futuro",
+    "progressions": "Pausa 1s arriba\nTempo más lento en la bajada\nSeries más pesadas manteniendo forma",
+    "media": [
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/5/5d/EZ-bar-curl-1.png",
+        "thumbnailUrl": null
+      },
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=kwG2ipFRgfo",
+        "thumbnailUrl": "https://img.youtube.com/vi/kwG2ipFRgfo/hqdefault.jpg"
+      }
+    ]
+  },
+  {
     "slug": "gym-leg-extension-14",
     "name": "Leg Extension",
     "environment": "GYM",
@@ -341,6 +686,29 @@
         "type": "youtube",
         "url": "https://www.youtube.com/watch?v=3R0SOJ3alTA",
         "thumbnailUrl": "https://img.youtube.com/vi/3R0SOJ3alTA/hqdefault.jpg"
+      }
+    ]
+  },
+  {
+    "slug": "extension-cuadriceps-maquina",
+    "name": "Extensión de cuádriceps en máquina (leg extension)",
+    "environment": "GYM",
+    "primaryMuscle": "Cuádriceps",
+    "description": "Aísla el cuádriceps con una máquina muy fácil de estandarizar en gym. Útil en MVP porque: poca fricción, fácil de progresar, fácil de registrar.\n\nTécnica: Ajusta la máquina para que la rodilla quede alineada con el eje/pivote. Rodillo justo por encima del tobillo (no sobre el pie). Espalda apoyada y cadera estable: no despegarse del asiento. Extiende la rodilla hasta casi estirar (sin bloquear con golpe). Baja lento hasta el inicio, sin rebote.",
+    "cues": "Rodilla alineada con el pivote\nRodillo justo por encima del tobillo\nCadera pegada al asiento\nSube firme, baja lento\nSin rebote ni bloqueo agresivo",
+    "commonMistakes": "Subir peso y empezar a despegar cadera: baja carga y/o recorta rango.\nRebotar abajo o arriba: tempo lento.\nBloquear agresivo la rodilla arriba: deja un margen pequeño.\nRodillo mal colocado.",
+    "regressions": "Menos peso + rango perfecto\nPausa 1s arriba con poco peso (control, sin bloqueo agresivo)",
+    "progressions": "Tempo: bajada 2–3s\nPausa 1s arriba manteniendo control\nMás carga sin perder alineación ni levantar cadera",
+    "media": [
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/b/b1/Leg-extensions-1-672x1024.png",
+        "thumbnailUrl": null
+      },
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=4ZDm5EbiFI8",
+        "thumbnailUrl": "https://img.youtube.com/vi/4ZDm5EbiFI8/hqdefault.jpg"
       }
     ]
   },
@@ -414,6 +782,29 @@
     ]
   },
   {
+    "slug": "elevaciones-laterales-mancuernas",
+    "name": "Elevaciones laterales con mancuernas",
+    "environment": "GYM",
+    "primaryMuscle": "Deltoides",
+    "description": "Movimiento simple para trabajar el deltoide lateral (hombro ancho) con poco estrés articular si se hace con peso moderado y control. La clave es evitar encoger hombros y evitar balanceos.\n\nTécnica: De pie, mancuernas a los lados, codo con ligera flexión (no bloqueado). Postura estable: abdomen firme, costillas tranquilas (sin arquear la lumbar). Sube los brazos hacia los lados hasta altura aproximada del hombro (no hace falta más). Muñecas neutras. Baja lento y controlado.",
+    "cues": "Peso moderado y control total\nHombros lejos de orejas (sin encoger)\nSube hasta altura de hombro\nMuñecas neutras\nBaja lento y controlado",
+    "commonMistakes": "Balanceo para mover más peso: baja carga; si balanceas, es demasiado.\nEncoger hombros (trapecio se lo come): piensa hombros abajo.\nSubir demasiado alto: suele meter trapecio y molestar; quédate en hombro.\nMuñeca doblada: neutra.",
+    "regressions": "Menos peso + rango cómodo (hasta donde controles perfecto)\nElevaciones a una mano (más fácil de controlar el balanceo)\nMáquina de elevación lateral si la tienes",
+    "progressions": "Pausa 1s arriba (sin encoger)\nTempo: bajada 2–3s\nCable lateral raise cuando la técnica esté sólida",
+    "media": [
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/f/fd/Dumbbell-lateral-raises-1.png",
+        "thumbnailUrl": null
+      },
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=3VcKaXpzqRo",
+        "thumbnailUrl": "https://img.youtube.com/vi/3VcKaXpzqRo/hqdefault.jpg"
+      }
+    ]
+  },
+  {
     "slug": "gym-romanian-deadlift-18",
     "name": "Romanian Deadlift",
     "environment": "GYM",
@@ -433,6 +824,80 @@
         "type": "youtube",
         "url": "https://www.youtube.com/watch?v=CQp5I9KgdXI",
         "thumbnailUrl": "https://img.youtube.com/vi/CQp5I9KgdXI/hqdefault.jpg"
+      }
+    ]
+  },
+  {
+    "slug": "romanian-deadlift",
+    "name": "Peso muerto rumano (RDL)",
+    "environment": "MIXED",
+    "primaryMuscle": "Isquios y glúteos (bisagra de cadera)",
+    "description": "El peso muerto rumano (RDL) entrena la bisagra de cadera: cadera va hacia atrás, columna estable y tensión en la parte posterior de las piernas. No es un 'bajar la espalda'; es 'mover la cadera' manteniendo la espalda neutra.\n\nObjetivo: sentir estiramiento controlado en isquios y volver a subir empujando la cadera hacia delante. Si aparece dolor agudo en espalda, para y usa una regresión.",
+    "cues": "• Pie a anchura de cadera, peso repartido (planta entera).\n• Rodillas 'suaves': ligera flexión fija (no es una sentadilla).\n• Prepara el torso: 'costillas abajo' + abdomen firme como para recibir un golpe.\n• Bisagra: lleva la cadera hacia atrás como si quisieras tocar una pared con los glúteos.\n• Mantén la espalda neutra (pecho orgulloso, pero sin arquear la zona lumbar).\n• Las pesas rozan muslos y espinillas: recorrido cerca del cuerpo.\n• Baja hasta donde mantengas espalda neutra y notes estiramiento en isquios; no hace falta tocar el suelo.\n• Sube empujando el suelo y llevando la cadera hacia delante; aprieta glúteos arriba SIN hiperextender la espalda.\n• Respira: toma aire y brace antes de bajar/subir; exhala al final de la subida manteniendo control.",
+    "commonMistakes": "• Convertirlo en sentadilla (mucha flexión de rodilla): reduce flexión, cadera atrás.\n• Redondear espalda: reduce rango, baja menos, practica bisagra con palo (3 puntos: cabeza-espalda-sacrum).\n• Pesas lejos del cuerpo: pega las pesas a las piernas.\n• Hiperextender arriba: termina 'alto' con glúteos, no arquees lumbar.\n• Bajar demasiado por ego (sin control): el rango correcto es el que mantiene tensión y neutralidad.\n\nSEGURIDAD: si hay dolor agudo, irradiado, hormigueo o mareo, detén. Prioriza técnica y usa regresiones.",
+    "regressions": "REGRESIONES (más fácil)\n• Bisagra sin peso (hands-on-hips): practica cadera atrás con espalda neutra.\n• Bisagra con palo: palo tocando cabeza-espalda-sacrum; no perder contacto.\n• RDL con poco rango: baja hasta mitad de tibia o donde mantengas forma.\n• Peso ligero y tempo lento: 3s bajada, 1s pausa, 2s subida.",
+    "progressions": "PROGRESIONES (más difícil)\n• Aumenta carga manteniendo técnica.\n• Pausa 1–2s abajo (tensión en isquios) sin redondear.\n• Tempo 3-1-3.\n• RDL a una pierna (solo si dominas el patrón; cadera estable y sin rotación).",
+    "media": [
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=hQgFixeXdZo",
+        "thumbnailUrl": "https://img.youtube.com/vi/hQgFixeXdZo/hqdefault.jpg"
+      },
+      {
+        "type": "image",
+        "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Romanian-deadlift-1.png",
+        "thumbnailUrl": null
+      }
+    ]
+  },
+  {
+    "slug": "peso-muerto-rumano",
+    "name": "Peso muerto rumano (RDL)",
+    "environment": "GYM",
+    "primaryMuscle": "Isquiotibiales y glúteos",
+    "description": "Bisagra de cadera para fortalecer isquios y glúteos con control y espalda neutral.",
+    "cues": "Cadera atrás, espalda larga\nRodillas suaves: no es una sentadilla\nBarra/mancuernas pegadas a las piernas\nBaja hasta donde mantengas la espalda neutral\nSube empujando la cadera hacia delante sin arquear la zona lumbar",
+    "commonMistakes": "Convertirlo en sentadilla (demasiada rodilla)\nRedondear la espalda para bajar más\nSeparar la barra del cuerpo\nRebotar abajo o perder control\nHiperextender la espalda al final",
+    "regressions": "RDL con mancuernas ligeras\nRDL desde bloques/rack (recorrido corto)\nBisagra con palo para aprender postura",
+    "progressions": "Más carga manteniendo técnica\nTempo RDL (bajada lenta + pausa)\nRDL a una pierna asistido",
+    "media": [
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/e/e8/Romanian-deadlift-1.png",
+        "thumbnailUrl": null
+      },
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=2SHsk9AzdjA",
+        "thumbnailUrl": "https://img.youtube.com/vi/2SHsk9AzdjA/hqdefault.jpg"
+      }
+    ]
+  },
+  {
+    "slug": "peso-muerto-rumano-barra",
+    "name": "Peso muerto rumano (barra)",
+    "environment": "GYM",
+    "primaryMuscle": "Isquiotibiales y glúteos",
+    "description": "El peso muerto rumano con barra es una bisagra de cadera: la cadera va hacia atrás con columna estable y tensión en la parte posterior de las piernas. Trabaja sobre todo isquiotibiales y glúteos. Úsalo para fortalecer la cadena posterior y mejorar la técnica de bisagra sin bajar la barra al suelo.\n\nSetup: Barra pegada a las piernas al inicio; pies a anchura de cadera o algo más estrechos; agarre justo fuera de las piernas, brazos rectos.\n\nEjecución: Baja llevando la cadera hacia atrás, manteniendo la tibia lo más vertical posible (ligera flexión de rodilla fija). Mantén la columna neutra (pecho alto, sin redondear ni arquear). El rango correcto es hasta donde notes estiramiento en isquios sin perder la neutralidad lumbar. Subida: empuja el suelo con los pies y lleva la cadera hacia delante; aprieta glúteos arriba sin hiperextender la lumbar.",
+    "cues": "Cadera atrás como si cerraras una puerta\nBarra rozando piernas\nCostillas abajo, abdomen firme\nCuello neutro",
+    "commonMistakes": "Redondear lumbar: reduce rango y practica bisagra con palo 3 puntos.\nConvertirlo en sentadilla (rodillas demasiado adelante): menos flexión de rodilla, cadera atrás.\nBarra se aleja del cuerpo: mantén la barra pegada a muslos y espinillas.\nRebotar abajo o perder tensión: control en todo el recorrido.\nHiperextender arriba: termina con glúteos sin arquear la espalda.\nDolor agudo en espalda: parar y bajar carga o rango.",
+    "regressions": "Bisagra con palo (dowel) 3 puntos\nRDL con mancuernas ligeras\nRack pull/recorrido parcial desde bloques",
+    "progressions": "Aumentar carga manteniendo técnica\nTempo 3s bajada\n1.5 reps / pausa en estiramiento",
+    "media": [
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=jEy_czb3RKA",
+        "thumbnailUrl": "https://img.youtube.com/vi/jEy_czb3RKA/hqdefault.jpg"
+      },
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/5/58/Romanian-deadlift-2.png",
+        "thumbnailUrl": null
+      },
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Romanian_dead_lift_2.svg/500px-Romanian_dead_lift_2.svg.png",
+        "thumbnailUrl": null
       }
     ]
   },
@@ -483,6 +948,29 @@
     ]
   },
   {
+    "slug": "push-up",
+    "name": "Flexiones (push-up)",
+    "environment": "CALISTHENICS",
+    "primaryMuscle": "Pectoral / tríceps / hombro",
+    "description": "Ejercicio básico de empuje con peso corporal para pecho, hombros y tríceps, con alta demanda de control del tronco.\n\nObjetivo: subir y bajar el cuerpo como una plancha rígida, sin hundir la cintura ni elevar la cadera.",
+    "cues": "1) Colócate en plancha alta: manos al suelo ligeramente más anchas que hombros; dedos abiertos; antebrazos verticales.\n2) Activa glúteos y abdomen: piensa en \"cerrar costillas\" y mantener pelvis neutra (sin arquear lumbar).\n3) Hombros \"abajo y atrás\" suave: evita encogerlos hacia las orejas.\n4) Baja controlado: codos a ~30–60° respecto al tronco (no totalmente pegados, no en cruz).\n5) Profundidad: pecho hacia el suelo sin perder la línea del cuerpo; cuello neutro (mirada al suelo a ~30 cm).\n6) Sube empujando el suelo: termina con codos extendidos sin bloquear agresivo; mantén la plancha.",
+    "commonMistakes": "• Cadera hundida / lumbar arqueada: suele cargar la zona baja. Solución: reduce rango o usa regresión (incline / rodillas) y aprieta glúteos.\n• Codos en cruz (90°): puede molestar hombros. Solución: codos a 30–60° y manos un poco más cerca.\n• Hombros hacia orejas: falta control escapular. Solución: \"mete hombros en los bolsillos\" y empuja el suelo manteniendo cuello largo.\n• Cabeza adelantada: tensa cuello. Solución: cuello neutro, mira al suelo.\n• Reps rápidas sin control: aumenta riesgo y baja calidad. Solución: tempo 2s bajada, 1s subida.\n\nSEGURIDAD: Si hay dolor agudo en hombro/muñeca/codo, para. Ajusta ángulo (incline), anchura de manos o reduce rango. Si persiste, evita el ejercicio y consulta a un profesional.",
+    "regressions": "REGRESIONES (más fácil)\n• Flexión inclinada (manos en banco/mesa): misma técnica, menos carga.\n• Flexión con rodillas: desde plancha, apoya rodillas manteniendo cadera alineada.\n• Rango parcial: baja solo hasta donde mantengas forma perfecta.",
+    "progressions": "PROGRESIONES (más difícil)\n• Flexión con pausa: 1–2s de pausa cerca del suelo sin colapsar.\n• Flexión tempo: 3–4s bajada.\n• Flexión diamante (tríceps): manos más juntas (solo si muñecas/hombros lo toleran).\n• Flexión declinada: pies elevados (más carga en hombro/pecho superior).",
+    "media": [
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=IODxDxX7oi4",
+        "thumbnailUrl": "https://img.youtube.com/vi/IODxDxX7oi4/hqdefault.jpg"
+      },
+      {
+        "type": "image",
+        "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Pushups.gif",
+        "thumbnailUrl": null
+      }
+    ]
+  },
+  {
     "slug": "home-bodyweight-squat-21",
     "name": "Bodyweight Squat",
     "environment": "HOME",
@@ -502,6 +990,29 @@
         "type": "youtube",
         "url": "https://www.youtube.com/watch?v=Dy28eq2PjcM",
         "thumbnailUrl": "https://img.youtube.com/vi/Dy28eq2PjcM/hqdefault.jpg"
+      }
+    ]
+  },
+  {
+    "slug": "bodyweight-squat",
+    "name": "Sentadilla (peso corporal)",
+    "environment": "MIXED",
+    "primaryMuscle": "Piernas y glúteos",
+    "description": "La sentadilla con peso corporal es un patrón básico para piernas y cadera. El objetivo es bajar controlado manteniendo el tronco estable y subir empujando el suelo con todo el pie. Prioriza rango cómodo y técnica: si hay dolor agudo (rodilla/espalda/cadera), reduce rango o usa una regresión.",
+    "cues": "• Coloca los pies a la anchura de hombros (ligeramente abiertos).\n• Reparte el peso en todo el pie (talón + base del dedo gordo + base del meñique).\n• Inicia el descenso llevando la cadera atrás y abajo, como sentarte.\n• Rodillas siguen la línea de los dedos (no colapsan hacia dentro).\n• Mantén el pecho \"orgulloso\" y el abdomen firme; espalda neutra.\n• Baja hasta donde puedas sin perder postura (muslos paralelos es una referencia, no obligación).\n• Sube empujando el suelo, exhala al pasar la parte difícil y aprieta glúteos arriba sin hiperextender la espalda.",
+    "commonMistakes": "• Rodillas hacia dentro (valgo): reduce profundidad, abre ligeramente pies y piensa \"rodillas hacia fuera\".\n• Talones se levantan: acorta rango, prueba elevar talones con una cuña o trabaja movilidad de tobillo.\n• Redondear la espalda en el fondo: baja menos, controla el core, usa caja/silla.\n• Bajar \"a plomo\" sin cadera: piensa 'cadera atrás y abajo'.\n• Rebotar en el fondo: pausa breve y sube con control.",
+    "regressions": "• Sentadilla a caja/silla (toca y sube).\n• TRX o apoyo en marco/mesa para descargar.\n• Sentadilla parcial (rango cómodo) con tempo 3s bajada.",
+    "progressions": "• Sentadilla con pausa 2s abajo.\n• Tempo 3-1-1 (3s baja, 1s pausa, 1s sube).\n• Sentadilla búlgara (split squat) o sentadilla a una pierna asistida.",
+    "media": [
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=m0GcZ24pK6k",
+        "thumbnailUrl": "https://img.youtube.com/vi/m0GcZ24pK6k/hqdefault.jpg"
+      },
+      {
+        "type": "image",
+        "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Squats.gif",
+        "thumbnailUrl": null
       }
     ]
   },
@@ -529,6 +1040,52 @@
     ]
   },
   {
+    "slug": "forearm-plank",
+    "name": "Plancha frontal (plank)",
+    "environment": "MIXED",
+    "primaryMuscle": "Core (abdomen) y estabilidad",
+    "description": "La plancha frontal es un ejercicio de estabilidad: no va de aguantar por aguantar, sino de mantener una posición sólida sin colapsar la zona lumbar ni cargar el cuello.\n\nObjetivo: cuerpo en línea (cabeza–hombros–cadera–tobillos) con abdomen y glúteos activos. Si aparece dolor agudo (espalda/hombro/cuello), para y usa una regresión.",
+    "cues": "• Colócate boca abajo y apoya antebrazos: codos debajo de hombros.\n• Empuja el suelo con antebrazos y separa ligeramente los hombros de las orejas.\n• Activa glúteos y abdomen: piensa 'costillas abajo' (sin sacar pecho).\n• Pelvis neutra: evita arquear la espalda o subir demasiado la cadera.\n• Piernas firmes: talones empujan hacia atrás; rodillas extendidas.\n• Cuello neutro: mirada al suelo, nuca larga.\n• Respira: exhala largo sin perder tensión (no aguantes el aire).\n\nSeñal de buena ejecución: puedes mantener la forma 10–30s sin temblores extremos ni dolor.",
+    "commonMistakes": "• Cadera hundida / lumbar arqueada: reduce el tiempo, activa glúteos, acorta el rango usando rodillas.\n• Cadera muy alta: deja de trabajar el core. Baja un poco y vuelve a 'costillas abajo'.\n• Hombros encogidos: empuja el suelo, hombros lejos de orejas.\n• Cabeza adelantada: cuello neutro, mira al suelo.\n• Aguantar la respiración: usa respiración controlada.\n\nSEGURIDAD: si hay dolor agudo o hormigueo, detén. Ajusta a regresión (rodillas o plancha inclinada).",
+    "regressions": "REGRESIONES (más fácil)\n• Plancha inclinada: antebrazos en mesa/banco (menos carga).\n• Plancha con rodillas: mantiene pelvis alineada, evita hundir la espalda.\n• Series cortas: 3–5 x 10–15s con descansos, priorizando forma perfecta.",
+    "progressions": "PROGRESIONES (más difícil)\n• Aumenta tiempo manteniendo técnica (sin pasar de 60s si se degrada la forma).\n• Plancha con toque de hombro (solo si no rota la cadera).\n• Plancha con pies elevados (más demanda).\n• RKC plank (más tensión, menos tiempo): glúteos y abdomen muy activos 10–20s.",
+    "media": [
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=vX6xSyxdsRo",
+        "thumbnailUrl": "https://img.youtube.com/vi/vX6xSyxdsRo/hqdefault.jpg"
+      },
+      {
+        "type": "image",
+        "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Plank.jpg",
+        "thumbnailUrl": null
+      }
+    ]
+  },
+  {
+    "slug": "side-plank",
+    "name": "Plancha lateral (side plank)",
+    "environment": "MIXED",
+    "primaryMuscle": "Oblicuos / estabilidad de cadera",
+    "description": "La plancha lateral entrena el \"lateral core\" (oblicuos) y la estabilidad de hombro y cadera. No es un ejercicio de aguante infinito: la prioridad es mantener una línea estable sin colapsar el hombro ni dejar caer la cadera.\n\nObjetivo: cuerpo alineado (hombros–cadera–tobillos) y cadera alta, con respiración controlada. Si aparece dolor agudo en hombro, cuello o zona lumbar, detén y usa una regresión.",
+    "cues": "• Colócate de lado y apoya el antebrazo: codo justo debajo del hombro.\n• Antebrazo firme en el suelo; empuja el suelo para \"separar\" el hombro de la oreja.\n• Piernas estiradas y pies apilados (o uno delante del otro para más estabilidad).\n• Activa glúteos y abdomen: piensa 'costillas abajo' y pelvis neutra.\n• Eleva la cadera: tu cuerpo forma una línea recta de cabeza a pies.\n• Cuello neutro: mirada al frente o al suelo, sin encoger.\n• Respira: exhala lento sin perder tensión.\n\nDuración recomendada para calidad: 10–30s por lado. Mejor varias series cortas que una larga con mala forma.",
+    "commonMistakes": "• Hombro colapsa / te 'cuelgas': empuja el suelo, codo bajo hombro, acorta la serie.\n• Cadera cae: baja el tiempo o usa rodillas; piensa 'cadera alta'.\n• Rotar el tronco hacia delante o atrás: mantén hombros apilados; pies en 'tijera' si hace falta.\n• Dolor en cuello: relaja trapecios, cuello neutro, no encoger.\n• Dolor en muñeca: usa antebrazo (esta versión) en lugar de mano.\n\nSEGURIDAD: si aparece dolor agudo o sensación rara, para. Ajusta con regresión (rodillas/inclinada).",
+    "regressions": "REGRESIONES (más fácil)\n• Plancha lateral con rodillas apoyadas (bent-knee): rodillas dobladas, cadera alta.\n• Plancha lateral inclinada: antebrazo en banco/mesa.\n• Series muy cortas: 5–10s perfectos, repetir 3–5 veces por lado.",
+    "progressions": "PROGRESIONES (más difícil)\n• Elevar la pierna superior (star plank) manteniendo pelvis estable.\n• Pausa + respiración: mantener 20–30s con respiración lenta sin perder forma.\n• Side plank con reach-through (rotación controlada) solo si no pierdes alineación.\n• Copenhagen plank (avanzado) — solo si ya dominas la base.",
+    "media": [
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=XeN4pEZZJNI",
+        "thumbnailUrl": "https://img.youtube.com/vi/XeN4pEZZJNI/hqdefault.jpg"
+      },
+      {
+        "type": "image",
+        "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Side%20Plank.jpg",
+        "thumbnailUrl": null
+      }
+    ]
+  },
+  {
     "slug": "home-lunges-23",
     "name": "Lunges",
     "environment": "HOME",
@@ -552,6 +1109,29 @@
     ]
   },
   {
+    "slug": "forward-lunge",
+    "name": "Zancada (lunge)",
+    "environment": "MIXED",
+    "primaryMuscle": "Piernas y glúteos",
+    "description": "La zancada es un patrón unilateral (una pierna cada vez) que mejora fuerza, estabilidad y control. El objetivo es bajar y subir con equilibrio, manteniendo rodilla y cadera alineadas.\n\nPrioridad: control y rango cómodo. Si aparece dolor agudo en rodilla/cadera/espalda, detén el ejercicio, reduce rango o usa una regresión.",
+    "cues": "• Postura inicial: de pie, abdomen firme, pecho estable.\n• Da un paso hacia delante lo bastante largo para que al bajar la rodilla delantera no se vaya muy por delante del pie.\n• Baja en vertical: imagina que tu cadera cae \"entre\" ambas piernas (no hacia delante).\n• Rodilla delantera sigue la línea de los dedos (evita colapsar hacia dentro).\n• Tronco ligeramente inclinado si lo necesitas, pero sin redondear la espalda.\n• Apoya el peso en todo el pie delantero (talón + base dedo gordo + base meñique).\n• Rodilla trasera apunta al suelo; toca suave o se queda cerca.\n• Sube empujando el suelo con el pie delantero, manteniendo control y equilibrio.",
+    "commonMistakes": "• Rodilla hacia dentro (valgo): reduce profundidad, baja más lento y piensa \"rodilla sigue a los dedos\".\n• Paso demasiado corto: la rodilla se desplaza en exceso; alarga el paso.\n• Rebotar abajo: pausa breve y sube con control.\n• Perder estabilidad (bamboleo): usa apoyo (pared/mesa) o haz zancada estática.\n• Dolor en rodilla: revisa paso, alineación y rango. Si persiste, cambia a regresión (split squat con apoyo o step-back lunge) y evita el dolor.\n\nSEGURIDAD: ante dolor agudo, mareo o sensación rara, para. No \"empujes a través del dolor\".",
+    "regressions": "REGRESIONES (más fácil)\n• Zancada estática (split squat): pies fijos, sin paso.\n• Zancada con apoyo (mano en pared/mesa) para equilibrio.\n• Rango parcial: baja solo hasta mantener alineación perfecta.\n• Step-back lunge (paso atrás): suele ser más amable para rodilla en algunos casos.",
+    "progressions": "PROGRESIONES (más difícil)\n• Pausa 2s abajo sin perder alineación.\n• Tempo 3-1-1 (3s bajada, 1s pausa, 1s subida).\n• Walking lunges (zancadas caminando).\n• Zancada con carga (mancuernas) cuando la técnica sea sólida.",
+    "media": [
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=2oI9XqmR3nk",
+        "thumbnailUrl": "https://img.youtube.com/vi/2oI9XqmR3nk/hqdefault.jpg"
+      },
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/a/af/Lunge-CDC_strength_training_for_older_adults.gif",
+        "thumbnailUrl": null
+      }
+    ]
+  },
+  {
     "slug": "home-glute-bridge-24",
     "name": "Glute Bridge",
     "environment": "HOME",
@@ -571,6 +1151,52 @@
         "type": "youtube",
         "url": "https://www.youtube.com/watch?v=wZID98mY5Qs",
         "thumbnailUrl": "https://img.youtube.com/vi/wZID98mY5Qs/hqdefault.jpg"
+      }
+    ]
+  },
+  {
+    "slug": "glute-bridge",
+    "name": "Puente de glúteos (glute bridge)",
+    "environment": "MIXED",
+    "primaryMuscle": "Glúteos e isquios",
+    "description": "El puente de glúteos fortalece glúteos y parte posterior del muslo con baja complejidad y suele ser una opción segura si se hace con control.\n\nObjetivo: elevar la cadera apretando glúteos, manteniendo las costillas \"cerradas\" y sin arquear la zona lumbar. Si notas dolor agudo en espalda o cadera, reduce rango o usa una regresión.",
+    "cues": "• Túmbate boca arriba, rodillas flexionadas, pies apoyados a la anchura de caderas.\n• Acerca los talones al glúteo: al subir deberías notar trabajo en glúteo, no solo en lumbares.\n• Antes de subir: abdomen firme y costillas abajo (evita sacar pecho y arquear espalda).\n• Empuja el suelo con TODO el pie (especialmente talón) y eleva la cadera.\n• Arriba: línea hombros–cadera–rodillas (sin sobrepasar).\n• Aprieta glúteos 1–2s arriba, respiración controlada.\n• Baja lento y controlado, sin \"dejarte caer\".",
+    "commonMistakes": "• Subir demasiado y arquear la espalda: baja el rango, piensa 'costillas abajo' y aprieta glúteos.\n• Notarlo solo en lumbares: acerca talones, reduce altura y prioriza apretar glúteos.\n• Rodillas se abren o se juntan: mantén rodillas alineadas con pies (imagina 'rail' estable).\n• Empujar con puntas en vez de talón: redistribuye el peso a talón y mediopié.\n• Repeticiones rápidas: usa tempo (2–3s subida, 2–3s bajada).\n\nSEGURIDAD: si aparece dolor agudo o sensación rara, para. Ajusta rango y técnica. Si persiste, evita el ejercicio.",
+    "regressions": "REGRESIONES (más fácil)\n• Puente parcial: sube menos, mantén control.\n• Isométrico corto: mantener 5–10s a media altura.\n• Elevar la cadera con pausa corta arriba, pocas reps y estrictas.",
+    "progressions": "PROGRESIONES (más difícil)\n• Puente con pausa 2–3s arriba.\n• Tempo 3-1-3 (3s sube, 1s pausa, 3s baja).\n• Puente a una pierna (single-leg) alternando: solo si controlas que la pelvis no rote.\n• Hip thrust con banco (más rango) cuando la técnica sea sólida.",
+    "media": [
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=wPM8icPu6H8",
+        "thumbnailUrl": "https://img.youtube.com/vi/wPM8icPu6H8/hqdefault.jpg"
+      },
+      {
+        "type": "image",
+        "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Glute-bridge.png",
+        "thumbnailUrl": null
+      }
+    ]
+  },
+  {
+    "slug": "hip-thrust-barra",
+    "name": "Hip thrust con barra",
+    "environment": "GYM",
+    "primaryMuscle": "Glúteos, isquiotibiales",
+    "description": "Extensión de cadera con la parte alta de la espalda apoyada en un banco y una barra sobre la cadera. En gimnasio es una forma potente de progresar fuerza de glúteos con recorrido mayor que el puente en el suelo.\n\nTécnica: Escápulas apoyadas en el borde del banco, pies firmes al suelo. Barra sobre el pliegue de la cadera (usa acolchado). Mentón ligeramente recogido, costillas abajo. Empuja con talones y extiende cadera hasta que tronco quede en mesa, sin arquear lumbar. Baja controlado.",
+    "cues": "Costillas abajo\nBarbilla ligeramente recogida\nEmpuja el suelo con talones\nArriba: glúteo fuerte, lumbar neutra",
+    "commonMistakes": "Hiperextender lumbar arriba (en vez de glúteo): costillas abajo, no arquees.\nPies demasiado lejos o cerca (lo sientes en cuádriceps o lumbar): ajusta hasta sentir glúteo.\nRebotar en el fondo: control.\nNo usar acolchado y que moleste la barra.",
+    "regressions": "Volver al puente de glúteos (ya en catálogo)\nHip thrust sin barra (peso corporal)\nMenos carga + pausa 1s arriba",
+    "progressions": "Más carga manteniendo técnica\nPausa 2s arriba\nTempo: bajada 2–3s",
+    "media": [
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/7/7c/Barbell_hip_thrust.png",
+        "thumbnailUrl": null
+      },
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=LM8XHLYJoYs",
+        "thumbnailUrl": "https://img.youtube.com/vi/LM8XHLYJoYs/hqdefault.jpg"
       }
     ]
   },
@@ -782,6 +1408,29 @@
     ]
   },
   {
+    "slug": "bird-dog",
+    "name": "Bird-dog (extensión alterna brazo/pierna)",
+    "environment": "MIXED",
+    "primaryMuscle": "Core (estabilidad lumbar) y control",
+    "description": "Bird-dog es un ejercicio de estabilidad: enseña a mantener la columna neutra mientras mueves brazos y piernas. Es muy útil para proteger la zona lumbar y mejorar el control en patrones como sentadilla o bisagra (RDL).\n\nObjetivo: moverte sin que la pelvis rote ni la espalda se arquee. Si aparece dolor agudo en espalda, para y usa una regresión.",
+    "cues": "• Posición inicial: a cuatro apoyos (manos bajo hombros, rodillas bajo caderas).\n• 'Costillas abajo' + abdomen firme: imagina que llevas un cinturón ajustado.\n• Espalda neutra: ni hundida ni redondeada.\n• Extiende a la vez: una pierna hacia atrás y el brazo contrario hacia delante.\n• Mantén la pelvis cuadrada al suelo (no gires la cadera).\n• Altura: pierna a nivel de cadera (no más alto si arqueas), brazo a la altura del hombro.\n• Pausa 1–2s al final manteniendo control.\n• Vuelve lento al centro sin colapsar.\n• Respira: exhala suave mientras estabilizas; no aguantes el aire.\n\nMeta: 6–10 repeticiones por lado con máxima calidad.",
+    "commonMistakes": "• Girar la pelvis: reduce rango y mueve más lento; piensa 'caderas como faros apuntan al suelo'.\n• Arquear la zona lumbar: baja la pierna, activa abdomen y glúteo; no busques altura.\n• Encoger hombros: cuello largo, hombros lejos de orejas.\n• Repeticiones rápidas: pierde control. Solución: tempo lento y pausas.\n\nSEGURIDAD: si hay dolor agudo o irradiado, detén. Prioriza control y rango pequeño.",
+    "regressions": "REGRESIONES (más fácil)\n• Solo piernas: extiende una pierna atrás manteniendo pelvis estable.\n• Solo brazos: extiende un brazo sin mover caderas.\n• Bird-dog con dedos: apoya puntas del pie extendido en el suelo para más estabilidad.\n• Pausas cortas: 3–5s isométricos con rango pequeño.",
+    "progressions": "PROGRESIONES (más difícil)\n• Pausa 3–5s en cada repetición.\n• Deslizar mano/pie (slider) manteniendo control.\n• Bird-dog 'draw a box': micro movimientos sin rotar pelvis.\n• Añadir resistencia ligera (banda) solo si la técnica es perfecta.",
+    "media": [
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=wiFNA3sqjCA",
+        "thumbnailUrl": "https://img.youtube.com/vi/wiFNA3sqjCA/hqdefault.jpg"
+      },
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/6/6e/Bird_dog_exercise.gif",
+        "thumbnailUrl": null
+      }
+    ]
+  },
+  {
     "slug": "home-dead-bug-34",
     "name": "Dead Bug",
     "environment": "HOME",
@@ -847,6 +1496,29 @@
         "type": "youtube",
         "url": "https://www.youtube.com/watch?v=WDIpL0pjun0",
         "thumbnailUrl": "https://img.youtube.com/vi/WDIpL0pjun0/hqdefault.jpg"
+      }
+    ]
+  },
+  {
+    "slug": "step-up",
+    "name": "Step-up (subida a cajón/escalón)",
+    "environment": "MIXED",
+    "primaryMuscle": "Piernas y glúteos",
+    "description": "El step-up es un patrón unilateral (una pierna a la vez) que fortalece piernas y glúteos con una carga muy controlable. Bien hecho, es una opción amable para rodilla porque permite ajustar altura y rango.\n\nObjetivo: subir al escalón usando la pierna de arriba, con rodilla alineada y control, sin impulsarte con la pierna de abajo.",
+    "cues": "• Elige una altura que puedas controlar: empieza bajo (escalón) antes que alto.\n• Pie completo sobre el escalón: talón y punta apoyados.\n• Rodilla alineada con los dedos del pie (evita que se meta hacia dentro).\n• Inclina el torso ligeramente hacia delante si ayuda a cargar glúteo, sin redondear la espalda.\n• Empuja el escalón con el pie de arriba (piensa 'subo con esta pierna').\n• Sube hasta estar erguido arriba, cadera extendida, sin hiperextender la espalda.\n• Baja lento y controlado: primero cadera hacia atrás un poco, luego pie al suelo.\n• Mantén pelvis estable: evita girarte hacia el lado.\n\nRitmo recomendado: 2–3s subida, 2–3s bajada.",
+    "commonMistakes": "• Impulsarte con la pierna de abajo: reduce altura y concéntrate en empujar con el pie de arriba.\n• Rodilla colapsa hacia dentro: baja la altura, reduce velocidad y piensa 'rodilla sigue a los dedos'.\n• Empujar solo con la punta (talón se despega): apoya todo el pie, presiona el talón.\n• Rebotar al bajar: controla la bajada, no te dejes caer.\n• Escalón demasiado alto: genera compensaciones. Empieza con altura más baja.\n\nSEGURIDAD: si aparece dolor agudo en rodilla/cadera/espalda, detén. Ajusta altura, rango y control. Evita trabajar con dolor.",
+    "regressions": "REGRESIONES (más fácil)\n• Altura muy baja (libro/escalón pequeño).\n• Apoyo con mano en pared/barandilla para equilibrio.\n• Step-up parcial: subir y bajar sin llegar a extensión completa.\n• Repeticiones lentas con pausa arriba 1s para estabilidad.",
+    "progressions": "PROGRESIONES (más difícil)\n• Aumentar altura gradualmente manteniendo alineación.\n• Pausa 2s arriba sin perder estabilidad.\n• Carga externa (mancuernas) cuando la técnica sea sólida.\n• Step-up con rodilla arriba (knee drive) solo si mantienes pelvis estable.",
+    "media": [
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=dQqApCGd5Ss",
+        "thumbnailUrl": "https://img.youtube.com/vi/dQqApCGd5Ss/hqdefault.jpg"
+      },
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/3/3b/Step-up_exercise.gif",
+        "thumbnailUrl": null
       }
     ]
   },
@@ -939,6 +1611,29 @@
         "type": "youtube",
         "url": "https://www.youtube.com/watch?v=9yVGh3XbJ34",
         "thumbnailUrl": "https://img.youtube.com/vi/9yVGh3XbJ34/hqdefault.jpg"
+      }
+    ]
+  },
+  {
+    "slug": "inverted-row",
+    "name": "Remo invertido (inverted row)",
+    "environment": "CALISTHENICS",
+    "primaryMuscle": "Espalda (dorsal/romboides) y bíceps",
+    "description": "El remo invertido es un tirón con peso corporal que fortalece espalda y bíceps sin necesidad de dominadas. Es ideal para equilibrar ejercicios de empuje (flexiones) y mejorar control escapular.\n\nObjetivo: tirar del pecho hacia la barra/agarre manteniendo el cuerpo firme (como una plancha) y los hombros estables. Prioriza control y rango cómodo.",
+    "cues": "• Ajusta el material: barra a altura de cintura (o anillas/TRX). Cuanto más horizontal estés, más difícil.\n• Agarre: manos a la anchura de hombros (o algo más). Muñecas neutras.\n• Posición inicial: cuerpo en línea recta (cabeza–cadera–tobillos). Glúteos y abdomen activos.\n• Hombros: antes de tirar, 'mete los hombros en el bolsillo' (depresión escapular suave).\n• Tirón: lleva el pecho hacia la barra, no la barbilla. Codos cerca del cuerpo (aprox. 30–60°).\n• Pausa 1s arriba con escápulas controladas (sin encoger hombros).\n• Baja lento (2–3s) manteniendo el cuerpo alineado, sin dejar caer la cadera.",
+    "commonMistakes": "• Cadera se hunde: pierde tensión y carga lumbar. Solución: aprieta glúteos/abdomen y reduce dificultad (más vertical).\n• Encoger hombros hacia orejas: carga cuello/hombro. Solución: depresión escapular antes de tirar.\n• Tirar con cuello/mentón: termina en 'pecho a la barra', cuello neutro.\n• Reps a tirones sin control: usa tempo y rango más fácil.\n\nSEGURIDAD: si hay dolor agudo en hombro/codo/muñeca, detén. Ajusta agarre, rango y ángulo. Evita forzar el final del recorrido si molesta el hombro.",
+    "regressions": "REGRESIONES (más fácil)\n• Más vertical: eleva la barra o acorta el paso para que el cuerpo esté menos horizontal.\n• Rodillas flexionadas: pies más cerca y rodillas dobladas reduce carga.\n• Rango parcial: sube solo hasta donde mantengas hombros estables.",
+    "progressions": "PROGRESIONES (más difícil)\n• Más horizontal: baja la barra o adelanta los pies.\n• Pausa arriba 2s sin encoger hombros.\n• Tempo 3-1-3 (3s sube, 1s pausa, 3s baja).\n• Pies elevados (muy difícil) manteniendo línea corporal.",
+    "media": [
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=Fl0UMfdEzsE",
+        "thumbnailUrl": "https://img.youtube.com/vi/Fl0UMfdEzsE/hqdefault.jpg"
+      },
+      {
+        "type": "image",
+        "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Inverted%20row.jpg",
+        "thumbnailUrl": null
       }
     ]
   },

@@ -1,8 +1,11 @@
 import { cache } from "react";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import type { Metadata } from "next";
 import { prisma } from "@/src/server/db/prisma";
+import { getYouTubeId, toWatchUrl } from "@/src/app/lib/youtube";
+import { trackEvent } from "@/src/server/lib/events";
 
 function renderTextBlock(text: string) {
   const lines = text.split(/\r?\n/).filter((l) => l.trim().length > 0);
@@ -16,9 +19,7 @@ function renderTextBlock(text: string) {
     );
   }
   if (lines.length === 1) {
-    return (
-      <p className="text-sm text-zinc-600 dark:text-zinc-400">{lines[0]!.trim()}</p>
-    );
+    return <p className="text-sm text-zinc-600 dark:text-zinc-400">{lines[0]!.trim()}</p>;
   }
   return null;
 }
@@ -68,7 +69,16 @@ export default async function ExercisePage({ params }: Props) {
     notFound();
   }
 
-  const mediaList = exercise.media ?? [];
+  const youtube = exercise.media?.find((m) => m.type === "youtube") ?? null;
+  const video = exercise.media?.find((m) => m.type === "video") ?? null;
+  const image = exercise.media?.find((m) => m.type === "image") ?? null;
+  const youtubeId = youtube ? getYouTubeId(youtube.url) : null;
+  if (youtube && !youtubeId) {
+    trackEvent("exercise_youtube_id_invalid", { slug }, { sentry: true });
+  }
+
+  const hasVideoBlock = youtube ?? video;
+  const hasAnyMedia = hasVideoBlock ?? image;
 
   return (
     <main className="mx-auto max-w-lg px-4 py-8">
@@ -85,69 +95,68 @@ export default async function ExercisePage({ params }: Props) {
         {exercise.primaryMuscle && ` · ${exercise.primaryMuscle}`}
       </p>
 
-      {mediaList.length > 0 ? (
+      {hasAnyMedia ? (
         <div className="mb-6 space-y-4">
-          {mediaList.map((media) => (
-            <div
-              key={media.id}
-              className="overflow-hidden rounded-lg bg-zinc-100 dark:bg-zinc-800"
-            >
-              {media.type === "video" ? (
-                <video
-                  src={media.url}
-                  controls
-                  className="w-full"
-                  poster={media.thumbnailUrl ?? undefined}
-                  aria-label={`Vídeo de ${exercise.name}`}
-                >
-                  No se pudo reproducir el vídeo.
-                </video>
-              ) : media.type === "youtube" ? (
-                <a
-                  href={media.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block"
-                  aria-label={`Ver vídeo de ${exercise.name} en YouTube`}
-                >
-                  {media.thumbnailUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element -- external URL (YouTube thumbnail)
-                    <img
-                      src={media.thumbnailUrl}
-                      alt={`Miniatura del vídeo en YouTube de ${exercise.name}`}
-                      loading="lazy"
-                      className="w-full object-cover"
+          {youtube ? (
+            <div className="mt-4">
+              {youtubeId ? (
+                <>
+                  <div className="relative w-full overflow-hidden rounded-2xl bg-black/5 pt-[56.25%]">
+                    <iframe
+                      className="absolute inset-0 h-full w-full"
+                      src={`https://www.youtube-nocookie.com/embed/${youtubeId}?rel=0`}
+                      title="Vídeo del ejercicio"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerPolicy="strict-origin-when-cross-origin"
+                      allowFullScreen
                     />
-                  ) : null}
-                  <span
-                    className={
-                      media.thumbnailUrl
-                        ? "block border-t border-zinc-200 px-4 py-3 text-sm font-medium text-blue-600 dark:border-zinc-700 dark:text-blue-400"
-                        : "block px-4 py-3 text-sm font-medium text-blue-600 dark:text-blue-400"
-                    }
-                  >
-                    Ver vídeo en YouTube
-                  </span>
-                </a>
-              ) : media.type === "image" ? (
-                // eslint-disable-next-line @next/next/no-img-element -- external URL embed
-                <img
-                  src={media.url}
-                  alt={`Ilustración de ${exercise.name}`}
-                  loading="lazy"
-                  className="w-full object-cover"
-                />
+                  </div>
+                  <div className="mt-2 text-sm">
+                    <a href={youtube.url} target="_blank" rel="noreferrer" className="underline">
+                      Ver en YouTube
+                    </a>
+                  </div>
+                </>
               ) : (
-                // eslint-disable-next-line @next/next/no-img-element -- external URL embed
-                <img
-                  src={media.url}
-                  alt={`Media de ${exercise.name}`}
-                  loading="lazy"
-                  className="w-full object-cover"
-                />
+                <div className="text-sm">
+                  <a
+                    href={toWatchUrl(youtube.url) ?? youtube.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="underline"
+                  >
+                    Ver en YouTube
+                  </a>
+                </div>
               )}
             </div>
-          ))}
+          ) : video ? (
+            <div className="overflow-hidden rounded-lg bg-zinc-100 dark:bg-zinc-800">
+              <video
+                src={video.url}
+                controls
+                className="w-full"
+                poster={video.thumbnailUrl ?? undefined}
+                aria-label={`Vídeo de ${exercise.name}`}
+              >
+                No se pudo reproducir el vídeo.
+              </video>
+            </div>
+          ) : null}
+
+          {image ? (
+            <div className="overflow-hidden rounded-lg bg-zinc-100 dark:bg-zinc-800">
+              <div className="relative w-full aspect-video">
+                <Image
+                  src={image.url}
+                  alt={`Ilustración de ${exercise.name}`}
+                  fill
+                  className="object-cover"
+                  unoptimized
+                />
+              </div>
+            </div>
+          ) : null}
         </div>
       ) : (
         <div className="mb-6 flex h-40 items-center justify-center rounded-lg bg-zinc-100 text-sm text-zinc-500 dark:bg-zinc-800">
@@ -161,7 +170,7 @@ export default async function ExercisePage({ params }: Props) {
         </h2>
         {renderTextBlock(
           exercise.description ??
-            `Ejercicio para trabajar principalmente ${exercise.primaryMuscle ?? "varios grupos musculares"} en ${ENV_LABELS[exercise.environment] ?? exercise.environment}.`
+            `Ejercicio para trabajar principalmente ${exercise.primaryMuscle ?? "varios grupos musculares"} en ${ENV_LABELS[exercise.environment] ?? exercise.environment}.`,
         )}
       </section>
 

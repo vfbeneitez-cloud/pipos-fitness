@@ -182,12 +182,13 @@ export default function WeekPage() {
             </h2>
             <NutritionToday
               day={plan.nutritionJson?.days?.find((d) => d.dayIndex === todayIndex)}
+              dayIndex={todayIndex}
               userId={plan.userId}
               weekStart={plan.weekStart}
             />
             <div className="mt-3">
               <Link
-                href="/log/nutrition"
+                href={`/log/nutrition?dayIndex=${todayIndex}`}
                 className="rounded-lg border border-zinc-300 px-4 py-2 text-sm dark:border-zinc-600"
               >
                 Registrar comida
@@ -214,6 +215,8 @@ function formatGeneratedAt(iso: string | null | undefined): string {
   }
 }
 
+const PROVIDER_ERROR_RATIONALE = "Error al procesar ajustes. Se mantiene el plan actual.";
+
 function RationalePanel({
   rationale,
   generatedAt,
@@ -223,6 +226,7 @@ function RationalePanel({
 }) {
   const [open, setOpen] = useState(false);
   const formatted = useMemo(() => formatGeneratedAt(generatedAt), [generatedAt]);
+  const isProviderError = rationale === PROVIDER_ERROR_RATIONALE;
   return (
     <section className="mb-6 rounded-lg border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-700 dark:bg-zinc-800/50">
       <div className="flex items-center justify-between gap-2">
@@ -238,6 +242,11 @@ function RationalePanel({
           {open ? "Ocultar motivo" : "Ver motivo"}
         </button>
       </div>
+      {isProviderError && (
+        <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
+          No se pudo conectar con IA. Se mantiene el plan actual.
+        </p>
+      )}
       {open && (
         <p className="mt-3 whitespace-pre-wrap text-sm text-zinc-600 dark:text-zinc-400">
           {rationale}
@@ -249,10 +258,12 @@ function RationalePanel({
 
 function NutritionToday({
   day,
+  dayIndex,
   userId,
   weekStart,
 }: {
   day: NutritionDay | undefined;
+  dayIndex: number;
   userId: string;
   weekStart: string;
 }) {
@@ -261,7 +272,7 @@ function NutritionToday({
       <div>
         <p className="mb-3 text-sm text-zinc-500">Sin menú para hoy.</p>
         <Link
-          href="/log/nutrition"
+          href={`/log/nutrition?dayIndex=${dayIndex}`}
           className="inline-block rounded-lg border border-zinc-300 px-4 py-2 text-sm dark:border-zinc-600"
         >
           Registrar comida igualmente

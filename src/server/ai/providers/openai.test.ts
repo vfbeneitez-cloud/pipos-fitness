@@ -1,5 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
+import * as Sentry from "@sentry/nextjs";
 import { OpenAIProvider, buildOpenAIPayload } from "./openai";
+
+vi.mock("@sentry/nextjs", () => ({ captureMessage: vi.fn(), captureException: vi.fn() }));
 
 describe("buildOpenAIPayload", () => {
   const messages = [
@@ -56,5 +59,47 @@ describe("OpenAIProvider", () => {
       expect.stringContaining("/v1/chat/completions"),
       expect.any(Object),
     );
+  });
+
+  it("throws OpenAI unauthorized and reports to Sentry on 401", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(() =>
+        Promise.resolve(
+          new Response(JSON.stringify({ error: { message: "Invalid API key" } }), { status: 401 }),
+        ),
+      ),
+    );
+    const provider = new OpenAIProvider("sk-invalid");
+    await expect(provider.chat([{ role: "user", content: "hi" }])).rejects.toThrow(
+      "OpenAI unauthorized",
+    );
+    expect(Sentry.captureMessage).toHaveBeenCalledWith("OpenAI unauthorized", {
+      tags: { fallback_type: "provider_error" },
+    });
+  });
+
+  it("retries once on 429 with backoff then succeeds", async () => {
+    let callCount = 0;
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(() => {
+        callCount++;
+        if (callCount === 1) {
+          return Promise.resolve(
+            new Response(JSON.stringify({ error: { message: "Rate limit" } }), { status: 429 }),
+          );
+        }
+        return Promise.resolve(
+          new Response(JSON.stringify({ choices: [{ message: { content: '{"ok":true}' } }] }), {
+            status: 200,
+          }),
+        );
+      }),
+    );
+    const provider = new OpenAIProvider("sk-test");
+    const result = await provider.chat([{ role: "user", content: "hi" }]);
+    expect(result.content).toBe('{"ok":true}');
+    expect(vi.mocked(fetch)).toHaveBeenCalledTimes(2);
   });
 });

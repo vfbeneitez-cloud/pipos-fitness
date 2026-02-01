@@ -24,6 +24,24 @@ export async function main() {
     items = JSON.parse(raw) as SeedExercise[];
   }
 
+  const pruneExercises = process.env.PRUNE_EXERCISES === "true";
+  if (pruneExercises && items.length > 0) {
+    if (process.env.NODE_ENV === "production") {
+      throw new Error("Refusing to prune exercises in production");
+    }
+    const seedSlugs = items.map((i) => i.slug);
+    const toPrune = await prisma.exercise.findMany({
+      where: { slug: { notIn: seedSlugs } },
+      select: { id: true },
+    });
+    const ids = toPrune.map((e) => e.id);
+    if (ids.length > 0) {
+      await prisma.mediaAsset.deleteMany({ where: { exerciseId: { in: ids } } });
+      await prisma.exercise.deleteMany({ where: { id: { in: ids } } });
+    }
+    console.log("Pruned:", ids.length);
+  }
+
   if (items.length === 0) {
     const defaults: SeedExercise[] = [
       {
