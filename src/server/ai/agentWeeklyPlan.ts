@@ -347,6 +347,9 @@ export async function adjustWeeklyPlan(body: unknown, userId: string) {
   const adherence = calculateAdherence(trainingLogs, nutritionLogs);
 
   const provider = getProvider();
+  const providerName = process.env.OPENAI_API_KEY ? "openai" : "mock";
+  logInfo("agent", "Weekly plan provider", { provider: providerName });
+
   const systemPrompt = `Eres un asistente de entrenamiento y nutrición. Analiza el perfil del usuario y sus logs recientes para proponer ajustes seguros al plan semanal.
 
 Reglas:
