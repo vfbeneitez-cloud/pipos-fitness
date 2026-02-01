@@ -118,8 +118,17 @@ describe("weekly plan v0", () => {
 
       expect(res.status).toBe(200);
       const plan = res.body as {
-        trainingJson: { environment: string; daysPerWeek: number; sessionMinutes: number; sessions: unknown[] };
-        nutritionJson: { mealsPerDay: number; cookingTime: string; days: { dayIndex: number; meals: unknown[] }[] };
+        trainingJson: {
+          environment: string;
+          daysPerWeek: number;
+          sessionMinutes: number;
+          sessions: unknown[];
+        };
+        nutritionJson: {
+          mealsPerDay: number;
+          cookingTime: string;
+          days: { dayIndex: number; meals: unknown[] }[];
+        };
       };
       expect(plan.trainingJson).toBeDefined();
       expect(plan.trainingJson.environment).toBe("GYM");
@@ -135,22 +144,22 @@ describe("weekly plan v0", () => {
       });
     });
 
-    it("createWeeklyPlan never calls Exercise.upsert", async () => {
+    it("createWeeklyPlan never creates Exercise (no new rows)", async () => {
       await prisma.userProfile.upsert({
         where: { userId: TEST_USER_ID },
         update: { mealsPerDay: 3, cookingTime: "MIN_10" },
         create: { userId: TEST_USER_ID, mealsPerDay: 3, cookingTime: "MIN_10" },
       });
 
-      const upsertSpy = vi.spyOn(prisma.exercise, "upsert");
+      const countBefore = await prisma.exercise.count();
 
       await createWeeklyPlan(
         { weekStart: "2026-01-26", environment: "GYM", daysPerWeek: 3, sessionMinutes: 45 },
         TEST_USER_ID,
       );
 
-      expect(upsertSpy).not.toHaveBeenCalled();
-      upsertSpy.mockRestore();
+      const countAfter = await prisma.exercise.count();
+      expect(countAfter).toBe(countBefore);
     });
   });
 

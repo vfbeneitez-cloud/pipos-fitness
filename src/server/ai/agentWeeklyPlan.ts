@@ -3,6 +3,7 @@ import { z } from "zod";
 import { trackEvent } from "@/src/server/lib/events";
 import { prisma } from "@/src/server/db/prisma";
 import { getProvider } from "./getProvider";
+import type { AIProvider } from "./provider";
 import { generateWeeklyTrainingPlan } from "@/src/core/training/generateWeeklyTrainingPlan";
 import { generateWeeklyNutritionPlan } from "@/src/core/nutrition/generateWeeklyNutritionPlan";
 import type { Prisma } from "@prisma/client";
@@ -100,12 +101,7 @@ export const AiPlanOutputSchema = z.object({
 const PlanFromApiSchema = AiPlanOutputSchema;
 
 async function generatePlanFromApi(
-  provider: {
-    chat: (
-      m: { role: string; content: string }[],
-      o?: { maxTokens?: number },
-    ) => Promise<{ content: string }>;
-  },
+  provider: AIProvider,
   args: {
     profile: {
       level?: string;
