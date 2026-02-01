@@ -1,10 +1,11 @@
 import * as Sentry from "@sentry/nextjs";
+import { logInfo } from "@/src/server/lib/logger";
 import type { AIProvider, AgentMessage, AgentResponse } from "../provider";
 
 const OPENAI_TIMEOUT_MS = 12_000;
 const CHAT_ENDPOINT = "https://api.openai.com/v1/chat/completions";
-const RATE_LIMIT_BACKOFF_MS_MIN = 500;
-const RATE_LIMIT_BACKOFF_MS_MAX = 1500;
+const RATE_LIMIT_BACKOFF_MS = 2000;
+const MAX_ATTEMPTS = 3;
 
 export function buildOpenAIPayload(
   endpoint: "chat" | "responses",
@@ -87,7 +88,7 @@ export class OpenAIProvider implements AIProvider {
 
     let lastError: unknown;
     let lastStatus: number | undefined;
-    for (let attempt = 0; attempt <= 1; attempt++) {
+    for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), OPENAI_TIMEOUT_MS);
       try {
@@ -102,26 +103,25 @@ export class OpenAIProvider implements AIProvider {
             throw new Error("OpenAI unauthorized");
           }
           const err = new Error(`OpenAI API error: ${res.status}`);
-          if (attempt === 0 && isTransientError(err, res.status)) {
+          if (attempt < MAX_ATTEMPTS - 1 && isTransientError(err, res.status)) {
             lastError = err;
             if (res.status === 429) {
-              const backoff =
-                RATE_LIMIT_BACKOFF_MS_MIN +
-                Math.random() * (RATE_LIMIT_BACKOFF_MS_MAX - RATE_LIMIT_BACKOFF_MS_MIN);
-              await sleep(Math.round(backoff));
+              const backoff = RATE_LIMIT_BACKOFF_MS * (attempt + 1);
+              await sleep(backoff);
             }
             continue;
           }
           throw err;
         }
         const data = (await res.json()) as { choices: Array<{ message: { content: string } }> };
+        logInfo("agent", "OpenAI response received");
         return { content: data.choices[0]?.message?.content ?? "" };
       } catch (err) {
         clearTimeout(timeoutId);
         lastError = err;
         if (err instanceof Error && err.message === "OpenAI unauthorized") throw err;
         if (
-          attempt === 0 &&
+          attempt < MAX_ATTEMPTS - 1 &&
           ((err instanceof Error && err.name === "AbortError") || isTransientError(err, lastStatus))
         ) {
           continue;

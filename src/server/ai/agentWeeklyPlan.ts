@@ -410,6 +410,9 @@ Propón ajustes seguros basados en adherencia y perfil.`;
       { role: "system", content: systemPrompt },
       { role: "user", content: userPrompt },
     ]);
+    if (providerName === "openai") {
+      logInfo("agent", "Weekly plan generated with OpenAI");
+    }
 
     if (redFlag.detected) {
       fallbackType = "red_flag";
