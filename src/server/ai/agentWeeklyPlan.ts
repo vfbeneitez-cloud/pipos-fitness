@@ -104,8 +104,8 @@ async function generatePlanFromApi(
   provider: AIProvider,
   args: {
     profile: {
-      level?: string;
-      goal?: string;
+      level?: string | null;
+      goal?: string | null;
       injuryNotes?: string | null;
       equipmentNotes?: string | null;
       dietaryStyle?: string | null;

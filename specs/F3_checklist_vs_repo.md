@@ -103,9 +103,9 @@ Revisión de `RELEASE_CHECKLIST.md` y `BETA_CHECKLIST.md` contra el repo. Solo a
 ## Resumen de NO cumplidos (con archivo/razón)
 
 1. **typecheck/test/build:** `src/server/ai/agentWeeklyPlan.ts` usa `Sentry` sin import → TS2304 y fallos en tests/build.
-2. **Tests (signin/profile/weeklyPlan):**  
-   - `src/app/auth/signin/page.test.tsx`: espera "Sign in to your account"; la página muestra "Inicia sesión".  
-   - `src/app/(app)/profile/page.test.tsx`: espera texto que coincida con `/onboarding|Ir a onboarding/i`; la UI muestra "Configurar preferencias".  
+2. **Tests (signin/profile/weeklyPlan):**
+   - `src/app/auth/signin/page.test.tsx`: espera "Sign in to your account"; la página muestra "Inicia sesión".
+   - `src/app/(app)/profile/page.test.tsx`: espera texto que coincida con `/onboarding|Ir a onboarding/i`; la UI muestra "Configurar preferencias".
    - Tests que llaman a `adjustWeeklyPlan` fallan por Sentry no definido.
 3. **/api/demo/*:** No existe `src/app/api/demo/`; el checklist pide 403 DEMO_DISABLED.
 4. **Middleware:** No existe `src/middleware.ts`; la nota del checklist lo referencia.
@@ -119,35 +119,35 @@ Revisión de `RELEASE_CHECKLIST.md` y `BETA_CHECKLIST.md` contra el repo. Solo a
 
 ### Obligatorias para que pasen quality gates y checklist
 
-1. **Sentry en agentWeeklyPlan**  
-   - **Acción:** Añadir en `src/server/ai/agentWeeklyPlan.ts` (línea 1): `import * as Sentry from "@sentry/nextjs";`  
+1. **Sentry en agentWeeklyPlan**
+   - **Acción:** Añadir en `src/server/ai/agentWeeklyPlan.ts` (línea 1): `import * as Sentry from "@sentry/nextjs";`
    - **Cierra:** typecheck, test (agentWeeklyPlan + weeklyPlan route test), build.
 
-2. **Tests de signin**  
-   - **Acción:** En `src/app/auth/signin/page.test.tsx`, ajustar expectativa al copy real: comprobar "Inicia sesión" y "Continuar con Google" (o el texto que muestre la página); quitar exigencia de "Sign in to your account" si ya no está en la UI.  
+2. **Tests de signin**
+   - **Acción:** En `src/app/auth/signin/page.test.tsx`, ajustar expectativa al copy real: comprobar "Inicia sesión" y "Continuar con Google" (o el texto que muestre la página); quitar exigencia de "Sign in to your account" si ya no está en la UI.
    - **Cierra:** test signin.
 
-3. **Test de profile (CTA onboarding)**  
-   - **Acción:** En `src/app/(app)/profile/page.test.tsx`, alinear el expect con la UI: por ejemplo matcher que acepte "Configurar preferencias" o el texto del CTA real cuando `profile === null`.  
+3. **Test de profile (CTA onboarding)**
+   - **Acción:** En `src/app/(app)/profile/page.test.tsx`, alinear el expect con la UI: por ejemplo matcher que acepte "Configurar preferencias" o el texto del CTA real cuando `profile === null`.
    - **Cierra:** test profile.
 
 ### Demo (elegir una opción de cierre mínimo)
 
-4. **Ruta /api/demo/session que devuelva 403 cuando DEMO_MODE !== "true"**  
-   - **Acción:** Crear `src/app/api/demo/session/route.ts` (GET) que lea `process.env.DEMO_MODE` y, si no es `"true"`, responda con 403 y body `{ error: "DEMO_DISABLED" }`; si es `"true"`, puede devolver 200 con un payload mínimo o placeholder.  
-   - **Cierra:** ítem "api/demo bloqueado cuando DEMO_MODE=false" y post-deploy "GET /api/demo/session → 403".  
+4. **Ruta /api/demo/session que devuelva 403 cuando DEMO_MODE !== "true"**
+   - **Acción:** Crear `src/app/api/demo/session/route.ts` (GET) que lea `process.env.DEMO_MODE` y, si no es `"true"`, responda con 403 y body `{ error: "DEMO_DISABLED" }`; si es `"true"`, puede devolver 200 con un payload mínimo o placeholder.
+   - **Cierra:** ítem "api/demo bloqueado cuando DEMO_MODE=false" y post-deploy "GET /api/demo/session → 403".
    - **Alternativa:** Si se decide no tener demo API: actualizar RELEASE_CHECKLIST y Notes para quitar la mención a `/api/demo/session` y `/api/demo/setup`, y dejar claro que no existen (solo getSession con demo user cuando DEMO_MODE=true).
 
 ### Documentación / notas (sin tocar comportamiento)
 
-5. **Nota sobre middleware**  
-   - **Acción:** En RELEASE_CHECKLIST.md, sección Notes, quitar o reescribir la frase que dice "El matcher de src/middleware.ts..."; indicar que no hay middleware personalizado o que la exclusión de rutas se hace por otro medio (p. ej. layout/auth).  
+5. **Nota sobre middleware**
+   - **Acción:** En RELEASE_CHECKLIST.md, sección Notes, quitar o reescribir la frase que dice "El matcher de src/middleware.ts..."; indicar que no hay middleware personalizado o que la exclusión de rutas se hace por otro medio (p. ej. layout/auth).
    - **Cierra:** coherencia checklist–repo.
 
-6. **Beta: disclaimer y feedback (mínimo)**  
-   - **Acción (disclaimer):** Añadir en una sola pantalla visible (p. ej. footer de `(app)/layout.tsx` o en onboarding paso 1) una línea de texto: "Esta app no sustituye el consejo médico o nutricional; consulta a un profesional antes de empezar." Sin nueva página ni feature.  
-   - **Acción (feedback):** Añadir en README o en BETA_CHECKLIST una frase: "Para reportar incidencias en beta: [email/issue tracker]." Opcional: un enlace "Reportar problema" en el footer que abra mailto o issue (una línea de UI).  
-   - **Acción (beta):** Una línea en landing o en layout: "Versión beta – limitaciones posibles."  
+6. **Beta: disclaimer y feedback (mínimo)**
+   - **Acción (disclaimer):** Añadir en una sola pantalla visible (p. ej. footer de `(app)/layout.tsx` o en onboarding paso 1) una línea de texto: "Esta app no sustituye el consejo médico o nutricional; consulta a un profesional antes de empezar." Sin nueva página ni feature.
+   - **Acción (feedback):** Añadir en README o en BETA_CHECKLIST una frase: "Para reportar incidencias en beta: [email/issue tracker]." Opcional: un enlace "Reportar problema" en el footer que abra mailto o issue (una línea de UI).
+   - **Acción (beta):** Una línea en landing o en layout: "Versión beta – limitaciones posibles."
    - **Cierra:** ítems de BETA sobre disclaimer, feedback y limitaciones.
 
 ### Resumen de prioridad

@@ -72,24 +72,24 @@
 
 ## 2. Faltan o ambiguas en `.env.example`
 
-- **`AUTH_URL`**  
-  - En `.env.example` solo dice "AUTH_URL=http://localhost:3000 (or your production URL)".  
+- **`AUTH_URL`**
+  - En `.env.example` solo dice "AUTH_URL=http://localhost:3000 (or your production URL)".
   - **Falta:** aclarar que en Vercel debe ser la URL de producción (ej. `https://tu-app.vercel.app`) y que en local puede ser `http://localhost:3000`.
 
-- **Email (magic link)**  
-  - **Inconsistencia:** `.env.example` dice "Deprecated — do not use (Google OAuth only): EMAIL_SERVER, EMAIL_FROM".  
-  - `DEPLOY_VERCEL.md` y `RELEASE_CHECKLIST.md` listan `EMAIL_SERVER` y `EMAIL_FROM` como variables de producción.  
+- **Email (magic link)**
+  - **Inconsistencia:** `.env.example` dice "Deprecated — do not use (Google OAuth only): EMAIL_SERVER, EMAIL_FROM".
+  - `DEPLOY_VERCEL.md` y `RELEASE_CHECKLIST.md` listan `EMAIL_SERVER` y `EMAIL_FROM` como variables de producción.
   - **Ambiguo:** si el producto es solo Google OAuth, conviene quitar email de la doc de deploy o dejar en `.env.example` una línea: "No usadas con Google OAuth: EMAIL_SERVER, EMAIL_FROM (ignorar si solo OAuth)."
 
-- **Cron**  
-  - `.env.example` documenta `CRON_SECRET` y `CRON_WEEKLY_REGEN_ENABLED` bien.  
+- **Cron**
+  - `.env.example` documenta `CRON_SECRET` y `CRON_WEEKLY_REGEN_ENABLED` bien.
   - **Falta:** indicar que el valor de `CRON_SECRET` debe ser fuerte (ej. `openssl rand -base64 32`) y que Vercel Cron puede inyectar el secret vía header Authorization.
 
-- **Sentry**  
-  - `.env.example` tiene DSN y opcionales.  
+- **Sentry**
+  - `.env.example` tiene DSN y opcionales.
   - **Falta:** aclarar que `SENTRY_ORG` y `SENTRY_PROJECT` se usan en `next.config.ts` para upload de source maps (pueden quedar vacíos si no se suben maps).
 
-- **Upstash**  
+- **Upstash**
   - Está claro: o se definen ambas `UPSTASH_REDIS_*` o se usa in-memory. Nada que corregir.
 
 ---
