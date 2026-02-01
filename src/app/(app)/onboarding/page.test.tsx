@@ -13,5 +13,6 @@ describe("GET /onboarding", () => {
     expect(html).toContain("Bienvenido");
     expect(html).toContain("Empezar");
     expect(html).toContain("Pipos Fitness");
+    expect(html).toContain("Evita incluir datos personales en las notas.");
   });
 });

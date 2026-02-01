@@ -1,7 +1,10 @@
 import { z } from "zod";
 import { prisma } from "@/src/server/db/prisma";
 import type { Prisma } from "@prisma/client";
-import { generateWeeklyTrainingPlan } from "@/src/core/training/generateWeeklyTrainingPlan";
+import {
+  generateWeeklyTrainingPlan,
+  type WeeklyTrainingPlan,
+} from "@/src/core/training/generateWeeklyTrainingPlan";
 import { generateWeeklyNutritionPlan } from "@/src/core/nutrition/generateWeeklyNutritionPlan";
 import { getProvider } from "@/src/server/ai/getProvider";
 import {
@@ -78,7 +81,7 @@ export async function createWeeklyPlan(body: unknown, userId: string) {
         planResult.training,
         exercisePool,
       );
-      training = mappedTraining;
+      training = mappedTraining as WeeklyTrainingPlan;
       nutrition = planResult.nutrition;
       if (unmatchedCount > 0) {
         trackEvent("ai_exercise_unmatched", { count: unmatchedCount });

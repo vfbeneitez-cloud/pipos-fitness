@@ -138,7 +138,7 @@ export default function OnboardingPage() {
           </p>
           <p className="mb-6 text-xs text-zinc-500 dark:text-zinc-500">
             Versión beta. Esta app no sustituye el consejo médico o nutricional. Si tienes dudas,
-            consulta a un profesional.
+            consulta a un profesional. Evita incluir datos personales en las notas.
           </p>
           <button
             type="button"
