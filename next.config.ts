@@ -5,7 +5,7 @@ const isProd = process.env.VERCEL_ENV === "production" || process.env.NODE_ENV =
 
 const scriptSrc = ["'self'", "'unsafe-inline'"];
 const scriptSrcElem = ["'self'", "'unsafe-inline'"];
-const connectSrc = ["'self'", "https://*.ingest.sentry.io", "https://*.ingest.*.sentry.io"];
+const connectSrc = ["'self'", "https://*.ingest.sentry.io"];
 if (!isProd) {
   scriptSrc.push("https://vercel.live");
   scriptSrcElem.push("https://vercel.live");
@@ -26,6 +26,7 @@ const securityHeaders = [
       "img-src 'self' data: https:",
       "font-src 'self'",
       `connect-src ${connectSrc.join(" ")}`,
+      "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com",
       "frame-ancestors 'none'",
     ].join("; "),
   },

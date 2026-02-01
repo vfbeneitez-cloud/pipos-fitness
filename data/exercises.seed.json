@@ -92,6 +92,52 @@
     ]
   },
   {
+    "slug": "press-inclinado-mancuernas",
+    "name": "Press inclinado con mancuernas",
+    "environment": "GYM",
+    "primaryMuscle": "Pectorales, deltoides anterior, tríceps",
+    "description": "Variante del press de pecho con banco inclinado (15–30° típico) para dar más énfasis a la parte alta del pecho y deltoide anterior, con mancuernas para un recorrido natural.\n\nTécnica: Banco a inclinación moderada (mejor poco que mucho para no convertirlo en press de hombro). Pies firmes, glúteos y parte alta de la espalda apoyados; pecho estable, sin exagerar arco lumbar. Baja las mancuernas controlado hacia los lados del pecho (no al cuello), con codos en diagonal (ni pegados ni en cruz). Sube empujando arriba y un poco hacia dentro, sin chocar mancuernas. Muñecas neutras, antebrazos lo más verticales posible en la parte baja.",
+    "cues": "Banco poco inclinado (moderado)\nHombros atrás y abajo\nBaja controlado, sin rebotar\nMuñecas neutras\nSube sólido sin chocar mancuernas",
+    "commonMistakes": "Inclinación demasiado alta (se vuelve press de hombro).\nRebotar abajo o acortar rango por exceso de peso.\nMuñecas dobladas hacia atrás.\nCodos demasiado abiertos (molestia de hombro).",
+    "regressions": "Menos peso + tempo (bajada 2–3s)\nRango un poco más corto si hay molestia (sin dolor raro)\nPress inclinado en máquina si necesitas aún más estabilidad",
+    "progressions": "Pausa 1s abajo (sin rebotar)\nTempo más lento\nMás carga manteniendo el mismo control",
+    "media": [
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/9/97/Dumbbell-incline-bench-press-1.png",
+        "thumbnailUrl": null
+      },
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=sK4Rvug6ufo",
+        "thumbnailUrl": "https://img.youtube.com/vi/sK4Rvug6ufo/hqdefault.jpg"
+      }
+    ]
+  },
+  {
+    "slug": "press-banca-barra",
+    "name": "Press de banca con barra",
+    "environment": "GYM",
+    "primaryMuscle": "Pectorales, deltoides anterior, tríceps",
+    "description": "Press horizontal con barra en banco plano para trabajar pecho, tríceps y hombro anterior. Es un básico de gym y muy compartible en la ruta pública.\n\nTécnica: Ojos debajo de la barra; pies firmes en el suelo. Espalda alta fija: hombros atrás y abajo (como meterlos en el banco). Agarre a anchura cómoda; muñecas neutras (barra sobre la base de la palma, no en los dedos). Baja controlado al pecho (zona media/alta del pecho), sin rebotar. Sube en línea estable sin despegar glúteos del banco; evita bloquear con golpe. Si puedes, usa topes/seguridades o un spotter.",
+    "cues": "Hombros atrás y abajo (fijos en el banco)\nMuñecas neutras: barra sobre la base de la palma\nBaja controlado al pecho sin rebotar\nPies firmes: torso estable\nSube sólido sin bloquear con golpe",
+    "commonMistakes": "Rebotar la barra en el pecho.\nMuñecas dobladas hacia atrás.\nCodos demasiado abiertos (molestia de hombro).\nPerder la posición de hombros (se van hacia delante).\nGlúteos se despegan del banco.",
+    "regressions": "Menos peso + pausa 1s en el pecho (sin rebotar)\nPress con mancuernas (ya en catálogo) si necesitas recorrido más natural\nPress en máquina si buscas aún más estabilidad",
+    "progressions": "Pausa 1s en el pecho\nTempo: bajada 2–3s\nMás carga manteniendo la misma forma",
+    "media": [
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/a/aa/Bench_press_1.jpg",
+        "thumbnailUrl": null
+      },
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=rT7DgCr-3pg",
+        "thumbnailUrl": "https://img.youtube.com/vi/rT7DgCr-3pg/hqdefault.jpg"
+      }
+    ]
+  },
+  {
     "slug": "gym-deadlift-2",
     "name": "Deadlift",
     "environment": "GYM",
@@ -295,6 +341,29 @@
         "type": "youtube",
         "url": "https://www.youtube.com/watch?v=SALxEARiMkw",
         "thumbnailUrl": "https://img.youtube.com/vi/SALxEARiMkw/hqdefault.jpg"
+      }
+    ]
+  },
+  {
+    "slug": "dominadas-asistidas-maquina",
+    "name": "Dominadas asistidas en máquina",
+    "environment": "GYM",
+    "primaryMuscle": "Dorsales, bíceps, romboides",
+    "description": "Versión asistida de dominadas usando una máquina con rodillera/plataforma y stack de peso. Sirve para: practicar el patrón de dominada con técnica limpia, ajustar la dificultad de forma muy gradual (más asistencia = más fácil), acumular volumen sin kipping ni balanceos.\n\nTécnica: Ajusta la asistencia (más peso en el stack = más ayuda). Agarra la barra (prono o neutro) y colócate con rodillas en la almohadilla (o pies en plataforma según máquina). Empieza en colgado activo: hombros abajo, sin encoger. Sube sin balanceo, pensando pecho hacia la barra. Baja controlado hasta brazos estirados sin colgarte pasivo. Mantén el torso estable.",
+    "cues": "Más asistencia = más fácil (ajusta el stack)\nEmpieza en colgado activo (hombros abajo)\nSube sin balanceo: pecho hacia la barra\nBaja controlado sin colgarte pasivo",
+    "commonMistakes": "Encoger hombros al inicio (trapecio domina): baja carga y repite colgado activo.\nRebotar con la rodillera: pausa 0.5–1s abajo, control.\nAcortar rango por orgullo: mejor rango completo con más asistencia.\nHiperextender lumbar para llegar: costillas tranquilas, core firme.",
+    "regressions": "Más asistencia (sube el peso del stack)\nIsométricos arriba 3–10s con mucha asistencia\nNegativas: sube con ayuda (más asistencia) y baja 3–5s",
+    "progressions": "Menos asistencia (baja el peso del stack)\nPausa 1s arriba\nSeries de calidad: mismas reps, menos ayuda semana a semana",
+    "media": [
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Dip_and_pull-up_machine.jpg/960px-Dip_and_pull-up_machine.jpg",
+        "thumbnailUrl": null
+      },
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=THSFzwAqYgk",
+        "thumbnailUrl": "https://img.youtube.com/vi/THSFzwAqYgk/hqdefault.jpg"
       }
     ]
   },
@@ -1149,8 +1218,8 @@
       },
       {
         "type": "youtube",
-        "url": "https://www.youtube.com/watch?v=wZID98mY5Qs",
-        "thumbnailUrl": "https://img.youtube.com/vi/wZID98mY5Qs/hqdefault.jpg"
+        "url": "https://www.youtube.com/watch?v=EEtd0uY-bMw",
+        "thumbnailUrl": "https://img.youtube.com/vi/EEtd0uY-bMw/hqdefault.jpg"
       }
     ]
   },
@@ -1471,8 +1540,8 @@
       },
       {
         "type": "youtube",
-        "url": "https://www.youtube.com/watch?v=wZID98mY5Qs",
-        "thumbnailUrl": "https://img.youtube.com/vi/wZID98mY5Qs/hqdefault.jpg"
+        "url": "https://www.youtube.com/watch?v=EEtd0uY-bMw",
+        "thumbnailUrl": "https://img.youtube.com/vi/EEtd0uY-bMw/hqdefault.jpg"
       }
     ]
   },
@@ -1680,6 +1749,29 @@
         "type": "youtube",
         "url": "https://www.youtube.com/watch?v=2z8JmcrW-As",
         "thumbnailUrl": "https://img.youtube.com/vi/2z8JmcrW-As/hqdefault.jpg"
+      }
+    ]
+  },
+  {
+    "slug": "fondos-paralelas",
+    "name": "Fondos en paralelas (dips)",
+    "environment": "CALISTHENICS",
+    "primaryMuscle": "Pectorales, deltoides anterior, tríceps",
+    "description": "Empuje en paralelas para trabajar pecho + tríceps con carga corporal. Muy útil como básico calistenia y como progresión natural de flexiones.\n\nTécnica: Arriba: brazos extendidos sin colgarte pasivo (hombros abajo, pecho estable). Baja controlado; codos hacia atrás/diagonal, sin abrirse exagerado. Profundidad: baja hasta donde el hombro siga sano (si hay pinchazo raro, recorta rango). Sube empujando fuerte sin balanceo. Mantén torso estable (sin kipping).",
+    "cues": "Hombros lejos de orejas (arriba estable)\nBaja lento y controlado\nRango cómodo > rango forzado\nSube sólido sin balanceo",
+    "commonMistakes": "Bajar demasiado profundo y forzar hombro: recorta rango.\nEncoger hombros arriba: pierdes estabilidad.\nRebotar abajo o balancear para subir: controla.\nCodos demasiado abiertos: más estrés articular.",
+    "regressions": "Fondos asistidos (máquina o banda)\nNegativas (bajada 3–5s)\nRango parcial limpio (mejor corto y perfecto que largo y feo)",
+    "progressions": "Pausa 1s abajo (solo si no molesta)\nMás repeticiones con forma estricta\nLastrados cuando ya son sólidos y sin dolor",
+    "media": [
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/5/5b/Dips.png",
+        "thumbnailUrl": null
+      },
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=vi1-BOcj3cQ",
+        "thumbnailUrl": "https://img.youtube.com/vi/vi1-BOcj3cQ/hqdefault.jpg"
       }
     ]
   },
@@ -1931,8 +2023,8 @@
       },
       {
         "type": "youtube",
-        "url": "https://www.youtube.com/watch?v=brhYBBFJMxk",
-        "thumbnailUrl": "https://img.youtube.com/vi/brhYBBFJMxk/hqdefault.jpg"
+        "url": "https://www.youtube.com/watch?v=b-ztMQpj8yc",
+        "thumbnailUrl": "https://img.youtube.com/vi/b-ztMQpj8yc/hqdefault.jpg"
       }
     ]
   },

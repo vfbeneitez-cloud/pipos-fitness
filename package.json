@@ -13,7 +13,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "format": "prettier -w .",
-    "format:check": "prettier -c ."
+    "format:check": "prettier -c .",
+    "check-youtube": "tsx scripts/check-youtube-urls.ts"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",
