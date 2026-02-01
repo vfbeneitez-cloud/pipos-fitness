@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { getWeekStart } from "@/src/app/lib/week";
 import { ErrorBanner } from "@/src/app/components/ErrorBanner";
+import { getErrorMessage } from "@/src/app/lib/errorMessage";
 
 const ENVIRONMENTS = [
   { value: "GYM", label: "Gimnasio" },
@@ -84,10 +85,15 @@ export default function ProfilePage() {
     (async () => {
       try {
         const res = await fetch("/api/profile");
-        const data = (await res.json()) as { profile?: UserProfile | null; error?: string };
+        const data = (await res.json()) as {
+          profile?: UserProfile | null;
+          error?: string;
+          error_code?: string;
+          message?: string;
+        };
         if (cancelled) return;
         if (!res.ok) {
-          setError(data.error ?? "No se pudo cargar el perfil.");
+          setError(getErrorMessage(data, "No se pudo cargar el perfil."));
           setProfile(null);
           return;
         }
@@ -141,9 +147,14 @@ export default function ProfilePage() {
           dislikes: dislikes || undefined,
         }),
       });
-      const data = (await res.json()) as { error?: string; profile?: UserProfile };
+      const data = (await res.json()) as {
+        error?: string;
+        error_code?: string;
+        message?: string;
+        profile?: UserProfile;
+      };
       if (!res.ok) {
-        setError(data.error ?? "Error al guardar.");
+        setError(getErrorMessage(data, "Error al guardar. Reintenta."));
         return;
       }
       setSuccessMessage("Perfil actualizado.");
@@ -178,9 +189,9 @@ export default function ProfilePage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ weekStart }),
       });
-      const data = (await res.json()) as { error?: string };
+      const data = (await res.json()) as { error?: string; error_code?: string; message?: string };
       if (!res.ok) {
-        setError(data.error ?? "Error al regenerar plan.");
+        setError(getErrorMessage(data, "Error al regenerar plan."));
         setRegenModalOpen(false);
         return;
       }
@@ -230,7 +241,7 @@ export default function ProfilePage() {
           href="/onboarding"
           className="inline-block rounded-lg bg-zinc-900 px-4 py-2 text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
         >
-          Ir a onboarding
+          Configurar preferencias
         </Link>
       </main>
     );
@@ -434,7 +445,7 @@ export default function ProfilePage() {
           </div>
           <div>
             <label htmlFor="dislikes" className="block text-sm text-zinc-600 dark:text-zinc-400">
-              Disgustos (opcional)
+              No me gusta (opcional)
             </label>
             <input
               id="dislikes"
@@ -478,7 +489,7 @@ export default function ProfilePage() {
               Regenerar plan
             </h2>
             <p className="mb-4 text-sm text-zinc-600 dark:text-zinc-400">
-              Se regenerará el plan DRAFT de la semana actual. Los logs no se borran.
+              Se regenerará el plan de esta semana. Tus registros no se borran.
             </p>
             <div className="flex gap-2">
               <button

@@ -4,6 +4,7 @@ import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { getWeekStart } from "@/src/app/lib/week";
 import { ErrorBanner } from "@/src/app/components/ErrorBanner";
+import { getErrorMessage } from "@/src/app/lib/errorMessage";
 
 const ENVIRONMENTS = [
   { value: "GYM", label: "Gimnasio" },
@@ -66,8 +67,12 @@ export default function OnboardingPage() {
         }),
       });
       if (!profileRes.ok) {
-        const err = (await profileRes.json()) as { error?: string };
-        setError(err.error ?? "Error al guardar perfil.");
+        const err = (await profileRes.json()) as {
+          error?: string;
+          error_code?: string;
+          message?: string;
+        };
+        setError(getErrorMessage(err, "Error al guardar. Reintenta."));
         return;
       }
 
@@ -83,8 +88,12 @@ export default function OnboardingPage() {
         }),
       });
       if (!planRes.ok) {
-        const err = (await planRes.json()) as { error?: string };
-        setError(err.error ?? "Error al crear plan.");
+        const err = (await planRes.json()) as {
+          error?: string;
+          error_code?: string;
+          message?: string;
+        };
+        setError(getErrorMessage(err, "Error al crear plan."));
         return;
       }
       router.push("/week");
@@ -126,6 +135,10 @@ export default function OnboardingPage() {
           </h2>
           <p className="mb-6 text-zinc-600 dark:text-zinc-400">
             Planes semanales de entrenamiento y nutrición, con guía visual de ejercicios.
+          </p>
+          <p className="mb-6 text-xs text-zinc-500 dark:text-zinc-500">
+            Versión beta. Esta app no sustituye el consejo médico o nutricional. Si tienes dudas,
+            consulta a un profesional.
           </p>
           <button
             type="button"

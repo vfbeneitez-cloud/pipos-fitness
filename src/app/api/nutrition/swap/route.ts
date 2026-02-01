@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { swapMeal } from "@/src/server/api/nutrition/swap";
 import { withSensitiveRoute } from "@/src/server/lib/withSensitiveRoute";
 import { requireAuth } from "@/src/server/lib/requireAuth";
+import { badRequestBody } from "@/src/server/api/errorResponse";
+import { trackEvent } from "@/src/server/lib/events";
 
 export async function POST(req: Request) {
   return withSensitiveRoute(req, async () => {
@@ -12,9 +14,19 @@ export async function POST(req: Request) {
     try {
       body = await req.json();
     } catch {
-      return NextResponse.json({ error: "INVALID_JSON" }, { status: 400 });
+      trackEvent("nutrition_swap_post_badRequest", { status: 400 });
+      return NextResponse.json(badRequestBody("INVALID_JSON"), { status: 400 });
     }
     const result = await swapMeal(body, userId);
+    if (result.status !== 200) {
+      trackEvent("nutrition_swap_post_error", { status: result.status }, { sentry: true });
+    } else {
+      trackEvent("nutrition_swap_post_success", { status: 200 });
+    }
+    if (result.status === 400) {
+      const errBody = result.body as { error?: string };
+      return NextResponse.json(badRequestBody(errBody.error ?? "INVALID_INPUT"), { status: 400 });
+    }
     return NextResponse.json(result.body, { status: result.status });
   });
 }

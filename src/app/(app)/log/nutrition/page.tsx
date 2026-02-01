@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { getDemoUserId } from "@/src/app/lib/demo";
 import { ErrorBanner } from "@/src/app/components/ErrorBanner";
+import { getErrorMessage } from "@/src/app/lib/errorMessage";
 
 const HUNGER_OPTIONS: { value: "low" | "ok" | "high"; label: string }[] = [
   { value: "low", label: "Poca" },
@@ -46,8 +47,12 @@ export default function LogNutritionPage() {
         }),
       });
       if (!res.ok) {
-        const data = (await res.json()) as { error?: string };
-        setError(data.error ?? "Error al guardar.");
+        const data = (await res.json()) as {
+          error?: string;
+          error_code?: string;
+          message?: string;
+        };
+        setError(getErrorMessage(data, "Error al guardar."));
         return;
       }
       router.push("/week");

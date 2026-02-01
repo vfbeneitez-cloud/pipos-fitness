@@ -108,20 +108,7 @@ En Vercel: **Settings → Environment Variables**
    - Valor: `false`
    - Environment: ✅ Production
 
-6. **Email (magic link)** — una de las dos opciones:
-
-   **Opción A (recomendada):**
-   - **`EMAIL_SERVER`**: cadena SMTP completa, ej: `smtp://USER:PASSWORD@smtp.gmail.com:587` o `smtps://USER:PASSWORD@smtp.gmail.com:465`
-   - **`EMAIL_FROM`**: ej: `no-reply@tudominio.com` (o tu email verificado)
-
-   **Opción B (variables separadas):**
-   - **`SMTP_HOST`** (ej: `smtp.gmail.com`)
-   - **`SMTP_PORT`** (ej: `587` o `465`)
-   - **`SMTP_USER`**
-   - **`SMTP_PASSWORD`**
-   - **`EMAIL_FROM`**: ej: `no-reply@tudominio.com`
-
-   Environment: ✅ Production
+6. **Email**: No aplica. Este proyecto usa solo Google OAuth; no se usan `EMAIL_SERVER` ni `EMAIL_FROM` (magic links).
 
 7. **`OPENAI_API_KEY`** (opcional)
    - Valor: Tu API key de OpenAI (solo si usas provider real)
@@ -240,9 +227,6 @@ curl https://tu-app.vercel.app/api/exercises
 
 # Auth endpoint (debe cargar página)
 curl -I https://tu-app.vercel.app/auth/signin
-
-# Demo endpoint (debe devolver 403)
-curl https://tu-app.vercel.app/api/demo/session
 ```
 
 ### Verificaciones Manuales:
@@ -261,16 +245,13 @@ curl https://tu-app.vercel.app/api/demo/session
 4. **`/auth/signin`**
    - Debe mostrar página de sign in (no error 500)
 
-5. **`/api/demo/session`**
-   - Debe devolver: `{ "error": "DEMO_DISABLED" }` con status 403
-
-6. **`/api/weekly-plan?weekStart=2026-01-26`**
+5. **`/api/weekly-plan?weekStart=2026-01-26`**
    - Sin sesión → debe devolver 401 `UNAUTHORIZED`
 
-7. **`/` (landing)**
+6. **`/` (landing)**
    - Debe redirigir a `/auth/signin` (no a `/week`)
 
-8. **`/onboarding`**
+7. **`/onboarding`**
    - Debe mostrar "Auth required" (no formulario demo)
 
 ## Troubleshooting
@@ -288,11 +269,6 @@ curl https://tu-app.vercel.app/api/demo/session
 
 - Verificar `DATABASE_URL` apunta a DB correcta
 - Verificar que las migraciones se ejecutaron
-
-### `/api/demo/session` no devuelve 403:
-
-- Verificar `DEMO_MODE=false` en Production
-- Hacer redeploy después de cambiar variables
 
 ## Paso 6 — Configurar el Cron en Vercel (clicks exactos)
 

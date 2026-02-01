@@ -65,8 +65,8 @@ describe("POST /api/cron/weekly-regenerate", () => {
     });
     const res = await POST(req);
     expect(res.status).toBe(401);
-    const body = (await res.json()) as { error: string };
-    expect(body.error).toBe("UNAUTHORIZED");
+    const body = (await res.json()) as { error_code: string; message: string };
+    expect(body.error_code).toBe("UNAUTHORIZED");
   });
 
   it("returns 401 when x-cron-secret does not match CRON_SECRET", async () => {
@@ -78,8 +78,8 @@ describe("POST /api/cron/weekly-regenerate", () => {
     });
     const res = await POST(req);
     expect(res.status).toBe(401);
-    const body = (await res.json()) as { error: string };
-    expect(body.error).toBe("UNAUTHORIZED");
+    const body = (await res.json()) as { error_code: string; message: string };
+    expect(body.error_code).toBe("UNAUTHORIZED");
   });
 
   it("returns 401 when CRON_SECRET is unset", async () => {

@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { checkRateLimit } from "./rateLimit";
 import { logInfo, logWarn, logError } from "./logger";
+import { trackEvent } from "./events";
+import { rateLimitExceeded } from "@/src/server/api/errorResponse";
 
 export async function withSensitiveRoute(
   req: Request,
@@ -13,10 +15,8 @@ export async function withSensitiveRoute(
   const limit = await checkRateLimit(req);
   if (!limit.ok) {
     logWarn(requestId, "rate limit exceeded", { path });
-    return NextResponse.json(
-      { error: "RATE_LIMIT_EXCEEDED" },
-      { status: 429, headers: { "Retry-After": String(limit.retryAfter ?? 60) } },
-    );
+    trackEvent("rate_limit", { path, retryAfter: limit.retryAfter ?? 60 }, { sentry: true });
+    return rateLimitExceeded(limit.retryAfter ?? 60);
   }
 
   try {

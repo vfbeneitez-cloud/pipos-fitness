@@ -11,6 +11,10 @@ export type AgentResponse = {
   content: string;
 };
 
+export type ChatOptions = {
+  maxTokens?: number;
+};
+
 export interface AIProvider {
-  chat(messages: AgentMessage[]): Promise<AgentResponse>;
+  chat(messages: AgentMessage[], options?: ChatOptions): Promise<AgentResponse>;
 }

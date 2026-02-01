@@ -2,6 +2,10 @@ import type { AIProvider, AgentMessage, AgentResponse } from "../provider";
 
 /**
  * OpenAI provider (opcional). Requiere OPENAI_API_KEY en env.
+ *
+ * JSON estricto: response_format { type: "json_object" } obliga al modelo a devolver solo JSON válido.
+ * Temperature baja (0.2) para respuestas más deterministas.
+ * maxTokens: el caller pasa el límite (p. ej. 4000 para plan semanal); default 2000.
  */
 export class OpenAIProvider implements AIProvider {
   private apiKey: string;
@@ -10,7 +14,7 @@ export class OpenAIProvider implements AIProvider {
     this.apiKey = apiKey;
   }
 
-  async chat(messages: AgentMessage[]): Promise<AgentResponse> {
+  async chat(messages: AgentMessage[], options?: { maxTokens?: number }): Promise<AgentResponse> {
     const res = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -20,8 +24,9 @@ export class OpenAIProvider implements AIProvider {
       body: JSON.stringify({
         model: "gpt-4o-mini",
         messages: messages.map((m) => ({ role: m.role, content: m.content })),
-        temperature: 0.7,
-        max_tokens: 500,
+        temperature: 0.2,
+        max_tokens: options?.maxTokens ?? 2000,
+        response_format: { type: "json_object" },
       }),
     });
 

@@ -152,10 +152,10 @@ describe("weekly plan authorization", () => {
 
       const req = new Request("http://localhost/api/weekly-plan?weekStart=2026-01-26");
       const res = await GET(req);
-      const body = (await res.json()) as { error: string };
+      const body = (await res.json()) as { error_code: string; message: string };
 
       expect(res.status).toBe(401);
-      expect(body.error).toBe("UNAUTHORIZED");
+      expect(body.error_code).toBe("UNAUTHORIZED");
     });
 
     it("returns 200 when session exists", async () => {
@@ -191,10 +191,10 @@ describe("weekly plan authorization", () => {
         }),
       });
       const res = await POST(req);
-      const body = (await res.json()) as { error: string };
+      const body = (await res.json()) as { error_code: string; message: string };
 
       expect(res.status).toBe(401);
-      expect(body.error).toBe("UNAUTHORIZED");
+      expect(body.error_code).toBe("UNAUTHORIZED");
     });
 
     it("returns 200 when session exists", async () => {

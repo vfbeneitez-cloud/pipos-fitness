@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
 import Link from "next/link";
 import { getWeekStart, DAY_NAMES } from "@/src/app/lib/week";
+import { getErrorMessage } from "@/src/app/lib/errorMessage";
 import { ErrorBanner } from "@/src/app/components/ErrorBanner";
 import { LoadingSkeleton } from "@/src/app/components/LoadingSkeleton";
 
@@ -49,13 +50,14 @@ export default function WeekPage() {
     setLoading(true);
     try {
       const res = await fetch(`/api/weekly-plan?weekStart=${weekStart}`);
+      const data = (await res.json()) as Plan | null | { error_code?: string; message?: string };
       if (!res.ok) {
-        setError("Error al cargar el plan.");
+        const err = data as { error_code?: string; message?: string; error?: string };
+        setError(getErrorMessage(err, "Error al cargar el plan."));
         setPlan(null);
         return;
       }
-      const data = (await res.json()) as Plan | null;
-      setPlan(data);
+      setPlan(data as Plan | null);
     } catch {
       setError("Error de red. Reintenta.");
       setPlan(null);
@@ -131,23 +133,15 @@ export default function WeekPage() {
                   </>
                 ) : (
                   <>
-                    <p className="mb-3 text-zinc-600 dark:text-zinc-400">
+                    <p className="mb-4 text-zinc-600 dark:text-zinc-400">
                       El descanso es parte del plan. No hay sesión programada para hoy.
                     </p>
-                    <div className="flex flex-wrap items-center gap-3">
-                      <Link
-                        href="/week"
-                        className="inline-block rounded-lg border border-zinc-300 px-4 py-2 hover:bg-zinc-100 dark:border-zinc-600 dark:hover:bg-zinc-800"
-                      >
-                        Ver semana
-                      </Link>
-                      <Link
-                        href="/log/training"
-                        className="text-sm text-zinc-600 underline dark:text-zinc-400"
-                      >
-                        Registrar entrenamiento igualmente
-                      </Link>
-                    </div>
+                    <Link
+                      href="/log/training"
+                      className="inline-block rounded-lg bg-zinc-900 px-4 py-2 text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+                    >
+                      Registrar entrenamiento igualmente
+                    </Link>
                   </>
                 )}
               </section>
@@ -263,7 +257,17 @@ function NutritionToday({
   weekStart: string;
 }) {
   if (!day) {
-    return <p className="text-sm text-zinc-500">Sin menú para hoy.</p>;
+    return (
+      <div>
+        <p className="mb-3 text-sm text-zinc-500">Sin menú para hoy.</p>
+        <Link
+          href="/log/nutrition"
+          className="inline-block rounded-lg border border-zinc-300 px-4 py-2 text-sm dark:border-zinc-600"
+        >
+          Registrar comida igualmente
+        </Link>
+      </div>
+    );
   }
   return (
     <ul className="space-y-2">
@@ -301,8 +305,10 @@ function SwapMealButton({
   const [open, setOpen] = useState(false);
   const [alt, setAlt] = useState<{ title: string; minutes: number } | null>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSwap = async () => {
+    setError(null);
     setLoading(true);
     try {
       const res = await fetch("/api/nutrition/swap", {
@@ -310,9 +316,18 @@ function SwapMealButton({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId, weekStart, dayIndex, mealSlot }),
       });
-      if (!res.ok) return;
-      const data = (await res.json()) as { meal: { title: string; minutes: number } };
-      setAlt(data.meal);
+      const data = (await res.json()) as
+        | { meal: { title: string; minutes: number } }
+        | { error_code?: string; message?: string };
+      if (!res.ok) {
+        const err = data as { error_code?: string; message?: string; error?: string };
+        setError(getErrorMessage(err, "No se pudo cambiar. Reintenta."));
+        return;
+      }
+      setAlt((data as { meal: { title: string; minutes: number } }).meal);
+      setError(null);
+    } catch {
+      setError("No se pudo cambiar. Reintenta.");
     } finally {
       setLoading(false);
     }
@@ -325,6 +340,7 @@ function SwapMealButton({
         onClick={() => {
           setOpen(true);
           setAlt(null);
+          setError(null);
           void handleSwap();
         }}
         className="text-sm font-medium text-zinc-600 underline dark:text-zinc-400"
@@ -345,7 +361,18 @@ function SwapMealButton({
                 {alt.title} ({alt.minutes} min)
               </p>
             )}
+            {error && <p className="mb-3 text-sm text-red-600 dark:text-red-400">{error}</p>}
             <div className="mt-4 flex justify-end gap-2">
+              {error && (
+                <button
+                  type="button"
+                  onClick={() => void handleSwap()}
+                  disabled={loading}
+                  className="rounded-lg bg-zinc-900 px-3 py-1 text-sm text-white disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900"
+                >
+                  Reintentar
+                </button>
+              )}
               <button
                 type="button"
                 onClick={() => setOpen(false)}

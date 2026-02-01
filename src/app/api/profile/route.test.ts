@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
 import { describe, expect, it, vi } from "vitest";
+import { unauthorized } from "@/src/server/api/errorResponse";
 import { GET, PUT } from "./route";
 
 vi.mock("@/src/server/lib/requireAuth", () => ({
@@ -18,9 +18,7 @@ const { getProfile, upsertProfile } = await import("@/src/server/api/profile/han
 
 describe("GET /api/profile", () => {
   it("returns 401 when no session", async () => {
-    vi.mocked(requireAuth).mockResolvedValue(
-      NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 }),
-    );
+    vi.mocked(requireAuth).mockResolvedValue(unauthorized());
     const res = await GET();
     expect(res.status).toBe(401);
   });
@@ -67,9 +65,7 @@ describe("GET /api/profile", () => {
 
 describe("PUT /api/profile", () => {
   it("returns 401 when no session", async () => {
-    vi.mocked(requireAuth).mockResolvedValue(
-      NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 }),
-    );
+    vi.mocked(requireAuth).mockResolvedValue(unauthorized());
     const req = new Request("http://localhost/api/profile", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
@@ -87,9 +83,9 @@ describe("PUT /api/profile", () => {
       body: JSON.stringify({ daysPerWeek: 99 }),
     });
     const res = await PUT(req);
-    const data = (await res.json()) as { error: string };
+    const data = (await res.json()) as { error_code: string; message: string };
     expect(res.status).toBe(400);
-    expect(data.error).toBe("INVALID_INPUT");
+    expect(data.error_code).toBe("INVALID_INPUT");
   });
 
   it("returns 200 with profile when body valid", async () => {

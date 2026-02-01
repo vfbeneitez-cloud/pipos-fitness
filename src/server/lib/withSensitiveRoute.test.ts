@@ -19,7 +19,7 @@ describe("withSensitiveRoute", () => {
     const res = await withSensitiveRoute(req, async () => NextResponse.json({}));
     expect(res.status).toBe(429);
     expect(res.headers.get("Retry-After")).toBe("42");
-    const body = (await res.json()) as { error: string };
-    expect(body.error).toBe("RATE_LIMIT_EXCEEDED");
+    const body = (await res.json()) as { error_code: string; message: string };
+    expect(body.error_code).toBe("RATE_LIMIT_EXCEEDED");
   });
 });

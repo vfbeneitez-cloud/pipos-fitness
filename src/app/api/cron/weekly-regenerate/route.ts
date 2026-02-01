@@ -1,7 +1,9 @@
 import { randomUUID } from "node:crypto";
 import * as Sentry from "@sentry/nextjs";
 import { NextResponse } from "next/server";
+import { trackEvent } from "@/src/server/lib/events";
 import { withSensitiveRoute } from "@/src/server/lib/withSensitiveRoute";
+import { unauthorized } from "@/src/server/api/errorResponse";
 import { prisma } from "@/src/server/db/prisma";
 import { adjustWeeklyPlan } from "@/src/server/ai/agentWeeklyPlan";
 import { getWeekStart } from "@/src/app/lib/week";
@@ -19,14 +21,14 @@ export async function POST(req: Request) {
 
   const expected = process.env.CRON_SECRET ?? "";
   if (!expected) {
-    return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
+    return unauthorized();
   }
   const xSecret = req.headers.get("x-cron-secret");
   const authHeader = req.headers.get("authorization");
   const authSecret = authHeader?.startsWith("Bearer ") ? authHeader.slice(7) : (authHeader ?? "");
   const secret = xSecret ?? authSecret;
   if (secret !== expected) {
-    return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
+    return unauthorized();
   }
 
   return withSensitiveRoute(req, async () => {
@@ -77,6 +79,9 @@ export async function POST(req: Request) {
     }
 
     const summary = { processed: userIds.length, succeeded, failed, skippedLocked };
+    trackEvent("cron_weekly_regenerate", summary, {
+      sentry: failed > 0,
+    });
     if (failed > 0) {
       Sentry.captureMessage("cron.weekly-regenerate partial failure", {
         level: failed === summary.processed && summary.processed > 0 ? "error" : "warning",

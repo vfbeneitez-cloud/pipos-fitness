@@ -6,7 +6,7 @@ import SignInPage from "./page";
 describe("GET /auth/signin", () => {
   it("renderiza el título y el botón Continuar con Google", () => {
     const html = renderToString(<SignInPage />);
-    expect(html).toContain("Sign in to your account");
+    expect(html).toContain("Inicia sesión");
     expect(html).toContain("Continuar con Google");
   });
 });

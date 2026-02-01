@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { adjustWeeklyPlan } from "@/src/server/ai/agentWeeklyPlan";
 import { withSensitiveRoute } from "@/src/server/lib/withSensitiveRoute";
 import { requireAuth } from "@/src/server/lib/requireAuth";
+import { badRequest } from "@/src/server/api/errorResponse";
 
 export async function POST(req: Request) {
   return withSensitiveRoute(req, async () => {
@@ -12,7 +13,7 @@ export async function POST(req: Request) {
     try {
       body = await req.json();
     } catch {
-      return NextResponse.json({ error: "INVALID_JSON" }, { status: 400 });
+      return badRequest("INVALID_JSON");
     }
     const result = await adjustWeeklyPlan(body, userId);
     return NextResponse.json(result.body, { status: result.status });

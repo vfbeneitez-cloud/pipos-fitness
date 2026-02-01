@@ -8,6 +8,7 @@ import type { NextRequest } from "next/server";
  * - /_next/* (static, image, etc.)
  * Add any global logic here; auth routes stay untouched.
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- req required by Next.js matcher API
 export function proxy(req: NextRequest) {
   return NextResponse.next();
 }

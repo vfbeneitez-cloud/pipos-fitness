@@ -26,6 +26,8 @@
 - [ ] Clear way for beta users to report issues (e.g. email, form, or Sentry user feedback).
 - [ ] Document known limitations and “beta” disclaimer in app or landing.
 
+**Feedback (beta):** reporta incidencias abriendo un issue en el repositorio. Incluye pasos para reproducir y captura si aplica.
+
 ## 5) Safety disclaimer
 
 - [ ] Disclaimer visible where relevant: e.g. “This app does not replace professional medical or nutrition advice; consult a professional before starting a new program.”

@@ -193,3 +193,7 @@ Las decisiones de arquitectura se documentan como ADRs en `adrs/`:
 - `ADR-0004-testing-strategy.md` — estrategia de testing con Vitest.
 - `ADR-0005-safety-constraints.md` — restricciones de seguridad para entrenamiento/nutrición.
 - `ADR-0006-auth.md` — autenticación con NextAuth.js y email magic link.
+
+### Feedback (beta)
+
+Reporta incidencias abriendo un issue en el repositorio. Incluye pasos para reproducir y captura si aplica.

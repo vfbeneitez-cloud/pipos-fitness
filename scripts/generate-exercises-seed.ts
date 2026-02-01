@@ -4,9 +4,6 @@
 import * as fs from "fs";
 import * as path from "path";
 
-const ENVS = ["GYM", "HOME", "CALISTHENICS", "POOL", "MIXED"] as const;
-const PER_ENV = 20;
-
 const GYM_NAMES = [
   "Leg Press",
   "Bench Press",

@@ -18,11 +18,10 @@
 - [ ] `.env.example` está actualizado con todas las variables necesarias
 - [ ] Verificar que no hay secretos hardcodeados en código
 
-### 4. Demo Mode Security
+### 4. Demo Mode
 
-- [ ] Verificar que `/api/demo/*` está bloqueado cuando `DEMO_MODE=false`
-- [ ] Test: `DEMO_MODE=false` → `/api/demo/session` debe devolver 403
-- [ ] En producción: comprobar que `/api/demo/*` no es accesible (403 en prod)
+- [ ] `DEMO_MODE=false` en producción; `NEXT_PUBLIC_DEMO_MODE=false`
+- No hay endpoints `/api/demo` en este repo. `DEMO_MODE` solo afecta comportamiento interno/UI (p. ej. `requireAuth` devuelve userId demo cuando `DEMO_MODE=true`).
 
 ---
 
@@ -37,8 +36,7 @@
 - [ ] `AUTH_URL` — URL de producción (ej: `https://tu-app.vercel.app`)
 - [ ] `DEMO_MODE` — `false`
 - [ ] `NEXT_PUBLIC_DEMO_MODE` — `false`
-- [ ] `EMAIL_SERVER` — SMTP server para magic links (ej: `smtp://user:pass@smtp.example.com:587`)
-- [ ] `EMAIL_FROM` — Email remitente (ej: `noreply@yourdomain.com`)
+- `EMAIL_SERVER` / `EMAIL_FROM` — no aplican (solo Google OAuth)
 - [ ] `OPENAI_API_KEY` — (opcional) Solo si se usa provider real de IA
 - [ ] `SENTRY_DSN` / `NEXT_PUBLIC_SENTRY_DSN` — (opcional) DSN de Sentry para errores en producción
 
@@ -102,11 +100,6 @@
   - Sin sesión → debe devolver 401 `UNAUTHORIZED`
   - Con sesión válida → debe devolver 200 o null
 
-**Demo Endpoints (deben estar bloqueados):**
-
-- [ ] `GET https://tu-app.vercel.app/api/demo/session`
-  - Debe devolver 403 `DEMO_DISABLED`
-
 ### 4. UI Checks
 
 - [ ] Landing page (`/`) redirige a `/auth/signin` (no a `/week`)
@@ -152,10 +145,10 @@
 - **DEMO_MODE**: Nunca debe estar en `true` en producción. Si ves `env: "demo"` en `/api/health`, hay un problema de configuración.
 - **AUTH_SECRET**: Debe ser único y secreto. Rotar si se compromete (ver README sección "How to rotate secrets").
 - **Rotate secrets if leaked**: Si AUTH_SECRET, DATABASE_URL o API keys se filtran, rotar de inmediato en Vercel/Neon y regenerar (ver README "How to rotate secrets").
-- **Verify /api/demo/\* not accessible in prod**: En producción, `GET /api/demo/session` y `POST /api/demo/setup` deben devolver 403 `DEMO_DISABLED`.
+- **No hay /api/demo**: Este repo no incluye endpoints `/api/demo/*`; `DEMO_MODE` solo afecta lógica interna/UI.
+- **Protección de rutas**: No hay `middleware.ts`. La protección se hace vía layouts (App Router) y redirect server-side (p. ej. `(app)/layout.tsx` redirige a signin sin sesión).
 - **DATABASE_URL**: Verificar que apunta a la base de datos correcta (no a desarrollo).
 - **Health endpoints**: Usar `/api/health` y `/api/health/db` para monitoreo continuo (ej: UptimeRobot, Pingdom).
-- **Middleware**: El matcher de `src/middleware.ts` excluye `/auth/*`, `/api/auth/*` y `_next` para no bloquear NextAuth ni assets.
 
 ---
 

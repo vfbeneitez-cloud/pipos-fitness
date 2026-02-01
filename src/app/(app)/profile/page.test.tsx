@@ -29,7 +29,7 @@ describe("GET /profile", () => {
     expect(html).toContain("Perfil");
   });
 
-  it("muestra CTA a onboarding cuando profile es null", async () => {
+  it("muestra CTA Configurar preferencias cuando profile es null", async () => {
     const container = document.createElement("div");
     document.body.appendChild(container);
     const root = createRoot(container);
@@ -42,7 +42,7 @@ describe("GET /profile", () => {
     await act(async () => {
       await new Promise((r) => setTimeout(r, 0));
     });
-    expect(container.textContent).toMatch(/onboarding|Ir a onboarding/i);
+    expect(container.textContent).toContain("Configurar preferencias");
     root.unmount();
     document.body.removeChild(container);
   });

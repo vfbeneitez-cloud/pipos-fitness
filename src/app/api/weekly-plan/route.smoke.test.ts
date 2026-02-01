@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { describe, expect, it, vi } from "vitest";
+import { unauthorized } from "@/src/server/api/errorResponse";
 import { GET } from "./route";
 
 vi.mock("@/src/server/lib/requireAuth", () => ({
@@ -17,9 +18,7 @@ const { requireAuth } = await import("@/src/server/lib/requireAuth");
 
 describe("smoke: protected route (week data)", () => {
   it("unauthenticated GET /api/weekly-plan -> 401 (equivalent to redirect for /week)", async () => {
-    vi.mocked(requireAuth).mockResolvedValue(
-      NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 }),
-    );
+    vi.mocked(requireAuth).mockResolvedValue(unauthorized());
     const req = new Request("http://localhost/api/weekly-plan?weekStart=2026-01-27");
     const res = await GET(req);
     expect(res.status).toBe(401);

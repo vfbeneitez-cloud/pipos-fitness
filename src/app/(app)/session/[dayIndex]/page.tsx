@@ -6,6 +6,7 @@ import Link from "next/link";
 import { getWeekStart } from "@/src/app/lib/week";
 import { DAY_NAMES } from "@/src/app/lib/week";
 import { ErrorBanner } from "@/src/app/components/ErrorBanner";
+import { getErrorMessage } from "@/src/app/lib/errorMessage";
 import { LoadingSkeleton } from "@/src/app/components/LoadingSkeleton";
 
 type TrainingSession = {
@@ -32,13 +33,14 @@ export default function SessionPage() {
     setLoading(true);
     try {
       const res = await fetch(`/api/weekly-plan?weekStart=${weekStart}`);
+      const data = (await res.json()) as Plan | null | { error_code?: string; message?: string };
       if (!res.ok) {
-        setError("Error al cargar el plan.");
+        const err = data as { error_code?: string; message?: string; error?: string };
+        setError(getErrorMessage(err, "Error al cargar el plan."));
         setPlan(null);
         return;
       }
-      const data = (await res.json()) as Plan | null;
-      setPlan(data);
+      setPlan(data as Plan | null);
     } catch {
       setError("Error de red. Reintenta.");
       setPlan(null);
@@ -71,19 +73,64 @@ export default function SessionPage() {
     );
   }
 
+  if (plan === null) {
+    return (
+      <main className="mx-auto max-w-lg px-4 py-8">
+        <nav className="mb-4" aria-label="Breadcrumb">
+          <Link href="/week" className="text-sm text-zinc-500 underline">
+            ← Semana
+          </Link>
+        </nav>
+        <h1 className="mb-6 text-2xl font-semibold text-zinc-900 dark:text-zinc-100">
+          {DAY_NAMES[dayIndex]}
+        </h1>
+        {error && (
+          <div className="mb-4">
+            <ErrorBanner message={error} onRetry={fetchPlan} />
+          </div>
+        )}
+        <p className="mb-6 text-zinc-600 dark:text-zinc-400">
+          Aún no tienes plan para esta semana.
+        </p>
+        <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
+          <Link
+            href="/week"
+            className="inline-block rounded-lg bg-zinc-900 px-4 py-2 text-center text-white dark:bg-zinc-100 dark:text-zinc-900"
+          >
+            Ir a la semana
+          </Link>
+          <Link
+            href="/onboarding"
+            className="inline-block rounded-lg border border-zinc-300 px-4 py-2 text-center dark:border-zinc-600"
+          >
+            Generar plan
+          </Link>
+        </div>
+      </main>
+    );
+  }
+
   const session = plan?.trainingJson?.sessions?.find((s) => s.dayIndex === dayIndex);
 
   if (plan && !session) {
     return (
       <main className="mx-auto max-w-lg px-4 py-8">
         <h1 className="mb-6 text-2xl font-semibold">{DAY_NAMES[dayIndex]}</h1>
-        <p className="mb-4 text-zinc-600 dark:text-zinc-400">Día libre o recuperación activa.</p>
-        <Link
-          href="/week"
-          className="inline-block rounded-lg bg-zinc-900 px-4 py-2 text-white dark:bg-zinc-100 dark:text-zinc-900"
-        >
-          Ver semana
-        </Link>
+        <p className="mb-6 text-zinc-600 dark:text-zinc-400">Día libre o recuperación activa.</p>
+        <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
+          <Link
+            href="/week"
+            className="inline-block rounded-lg bg-zinc-900 px-4 py-2 text-center text-white dark:bg-zinc-100 dark:text-zinc-900"
+          >
+            Ver semana
+          </Link>
+          <Link
+            href="/log/training"
+            className="inline-block rounded-lg border border-zinc-300 px-4 py-2 text-center dark:border-zinc-600"
+          >
+            Registrar entrenamiento igualmente
+          </Link>
+        </div>
       </main>
     );
   }
@@ -129,7 +176,7 @@ export default function SessionPage() {
             href="/log/training"
             className="inline-block rounded-lg bg-zinc-900 px-4 py-2 text-white dark:bg-zinc-100 dark:text-zinc-900"
           >
-            Marcar sesión como hecha
+            Registrar entrenamiento
           </Link>
         </>
       )}

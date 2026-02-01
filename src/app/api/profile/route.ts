@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { requireAuth } from "@/src/server/lib/requireAuth";
 import { withSensitiveRoute } from "@/src/server/lib/withSensitiveRoute";
+import { badRequest } from "@/src/server/api/errorResponse";
 import { ProfileInputSchema } from "@/src/server/api/profile/schema";
 import { getProfile, upsertProfile } from "@/src/server/api/profile/handlers";
 
@@ -18,11 +19,11 @@ export async function PUT(req: Request) {
     try {
       body = await req.json();
     } catch {
-      return NextResponse.json({ error: "INVALID_JSON" }, { status: 400 });
+      return badRequest("INVALID_JSON");
     }
     const parsed = ProfileInputSchema.safeParse(body ?? {});
     if (!parsed.success) {
-      return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
+      return badRequest("INVALID_INPUT");
     }
     const authResult = await requireAuth();
     if (authResult instanceof NextResponse) return authResult;
@@ -38,11 +39,11 @@ export async function POST(req: Request) {
     try {
       body = await req.json();
     } catch {
-      return NextResponse.json({ error: "INVALID_JSON" }, { status: 400 });
+      return badRequest("INVALID_JSON");
     }
     const parsed = ProfileInputSchema.safeParse(body ?? {});
     if (!parsed.success) {
-      return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
+      return badRequest("INVALID_INPUT");
     }
     const authResult = await requireAuth();
     if (authResult instanceof NextResponse) return authResult;

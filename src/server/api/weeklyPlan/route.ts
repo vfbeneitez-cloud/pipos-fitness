@@ -3,6 +3,9 @@ import { prisma } from "@/src/server/db/prisma";
 import type { Prisma } from "@prisma/client";
 import { generateWeeklyTrainingPlan } from "@/src/core/training/generateWeeklyTrainingPlan";
 import { generateWeeklyNutritionPlan } from "@/src/core/nutrition/generateWeeklyNutritionPlan";
+import { getProvider } from "@/src/server/ai/getProvider";
+import { generatePlanFromApi, mapAiTrainingToExistingExercises } from "@/src/server/ai/agentWeeklyPlan";
+import { trackEvent } from "@/src/server/lib/events";
 
 const GetQuery = z.object({
   weekStart: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
@@ -46,29 +49,75 @@ export async function createWeeklyPlan(body: unknown, userId: string) {
   const { environment, daysPerWeek, sessionMinutes } = parsed.data;
   const weekStart = normalizeWeekStart(parsed.data.weekStart);
 
-  const exercisePool = await prisma.exercise.findMany({
-    where: {
-      ...(environment === "MIXED" ? {} : { environment }),
-    },
-    select: { slug: true, name: true },
-  });
-
-  const training = generateWeeklyTrainingPlan({
-    environment,
-    daysPerWeek,
-    sessionMinutes,
-    exercisePool,
-  });
-
   const profile = await prisma.userProfile.findUnique({ where: { userId } });
+  const finalMealsPerDay = profile?.mealsPerDay ?? 3;
+  const finalCookingTime = profile?.cookingTime ?? "MIN_20";
 
-  const nutrition = generateWeeklyNutritionPlan({
-    mealsPerDay: profile?.mealsPerDay ?? 3,
-    cookingTime: profile?.cookingTime ?? "MIN_20",
-    dietaryStyle: profile?.dietaryStyle ?? null,
-    allergies: profile?.allergies ?? null,
-    dislikes: profile?.dislikes ?? null,
-  });
+  let training: ReturnType<typeof generateWeeklyTrainingPlan>;
+  let nutrition: ReturnType<typeof generateWeeklyNutritionPlan>;
+
+  if (process.env.OPENAI_API_KEY) {
+    const provider = getProvider();
+    const planResult = await generatePlanFromApi(provider, {
+      profile,
+      finalEnvironment: environment,
+      finalDaysPerWeek: daysPerWeek,
+      finalSessionMinutes: sessionMinutes,
+      finalMealsPerDay,
+      finalCookingTime,
+    });
+    if (planResult) {
+      const exercisePool = await prisma.exercise.findMany({
+        where: { ...(environment === "MIXED" ? {} : { environment }) },
+        select: { slug: true, name: true, environment: true, primaryMuscle: true },
+      });
+      const { training: mappedTraining, unmatchedCount } = mapAiTrainingToExistingExercises(
+        planResult.training,
+        exercisePool,
+      );
+      training = mappedTraining;
+      nutrition = planResult.nutrition;
+      if (unmatchedCount > 0) {
+        trackEvent("ai_exercise_unmatched", { count: unmatchedCount });
+      }
+    } else {
+      const exercisePool = await prisma.exercise.findMany({
+        where: { ...(environment === "MIXED" ? {} : { environment }) },
+        select: { slug: true, name: true },
+      });
+      training = generateWeeklyTrainingPlan({
+        environment,
+        daysPerWeek,
+        sessionMinutes,
+        exercisePool,
+      });
+      nutrition = generateWeeklyNutritionPlan({
+        mealsPerDay: finalMealsPerDay,
+        cookingTime: finalCookingTime,
+        dietaryStyle: profile?.dietaryStyle ?? null,
+        allergies: profile?.allergies ?? null,
+        dislikes: profile?.dislikes ?? null,
+      });
+    }
+  } else {
+    const exercisePool = await prisma.exercise.findMany({
+      where: { ...(environment === "MIXED" ? {} : { environment }) },
+      select: { slug: true, name: true },
+    });
+    training = generateWeeklyTrainingPlan({
+      environment,
+      daysPerWeek,
+      sessionMinutes,
+      exercisePool,
+    });
+    nutrition = generateWeeklyNutritionPlan({
+      mealsPerDay: finalMealsPerDay,
+      cookingTime: finalCookingTime,
+      dietaryStyle: profile?.dietaryStyle ?? null,
+      allergies: profile?.allergies ?? null,
+      dislikes: profile?.dislikes ?? null,
+    });
+  }
 
   const plan = await prisma.weeklyPlan.upsert({
     where: { userId_weekStart: { userId, weekStart } },
