@@ -24,8 +24,14 @@ export async function POST(req: Request) {
       trackEvent("nutrition_swap_post_success", { status: 200 });
     }
     if (result.status === 400) {
-      const errBody = result.body as { error?: string };
-      return NextResponse.json(badRequestBody(errBody.error ?? "INVALID_INPUT"), { status: 400 });
+      const errBody = result.body as { error?: string; message?: string };
+      return NextResponse.json(
+        {
+          error_code: errBody.error ?? "INVALID_INPUT",
+          message: errBody.message ?? "Revisa los datos e inténtalo de nuevo.",
+        },
+        { status: 400 },
+      );
     }
     return NextResponse.json(result.body, { status: result.status });
   });

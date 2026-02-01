@@ -125,7 +125,7 @@ export default function SessionPage() {
             Ver semana
           </Link>
           <Link
-            href="/log/training"
+            href={`/log/training?dayIndex=${dayIndex}`}
             className="inline-block rounded-lg border border-zinc-300 px-4 py-2 text-center dark:border-zinc-600"
           >
             Registrar entrenamiento igualmente
@@ -173,7 +173,7 @@ export default function SessionPage() {
             ))}
           </ul>
           <Link
-            href="/log/training"
+            href={`/log/training?dayIndex=${dayIndex}`}
             className="inline-block rounded-lg bg-zinc-900 px-4 py-2 text-white dark:bg-zinc-100 dark:text-zinc-900"
           >
             Registrar entrenamiento

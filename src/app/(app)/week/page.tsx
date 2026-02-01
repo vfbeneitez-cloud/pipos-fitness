@@ -137,7 +137,7 @@ export default function WeekPage() {
                       El descanso es parte del plan. No hay sesión programada para hoy.
                     </p>
                     <Link
-                      href="/log/training"
+                      href={`/log/training?dayIndex=${todayIndex}`}
                       className="inline-block rounded-lg bg-zinc-900 px-4 py-2 text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
                     >
                       Registrar entrenamiento igualmente
@@ -168,7 +168,7 @@ export default function WeekPage() {
             </ul>
             <div className="mt-3">
               <Link
-                href={`/log/training`}
+                href={`/log/training?dayIndex=${todayIndex}`}
                 className="rounded-lg border border-zinc-300 px-4 py-2 text-sm dark:border-zinc-600"
               >
                 Registrar entrenamiento
@@ -271,9 +271,9 @@ function NutritionToday({
   }
   return (
     <ul className="space-y-2">
-      {day.meals.map((m) => (
+      {day.meals.map((m, mealIndex) => (
         <li
-          key={m.slot}
+          key={`${m.slot}-${mealIndex}`}
           className="flex items-center justify-between rounded-lg border border-zinc-200 p-3 dark:border-zinc-700"
         >
           <div>
@@ -283,7 +283,7 @@ function NutritionToday({
             userId={userId}
             weekStart={weekStart}
             dayIndex={day.dayIndex}
-            mealSlot={m.slot as "breakfast" | "lunch" | "dinner" | "snack"}
+            mealIndex={mealIndex}
           />
         </li>
       ))}
@@ -295,12 +295,12 @@ function SwapMealButton({
   userId,
   weekStart,
   dayIndex,
-  mealSlot,
+  mealIndex,
 }: {
   userId: string;
   weekStart: string;
   dayIndex: number;
-  mealSlot: "breakfast" | "lunch" | "dinner" | "snack";
+  mealIndex: number;
 }) {
   const [open, setOpen] = useState(false);
   const [alt, setAlt] = useState<{ title: string; minutes: number } | null>(null);
@@ -314,7 +314,7 @@ function SwapMealButton({
       const res = await fetch("/api/nutrition/swap", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, weekStart, dayIndex, mealSlot }),
+        body: JSON.stringify({ userId, weekStart, dayIndex, mealIndex }),
       });
       const data = (await res.json()) as
         | { meal: { title: string; minutes: number } }

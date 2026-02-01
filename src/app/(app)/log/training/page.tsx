@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, useCallback } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { getDemoUserId } from "@/src/app/lib/demo";
 import { ErrorBanner } from "@/src/app/components/ErrorBanner";
 import { getErrorMessage } from "@/src/app/lib/errorMessage";
+import { getWeekStart, getTodayDayIndex } from "@/src/app/lib/week";
 
 const DIFFICULTY_OPTIONS: { value: "easy" | "ok" | "hard"; label: string; emoji: string }[] = [
   { value: "easy", label: "Fácil", emoji: "😌" },
@@ -13,8 +14,18 @@ const DIFFICULTY_OPTIONS: { value: "easy" | "ok" | "hard"; label: string; emoji:
   { value: "hard", label: "Duro", emoji: "😣" },
 ];
 
+type TrainingSession = {
+  dayIndex: number;
+  name: string;
+};
+type Plan = {
+  id: string;
+  trainingJson?: { sessions?: TrainingSession[] };
+};
+
 export default function LogTrainingPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [done, setDone] = useState<boolean | null>(null);
   const [difficulty, setDifficulty] = useState<"easy" | "ok" | "hard">("ok");
   const [pain, setPain] = useState(false);
@@ -23,8 +34,37 @@ export default function LogTrainingPage() {
   const [optionalNotesVisible, setOptionalNotesVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [plan, setPlan] = useState<Plan | null | undefined>(undefined);
+  const [dayIndex, setDayIndex] = useState<number>(getTodayDayIndex());
+
+  const session = plan?.trainingJson?.sessions?.find((s) => s.dayIndex === dayIndex);
+  const hasNoSession = plan !== undefined && (plan === null || !session);
 
   const canSubmit = done === false || (done === true && difficulty != null);
+
+  const weekStart = getWeekStart(new Date());
+  const fetchPlan = useCallback(async () => {
+    try {
+      const res = await fetch(`/api/weekly-plan?weekStart=${weekStart}`);
+      const data = (await res.json()) as Plan | null;
+      if (res.ok) setPlan(data);
+      else setPlan(null);
+    } catch {
+      setPlan(null);
+    }
+  }, [weekStart]);
+
+  useEffect(() => {
+    const idx = searchParams.get("dayIndex");
+    if (idx !== null) {
+      const n = parseInt(idx, 10);
+      if (!Number.isNaN(n) && n >= 0 && n <= 6) setDayIndex(n);
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
+    void fetchPlan();
+  }, [fetchPlan]);
 
   // MVP: painNotes combina detalle de dolor + notas generales (deuda técnica: valorar separar en sprint futuro)
   const buildPainNotesPayload = (): string | undefined => {
@@ -46,16 +86,21 @@ export default function LogTrainingPage() {
     setLoading(true);
     try {
       const completed = done === true;
+      const sessionName = session?.name ?? "Entrenamiento libre";
+      const payload: Record<string, unknown> = {
+        userId,
+        completed,
+        difficulty: completed ? difficulty : undefined,
+        pain: completed ? pain : false,
+        painNotes: completed ? buildPainNotesPayload() : undefined,
+        sessionName,
+        dayIndex,
+      };
+      if (plan?.id) payload.planId = plan.id;
       const res = await fetch("/api/training/log", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId,
-          completed,
-          difficulty: completed ? difficulty : undefined,
-          pain: completed ? pain : false,
-          painNotes: completed ? buildPainNotesPayload() : undefined,
-        }),
+        body: JSON.stringify(payload),
       });
       if (!res.ok) {
         const data = (await res.json()) as {
@@ -84,6 +129,12 @@ export default function LogTrainingPage() {
       <h1 className="mb-6 text-2xl font-semibold text-zinc-900 dark:text-zinc-100">
         Registrar entrenamiento
       </h1>
+
+      {hasNoSession && (
+        <p className="mb-4 text-sm text-zinc-600 dark:text-zinc-400">
+          Hoy no había sesión programada. Lo registraré como entrenamiento libre.
+        </p>
+      )}
 
       {error && (
         <div className="mb-4">

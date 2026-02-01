@@ -17,6 +17,7 @@ describe("POST /api/nutrition/swap", () => {
     });
   });
   it("swaps a meal successfully", async () => {
+    const weekStart = "2026-01-19";
     await prisma.userProfile.upsert({
       where: { userId: TEST_USER_ID },
       update: { mealsPerDay: 3, cookingTime: "MIN_20", dietaryStyle: "omnivore" },
@@ -28,63 +29,40 @@ describe("POST /api/nutrition/swap", () => {
       },
     });
 
+    const threeMealsPlanJson = {
+      days: [
+        {
+          dayIndex: 0,
+          meals: [
+            { slot: "breakfast", title: "Test breakfast", minutes: 10, tags: [], ingredients: [], instructions: "", substitutions: [] },
+            { slot: "lunch", title: "Test lunch", minutes: 20, tags: [], ingredients: [], instructions: "", substitutions: [] },
+            { slot: "dinner", title: "Test dinner", minutes: 30, tags: [], ingredients: [], instructions: "", substitutions: [] },
+          ],
+        },
+      ],
+    };
     await prisma.weeklyPlan.upsert({
       where: {
         userId_weekStart: {
           userId: TEST_USER_ID,
-          weekStart: new Date("2026-01-26T00:00:00.000Z"),
+          weekStart: new Date(`${weekStart}T00:00:00.000Z`),
         },
       },
-      update: {},
+      update: { nutritionJson: threeMealsPlanJson },
       create: {
         userId: TEST_USER_ID,
-        weekStart: new Date("2026-01-26T00:00:00.000Z"),
+        weekStart: new Date(`${weekStart}T00:00:00.000Z`),
         status: "DRAFT",
         trainingJson: { sessions: [] },
-        nutritionJson: {
-          days: [
-            {
-              dayIndex: 0,
-              meals: [
-                {
-                  slot: "breakfast",
-                  title: "Test breakfast",
-                  minutes: 10,
-                  tags: [],
-                  ingredients: [],
-                  instructions: "",
-                  substitutions: [],
-                },
-                {
-                  slot: "lunch",
-                  title: "Test lunch",
-                  minutes: 20,
-                  tags: [],
-                  ingredients: [],
-                  instructions: "",
-                  substitutions: [],
-                },
-                {
-                  slot: "dinner",
-                  title: "Test dinner",
-                  minutes: 30,
-                  tags: [],
-                  ingredients: [],
-                  instructions: "",
-                  substitutions: [],
-                },
-              ],
-            },
-          ],
-        },
+        nutritionJson: threeMealsPlanJson,
       },
     });
 
     const result = await swapMeal(
       {
-        weekStart: "2026-01-26",
+        weekStart,
         dayIndex: 0,
-        mealSlot: "lunch",
+        mealIndex: 1,
         reason: "dislike",
       },
       TEST_USER_ID,
@@ -123,6 +101,191 @@ describe("POST /api/nutrition/swap", () => {
 
     expect(result.status).toBe(404);
     expect((result.body as { error: string }).error).toBe("PLAN_NOT_FOUND");
+  });
+
+  it("swaps snack #2 (mealIndex 3) when mealsPerDay=5 with 2 snacks", async () => {
+    await prisma.userProfile.upsert({
+      where: { userId: TEST_USER_ID },
+      update: { mealsPerDay: 5, cookingTime: "MIN_20", dietaryStyle: "omnivore" },
+      create: {
+        userId: TEST_USER_ID,
+        mealsPerDay: 5,
+        cookingTime: "MIN_20",
+        dietaryStyle: "omnivore",
+      },
+    });
+
+    const fiveMealsJson = {
+      days: [
+        {
+          dayIndex: 0,
+          meals: [
+            {
+              slot: "breakfast",
+              title: "B1",
+              minutes: 10,
+              tags: [],
+              ingredients: [],
+              instructions: "",
+              substitutions: [],
+            },
+            {
+              slot: "snack",
+              title: "S1",
+              minutes: 5,
+              tags: [],
+              ingredients: [],
+              instructions: "",
+              substitutions: [],
+            },
+            {
+              slot: "lunch",
+              title: "L1",
+              minutes: 20,
+              tags: [],
+              ingredients: [],
+              instructions: "",
+              substitutions: [],
+            },
+            {
+              slot: "snack",
+              title: "S2",
+              minutes: 5,
+              tags: [],
+              ingredients: [],
+              instructions: "",
+              substitutions: [],
+            },
+            {
+              slot: "dinner",
+              title: "D1",
+              minutes: 30,
+              tags: [],
+              ingredients: [],
+              instructions: "",
+              substitutions: [],
+            },
+          ],
+        },
+      ],
+    };
+    await prisma.weeklyPlan.upsert({
+      where: {
+        userId_weekStart: {
+          userId: TEST_USER_ID,
+          weekStart: new Date("2026-01-26T00:00:00.000Z"),
+        },
+      },
+      update: { nutritionJson: fiveMealsJson },
+      create: {
+        userId: TEST_USER_ID,
+        weekStart: new Date("2026-01-26T00:00:00.000Z"),
+        status: "DRAFT",
+        trainingJson: { sessions: [] },
+        nutritionJson: fiveMealsJson,
+      },
+    });
+
+    const result = await swapMeal(
+      { weekStart: "2026-01-26", dayIndex: 0, mealIndex: 3 },
+      TEST_USER_ID,
+    );
+
+    expect(result.status).toBe(200);
+    const body = result.body as { meal: { slot: string; title: string } };
+    expect(body.meal).toBeDefined();
+    expect(body.meal.slot).toBe("snack");
+  });
+
+  it("swaps via legacy mealSlot when slot is unique", async () => {
+    await prisma.userProfile.upsert({
+      where: { userId: TEST_USER_ID },
+      update: { mealsPerDay: 3, cookingTime: "MIN_20" },
+      create: { userId: TEST_USER_ID, mealsPerDay: 3, cookingTime: "MIN_20" },
+    });
+    const threeMealsJson = {
+      days: [
+        {
+          dayIndex: 0,
+          meals: [
+            { slot: "breakfast", title: "B", minutes: 10, tags: [], ingredients: [], instructions: "", substitutions: [] },
+            { slot: "lunch", title: "L", minutes: 20, tags: [], ingredients: [], instructions: "", substitutions: [] },
+            { slot: "dinner", title: "D", minutes: 30, tags: [], ingredients: [], instructions: "", substitutions: [] },
+          ],
+        },
+      ],
+    };
+    await prisma.weeklyPlan.upsert({
+      where: {
+        userId_weekStart: { userId: TEST_USER_ID, weekStart: new Date("2026-01-26T00:00:00.000Z") },
+      },
+      update: { nutritionJson: threeMealsJson },
+      create: {
+        userId: TEST_USER_ID,
+        weekStart: new Date("2026-01-26T00:00:00.000Z"),
+        status: "DRAFT",
+        trainingJson: {},
+        nutritionJson: threeMealsJson,
+      },
+    });
+
+    const result = await swapMeal(
+      { weekStart: "2026-01-26", dayIndex: 0, mealSlot: "lunch" },
+      TEST_USER_ID,
+    );
+
+    expect(result.status).toBe(200);
+    const body = result.body as { meal: { slot: string } };
+    expect(body.meal.slot).toBe("lunch");
+  });
+
+  it("returns 400 INVALID_INPUT when slot is ambiguous (2 snacks)", async () => {
+    await prisma.userProfile.upsert({
+      where: { userId: TEST_USER_ID },
+      update: { mealsPerDay: 5, cookingTime: "MIN_20" },
+      create: { userId: TEST_USER_ID, mealsPerDay: 5, cookingTime: "MIN_20" },
+    });
+
+    const fiveMealsTwoSnacksJson = {
+      days: [
+        {
+          dayIndex: 0,
+          meals: [
+            { slot: "breakfast", title: "B", minutes: 10, tags: [], ingredients: [], instructions: "", substitutions: [] },
+            { slot: "snack", title: "S1", minutes: 5, tags: [], ingredients: [], instructions: "", substitutions: [] },
+            { slot: "lunch", title: "L", minutes: 20, tags: [], ingredients: [], instructions: "", substitutions: [] },
+            { slot: "snack", title: "S2", minutes: 5, tags: [], ingredients: [], instructions: "", substitutions: [] },
+            { slot: "dinner", title: "D", minutes: 30, tags: [], ingredients: [], instructions: "", substitutions: [] },
+          ],
+        },
+      ],
+    };
+    await prisma.weeklyPlan.upsert({
+      where: {
+        userId_weekStart: {
+          userId: TEST_USER_ID,
+          weekStart: new Date("2026-01-26T00:00:00.000Z"),
+        },
+      },
+      update: { nutritionJson: fiveMealsTwoSnacksJson },
+      create: {
+        userId: TEST_USER_ID,
+        weekStart: new Date("2026-01-26T00:00:00.000Z"),
+        status: "DRAFT",
+        trainingJson: { sessions: [] },
+        nutritionJson: fiveMealsTwoSnacksJson,
+      },
+    });
+
+    const result = await swapMeal(
+      { weekStart: "2026-01-26", dayIndex: 0, mealSlot: "snack" },
+      TEST_USER_ID,
+    );
+
+    expect(result.status).toBe(400);
+    const errBody = result.body as { error: string; message?: string };
+    expect(errBody.error).toBe("INVALID_INPUT");
+    expect(errBody.message ?? "").toContain("varias comidas");
   });
 });
 

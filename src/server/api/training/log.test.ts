@@ -92,6 +92,40 @@ describe("POST /api/training/log", () => {
     expect(result.status).toBe(404);
     expect((result.body as { error: string }).error).toBe("PLAN_NOT_FOUND");
   });
+
+  it("creates log for day without session (Entrenamiento libre)", async () => {
+    const result = await createTrainingLog(
+      {
+        completed: true,
+        difficulty: "ok",
+        pain: false,
+        sessionName: "Entrenamiento libre",
+        dayIndex: 3,
+      },
+      TEST_USER_ID,
+    );
+
+    expect(result.status).toBe(200);
+    const body = result.body as { id: string; sessionName: string | null };
+    expect(body.id).toBeDefined();
+    expect(body.sessionName).toBe("Entrenamiento libre");
+  });
+
+  it("creates log without sessionName, defaults to Entrenamiento libre", async () => {
+    const result = await createTrainingLog(
+      {
+        completed: true,
+        pain: false,
+        dayIndex: 2,
+      },
+      TEST_USER_ID,
+    );
+
+    expect(result.status).toBe(200);
+    const body = result.body as { id: string; sessionName: string | null };
+    expect(body.id).toBeDefined();
+    expect(body.sessionName).toBe("Entrenamiento libre");
+  });
 });
 
 describe("POST /api/training/log authorization", () => {

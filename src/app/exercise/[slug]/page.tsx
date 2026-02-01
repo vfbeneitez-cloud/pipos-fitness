@@ -1,9 +1,27 @@
 import { cache } from "react";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import type { Metadata } from "next";
 import { prisma } from "@/src/server/db/prisma";
+
+function renderTextBlock(text: string) {
+  const lines = text.split(/\r?\n/).filter((l) => l.trim().length > 0);
+  if (lines.length >= 2) {
+    return (
+      <ul className="list-disc space-y-1 pl-5 text-sm text-zinc-600 dark:text-zinc-400">
+        {lines.map((line, i) => (
+          <li key={i}>{line.trim()}</li>
+        ))}
+      </ul>
+    );
+  }
+  if (lines.length === 1) {
+    return (
+      <p className="text-sm text-zinc-600 dark:text-zinc-400">{lines[0]!.trim()}</p>
+    );
+  }
+  return null;
+}
 
 const ENV_LABELS: Record<string, string> = {
   GYM: "Gimnasio",
@@ -50,7 +68,7 @@ export default async function ExercisePage({ params }: Props) {
     notFound();
   }
 
-  const media = exercise.media?.[0];
+  const mediaList = exercise.media ?? [];
 
   return (
     <main className="mx-auto max-w-lg px-4 py-8">
@@ -67,29 +85,69 @@ export default async function ExercisePage({ params }: Props) {
         {exercise.primaryMuscle && ` · ${exercise.primaryMuscle}`}
       </p>
 
-      {media ? (
-        <div className="mb-6 overflow-hidden rounded-lg bg-zinc-100 dark:bg-zinc-800">
-          {media.type === "video" ? (
-            <video
-              src={media.url}
-              controls
-              className="w-full"
-              poster={media.thumbnailUrl ?? undefined}
-              aria-label={`Vídeo de ${exercise.name}`}
+      {mediaList.length > 0 ? (
+        <div className="mb-6 space-y-4">
+          {mediaList.map((media) => (
+            <div
+              key={media.id}
+              className="overflow-hidden rounded-lg bg-zinc-100 dark:bg-zinc-800"
             >
-              No se pudo reproducir el vídeo.
-            </video>
-          ) : (
-            // MVP: unoptimized evita config de dominios externos para thumbnails
-            <Image
-              src={media.url}
-              alt={`Ilustración de ${exercise.name}`}
-              width={800}
-              height={600}
-              className="w-full object-cover"
-              unoptimized
-            />
-          )}
+              {media.type === "video" ? (
+                <video
+                  src={media.url}
+                  controls
+                  className="w-full"
+                  poster={media.thumbnailUrl ?? undefined}
+                  aria-label={`Vídeo de ${exercise.name}`}
+                >
+                  No se pudo reproducir el vídeo.
+                </video>
+              ) : media.type === "youtube" ? (
+                <a
+                  href={media.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block"
+                  aria-label={`Ver vídeo de ${exercise.name} en YouTube`}
+                >
+                  {media.thumbnailUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element -- external URL (YouTube thumbnail)
+                    <img
+                      src={media.thumbnailUrl}
+                      alt={`Miniatura del vídeo en YouTube de ${exercise.name}`}
+                      loading="lazy"
+                      className="w-full object-cover"
+                    />
+                  ) : null}
+                  <span
+                    className={
+                      media.thumbnailUrl
+                        ? "block border-t border-zinc-200 px-4 py-3 text-sm font-medium text-blue-600 dark:border-zinc-700 dark:text-blue-400"
+                        : "block px-4 py-3 text-sm font-medium text-blue-600 dark:text-blue-400"
+                    }
+                  >
+                    Ver vídeo en YouTube
+                  </span>
+                </a>
+              ) : media.type === "image" ? (
+                // eslint-disable-next-line @next/next/no-img-element -- external URL embed
+                <img
+                  src={media.url}
+                  alt={`Ilustración de ${exercise.name}`}
+                  loading="lazy"
+                  className="w-full object-cover"
+                />
+              ) : (
+                // eslint-disable-next-line @next/next/no-img-element -- external URL embed
+                <img
+                  src={media.url}
+                  alt={`Media de ${exercise.name}`}
+                  loading="lazy"
+                  className="w-full object-cover"
+                />
+              )}
+            </div>
+          ))}
         </div>
       ) : (
         <div className="mb-6 flex h-40 items-center justify-center rounded-lg bg-zinc-100 text-sm text-zinc-500 dark:bg-zinc-800">
@@ -101,10 +159,10 @@ export default async function ExercisePage({ params }: Props) {
         <h2 id="desc-heading" className="mb-2 font-medium">
           Descripción
         </h2>
-        <p className="whitespace-pre-wrap text-sm text-zinc-600 dark:text-zinc-400">
-          {exercise.description ??
-            `Ejercicio para trabajar principalmente ${exercise.primaryMuscle ?? "varios grupos musculares"} en ${ENV_LABELS[exercise.environment] ?? exercise.environment}.`}
-        </p>
+        {renderTextBlock(
+          exercise.description ??
+            `Ejercicio para trabajar principalmente ${exercise.primaryMuscle ?? "varios grupos musculares"} en ${ENV_LABELS[exercise.environment] ?? exercise.environment}.`
+        )}
       </section>
 
       {exercise.cues && (
@@ -112,9 +170,7 @@ export default async function ExercisePage({ params }: Props) {
           <h2 id="cues-heading" className="mb-2 font-medium">
             Puntos clave
           </h2>
-          <p className="whitespace-pre-wrap text-sm text-zinc-600 dark:text-zinc-400">
-            {exercise.cues}
-          </p>
+          {renderTextBlock(exercise.cues)}
         </section>
       )}
 
@@ -123,9 +179,7 @@ export default async function ExercisePage({ params }: Props) {
           <h2 id="mistakes-heading" className="mb-2 font-medium">
             Errores comunes y seguridad
           </h2>
-          <p className="whitespace-pre-wrap text-sm text-zinc-600 dark:text-zinc-400">
-            {exercise.commonMistakes}
-          </p>
+          {renderTextBlock(exercise.commonMistakes)}
         </section>
       )}
 
@@ -134,9 +188,7 @@ export default async function ExercisePage({ params }: Props) {
           <h2 id="easier-heading" className="mb-2 font-medium">
             Versión más fácil
           </h2>
-          <p className="whitespace-pre-wrap text-sm text-zinc-600 dark:text-zinc-400">
-            {exercise.regressions}
-          </p>
+          {renderTextBlock(exercise.regressions)}
         </section>
       )}
 
@@ -145,9 +197,7 @@ export default async function ExercisePage({ params }: Props) {
           <h2 id="harder-heading" className="mb-2 font-medium">
             Versión más difícil
           </h2>
-          <p className="whitespace-pre-wrap text-sm text-zinc-600 dark:text-zinc-400">
-            {exercise.progressions}
-          </p>
+          {renderTextBlock(exercise.progressions)}
         </section>
       )}
 
