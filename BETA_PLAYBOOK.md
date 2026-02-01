@@ -8,13 +8,22 @@ Validar el flujo end-to-end con usuarios reales durante **2–4 semanas**. Confi
 
 ## Métricas de éxito (5, binarias)
 
-| Métrica     | Criterio de cumplimiento                                                               |
-| ----------- | -------------------------------------------------------------------------------------- |
-| Uso         | ≥10 días de uso en 14 días (sumado entre usuarios)                                     |
-| Dead-ends   | 0 pantallas sin CTA (siempre hay salida)                                               |
-| Fallback IA | <20% de eventos Sentry con tag `fallback_type` (red_flag, parse_error, provider_error) |
-| Rate limit  | <5% de 429 en endpoints sensibles (weekly-plan, profile, logs)                         |
-| Issues QA   | ≥80% de issues con pasos reproducibles + entorno                                       |
+| Métrica               | Criterio de cumplimiento                                                                                  |
+| --------------------- | --------------------------------------------------------------------------------------------------------- |
+| Uso                   | ≥10 días de uso en 14 días (sumado entre usuarios)                                                        |
+| Dead-ends             | 0 pantallas sin CTA (siempre hay salida)                                                                  |
+| Fallback IA           | <20% de eventos Sentry con tag `fallback_type` (red_flag, parse_error, provider_error, ai_invalid_output) |
+| Rate limit            | <5% de 429 en endpoints sensibles (weekly-plan, profile, logs)                                            |
+| ai_exercise_unmatched | Ideal 0; investigar si >0 sostenido (count por evento)                                                    |
+| Issues QA             | ≥80% de issues con pasos reproducibles + entorno                                                          |
+
+---
+
+## Cómo medir
+
+- En Sentry, filtrar por tag `fallback_type` para ver red_flag, parse_error, provider_error, ai_invalid_output.
+- Contar eventos `rate_limit` para monitorizar 429 en endpoints sensibles.
+- Contar eventos `ai_exercise_unmatched`; revisar si hay volumen sostenido o picos.
 
 ---
 

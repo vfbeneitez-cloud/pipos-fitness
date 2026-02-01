@@ -195,9 +195,12 @@ Genera el plan personalizado en JSON.`;
     };
   } catch (err) {
     const isProviderError =
-      err instanceof Error && (err.name === "AbortError" || err.message.startsWith("OpenAI API error"));
+      err instanceof Error &&
+      (err.name === "AbortError" || err.message.startsWith("OpenAI API error"));
     Sentry.captureMessage(
-      isProviderError ? "weekly_plan_fallback_provider_error" : "weekly_plan_fallback_ai_invalid_output",
+      isProviderError
+        ? "weekly_plan_fallback_provider_error"
+        : "weekly_plan_fallback_ai_invalid_output",
       { tags: { fallback_type: isProviderError ? "provider_error" : "ai_invalid_output" } },
     );
     return null;
@@ -257,17 +260,35 @@ export function mapAiTrainingToExistingExercises(
     exercises: s.exercises.map((ex) => {
       const bySlugMatch = bySlug.get(ex.slug.toLowerCase());
       if (bySlugMatch) {
-        return { slug: bySlugMatch.slug, name: bySlugMatch.name, sets: ex.sets, reps: ex.reps, restSec: ex.restSec };
+        return {
+          slug: bySlugMatch.slug,
+          name: bySlugMatch.name,
+          sets: ex.sets,
+          reps: ex.reps,
+          restSec: ex.restSec,
+        };
       }
       const byNameMatch = byName.get(ex.name.toLowerCase().trim());
       if (byNameMatch) {
-        return { slug: byNameMatch.slug, name: byNameMatch.name, sets: ex.sets, reps: ex.reps, restSec: ex.restSec };
+        return {
+          slug: byNameMatch.slug,
+          name: byNameMatch.name,
+          sets: ex.sets,
+          reps: ex.reps,
+          restSec: ex.restSec,
+        };
       }
       unmatchedCount += 1;
       if (!fallback) {
         throw new Error("No exercise pool for mapping");
       }
-      return { slug: fallback.slug, name: fallback.name, sets: ex.sets, reps: ex.reps, restSec: ex.restSec };
+      return {
+        slug: fallback.slug,
+        name: fallback.name,
+        sets: ex.sets,
+        reps: ex.reps,
+        restSec: ex.restSec,
+      };
     }),
   }));
 

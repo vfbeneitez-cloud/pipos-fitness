@@ -119,6 +119,24 @@ En Vercel: **Settings → Environment Variables**
    - En API routes, para errores 500: `Sentry.captureException(error);`
    - Ver RELEASE_CHECKLIST.md → Production Monitoring (Sentry + Uptime + Vercel)
 
+### Cron semanal
+
+Variables requeridas para el cron `/api/cron/weekly-regenerate`:
+
+- **`CRON_SECRET`**: secreto para autenticar llamadas al endpoint. Generar con `openssl rand -base64 32`
+- **`CRON_WEEKLY_REGEN_ENABLED`**: `true` para activar; si no está o es distinto, el endpoint devuelve 404
+
+Probar manualmente (local o preview):
+
+```bash
+curl -X POST https://<DEPLOY_URL>/api/cron/weekly-regenerate \
+  -H "x-cron-secret: <CRON_SECRET>"
+```
+
+Esperado: `{ "ok": true, "processed": N, "succeeded": M, "failed": K, "skippedLocked": L }`. 404 → falta `CRON_WEEKLY_REGEN_ENABLED=true`. 401 → secret incorrecto.
+
+En Sentry: buscar el evento `cron_weekly_regenerate` (processed, succeeded, failed, skippedLocked). Si `failed > 0`, también se captura la excepción por cada fallo.
+
 ### Variables para Preview/Development (opcional):
 
 Repetir las mismas variables con valores de desarrollo/preview si quieres.

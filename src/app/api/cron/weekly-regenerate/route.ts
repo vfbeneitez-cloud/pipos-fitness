@@ -68,8 +68,9 @@ export async function POST(req: Request) {
         } else {
           failed += 1;
         }
-      } catch {
+      } catch (err) {
         failed += 1;
+        Sentry.captureException(err);
       } finally {
         await prisma.weeklyPlan.updateMany({
           where: { userId, weekStart: weekStartDate, regenLockId: lockId },
@@ -79,9 +80,7 @@ export async function POST(req: Request) {
     }
 
     const summary = { processed: userIds.length, succeeded, failed, skippedLocked };
-    trackEvent("cron_weekly_regenerate", summary, {
-      sentry: failed > 0,
-    });
+    trackEvent("cron_weekly_regenerate", summary, { sentry: true });
     if (failed > 0) {
       Sentry.captureMessage("cron.weekly-regenerate partial failure", {
         level: failed === summary.processed && summary.processed > 0 ? "error" : "warning",

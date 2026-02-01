@@ -20,6 +20,7 @@ vi.mock("@/src/app/lib/week", () => ({
 }));
 vi.mock("@sentry/nextjs", () => ({
   captureMessage: vi.fn(),
+  captureException: vi.fn(),
 }));
 
 const { prisma } = await import("@/src/server/db/prisma");

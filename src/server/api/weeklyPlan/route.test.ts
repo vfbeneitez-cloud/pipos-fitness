@@ -117,7 +117,7 @@ describe("weekly plan v0", () => {
       );
 
       expect(res.status).toBe(200);
-      const plan = res.body as {
+      const plan = res.body as unknown as {
         trainingJson: {
           environment: string;
           daysPerWeek: number;

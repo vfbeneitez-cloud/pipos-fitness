@@ -134,7 +134,7 @@ describe("POST /api/agent/weekly-plan", () => {
       const result = await adjustWeeklyPlan({ weekStart: "2026-01-26" }, TEST_USER_ID);
 
       expect(result.status).toBe(200);
-      const body = result.body as {
+      const body = result.body as unknown as {
         plan: {
           trainingJson: { environment: string; daysPerWeek: number; sessions: unknown[] };
           nutritionJson: { mealsPerDay: number; days: { dayIndex: number; meals: unknown[] }[] };
