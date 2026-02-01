@@ -3177,5 +3177,97 @@
         "thumbnailUrl": null
       }
     ]
+  },
+  {
+    "slug": "swing-con-pesa-rusa",
+    "name": "Swing con pesa rusa (kettlebell swing)",
+    "environment": "MIXED",
+    "primaryMuscle": "Glúteos, isquiotibiales, core",
+    "description": "Movimiento balístico de bisagra de cadera. La potencia viene de la cadera y los glúteos (no de levantar con los brazos). Objetivo: entrenar glúteos/isquios, core firme y control de la espalda.\n\nColoca la pesa rusa delante de ti, haz bisagra llevando la cadera atrás con espalda neutra y arranca la pesa entre las piernas. Explota con la cadera hacia delante y deja que la pesa \"flote\" hasta la altura del pecho. Controla la bajada y repite sin perder postura. Si notas que tiras con hombros o sientes la zona lumbar, reduce peso/velocidad y prioriza técnica.",
+    "cues": "Cadera atrás, espalda larga\nAprieta glúteos arriba sin arquear la espalda\nBrazos como cuerdas: no tiran\nLa pesa cerca del cuerpo\nCostillas abajo, abdomen firme",
+    "commonMistakes": "Convertirlo en sentadilla (demasiada rodilla, poca cadera)\nTirar con brazos/hombros para subir la pesa\nRedondear la espalda al pasar la pesa entre las piernas\nHiperextender al final (sacar costillas/arquear lumbar)\nDejar que la pesa se aleje del cuerpo",
+    "regressions": "Menos peso manteniendo postura perfecta\nSwing dead-stop (pausando en el suelo cada repetición)\nPracticar bisagra de cadera sin swing antes",
+    "progressions": "Más peso solo si no cambia la técnica\nMás repeticiones/tiempo con la misma forma\nSwing a una mano (cuando el básico sea sólido)",
+    "media": [
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=vdezTMulJ-k",
+        "thumbnailUrl": "https://img.youtube.com/vi/vdezTMulJ-k/hqdefault.jpg"
+      },
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/3/3b/Kettlebell_swing_with_arms_fully_extended.jpg",
+        "thumbnailUrl": null
+      }
+    ]
+  },
+  {
+    "slug": "burpee-sin-salto",
+    "name": "Burpee (sin salto)",
+    "environment": "HOME",
+    "primaryMuscle": "Full body",
+    "description": "Variante de burpee de bajo impacto: sin salto final y con opción de llevar pies atrás/adelante caminando (en vez de saltar). Sirve para subir pulso de forma controlada manteniendo técnica.",
+    "cues": "Baja a sentadilla y apoya manos bajo hombros\nLleva pies atrás a plancha (caminando si hace falta)\nMantén core firme: evita hundir lumbar\nVuelve con pies hacia delante (caminando o saltito suave)\nPonte de pie sin salto; exhala y reinicia",
+    "commonMistakes": "Colapsar la zona lumbar en plancha\nManos demasiado adelantadas (carga hombros)\nDejar caer el cuerpo sin control\nForzar velocidad y perder técnica",
+    "regressions": "Paso atrás/adelante (sin saltar)\nElevar manos en un banco/mesa estable (menos carga)",
+    "progressions": "Añadir salto final si técnica y articulaciones lo toleran\nAñadir flexión (solo si control escapular es bueno)",
+    "media": [
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=qLBImHhCXSw",
+        "thumbnailUrl": "https://img.youtube.com/vi/qLBImHhCXSw/hqdefault.jpg"
+      },
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/b/b0/Burpee.gif",
+        "thumbnailUrl": null
+      }
+    ]
+  },
+  {
+    "slug": "sentadilla-contra-la-pared",
+    "name": "Sentadilla contra la pared (Wall sit)",
+    "environment": "HOME",
+    "primaryMuscle": "Cuádriceps",
+    "description": "Ejercicio isométrico de piernas con la espalda apoyada en la pared. Ajusta la altura para mantener buena postura sin dolor: no hace falta bajar hasta 90°.\n\nApoya la espalda en la pared, separa los pies un poco hacia delante y baja hasta una posición estable. Mantén rodillas alineadas con los pies y respira con normalidad durante el tiempo marcado.",
+    "cues": "Espalda completa contra la pared\nPies algo adelantados para poder bajar estable\nRodillas siguen la línea de los pies (sin colapsar hacia dentro)\nAltura cómoda: técnica primero, ego cero\nRespira fluido durante el aguante",
+    "commonMistakes": "Bajar demasiado y perder postura\nRodillas hacia dentro\nPies demasiado cerca de la pared (te obliga a inclinarte)\nAguantar la respiración y tensionar hombros/cuello",
+    "regressions": "Menos profundidad (más alto)\nMenos tiempo (10–20 s)\nHacerlo en varias tandas cortas",
+    "progressions": "Más tiempo manteniendo postura\nAñadir una mancuerna ligera en el regazo\nUna pierna (solo si no hay molestias y hay control)",
+    "media": [
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=JaZNYM3zAP0",
+        "thumbnailUrl": "https://img.youtube.com/vi/JaZNYM3zAP0/hqdefault.jpg"
+      },
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Airline_position.svg/330px-Airline_position.svg.png",
+        "thumbnailUrl": null
+      }
+    ]
+  },
+  {
+    "slug": "press-pallof-con-banda",
+    "name": "Press Pallof con banda (anti-rotación)",
+    "environment": "HOME",
+    "primaryMuscle": "Core (transverso, recto abdominal, oblicuos)",
+    "description": "Ejercicio de core para resistir la rotación: la banda tira hacia un lado y tú mantienes el tronco estable mientras empujas las manos al frente.\n\nColoca la banda a la altura del pecho y ponte de lado al anclaje. Junta las manos frente al esternón, separa un poco los pies y aléjate lo justo para notar tensión. Exhala suave mientras empujas las manos al frente sin dejar que el cuerpo gire; vuelve con control. Debe sentirse \"trabajo\" en abdomen y glúteos, no dolor agudo en espalda u hombro. Si aparece dolor o pierdes la postura, reduce tensión o rango.",
+    "cues": "Cuerpo de lado al anclaje; hombros y caderas miran al frente\nCostillas \"abajo\" y cuello largo (sin encoger hombros)\nGlúteos firmes y abdomen activo antes de empujar\nEmpuja lento y vuelve lento, sin que el tronco rote\nRespira: exhala al empujar, inhala al volver",
+    "commonMistakes": "Girar el tronco hacia la banda (se pierde el objetivo anti-rotación)\nArquear la zona lumbar al empujar\nSubir hombros y tensar el cuello\nUsar demasiada tensión y compensar con el cuerpo\nMover caderas o dar pasos para \"escapar\" de la banda",
+    "regressions": "Menos tensión: acércate al anclaje o usa banda más suave\nMenos recorrido: empuja a medias y vuelve\nPosición más estable: pies más separados (base amplia)",
+    "progressions": "Pausa de 1–2 s con brazos extendidos sin perder postura\nMás tensión (paso extra lateral) manteniendo técnica\nPosición en zancada (staggered stance) para más control de cadera",
+    "media": [
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=lqPrSGXfL1Q",
+        "thumbnailUrl": "https://img.youtube.com/vi/lqPrSGXfL1Q/hqdefault.jpg"
+      },
+      {
+        "type": "image",
+        "url": "https://proet-s3-do.fra1.digitaloceanspaces.com/exercise/press-pallof-3167.png",
+        "thumbnailUrl": null
+      }
+    ]
   }
 ]
