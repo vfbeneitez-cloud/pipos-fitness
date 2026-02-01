@@ -194,10 +194,13 @@ Genera el plan personalizado en JSON.`;
       },
       exercisesToUpsert,
     };
-  } catch {
-    Sentry.captureMessage("weekly_plan_fallback_ai_invalid_output", {
-      tags: { fallback_type: "ai_invalid_output" },
-    });
+  } catch (err) {
+    const isProviderError =
+      err instanceof Error && (err.name === "AbortError" || err.message.startsWith("OpenAI API error"));
+    Sentry.captureMessage(
+      isProviderError ? "weekly_plan_fallback_provider_error" : "weekly_plan_fallback_ai_invalid_output",
+      { tags: { fallback_type: isProviderError ? "provider_error" : "ai_invalid_output" } },
+    );
     return null;
   }
 }

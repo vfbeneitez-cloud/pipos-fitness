@@ -109,6 +109,68 @@ describe("POST /api/agent/weekly-plan", () => {
     expect(result.status).toBe(400);
     expect((result.body as { error: string }).error).toBe("INVALID_BODY");
   });
+
+  describe("AI Beta contract (mock provider)", () => {
+    it("adjustWeeklyPlan returns expected shape (plan.trainingJson, plan.nutritionJson)", async () => {
+      await prisma.userProfile.upsert({
+        where: { userId: TEST_USER_ID },
+        update: {
+          daysPerWeek: 3,
+          sessionMinutes: 45,
+          environment: "GYM",
+          mealsPerDay: 3,
+          cookingTime: "MIN_20",
+        },
+        create: {
+          userId: TEST_USER_ID,
+          daysPerWeek: 3,
+          sessionMinutes: 45,
+          environment: "GYM",
+          mealsPerDay: 3,
+          cookingTime: "MIN_20",
+        },
+      });
+
+      const result = await adjustWeeklyPlan({ weekStart: "2026-01-26" }, TEST_USER_ID);
+
+      expect(result.status).toBe(200);
+      const body = result.body as {
+        plan: {
+          trainingJson: { environment: string; daysPerWeek: number; sessions: unknown[] };
+          nutritionJson: { mealsPerDay: number; days: { dayIndex: number; meals: unknown[] }[] };
+        };
+      };
+      expect(body.plan.trainingJson).toBeDefined();
+      expect(body.plan.trainingJson.environment).toBe("GYM");
+      expect(body.plan.trainingJson.daysPerWeek).toBe(3);
+      expect(Array.isArray(body.plan.trainingJson.sessions)).toBe(true);
+      expect(body.plan.nutritionJson).toBeDefined();
+      expect(body.plan.nutritionJson.days.length).toBe(7);
+      expect(body.plan.nutritionJson.mealsPerDay).toBe(3);
+    });
+
+    it("adjustWeeklyPlan never calls Exercise.upsert", async () => {
+      await prisma.userProfile.upsert({
+        where: { userId: TEST_USER_ID },
+        update: { daysPerWeek: 3, sessionMinutes: 45, environment: "GYM", mealsPerDay: 3, cookingTime: "MIN_20" },
+        create: {
+          userId: TEST_USER_ID,
+          daysPerWeek: 3,
+          sessionMinutes: 45,
+          environment: "GYM",
+          mealsPerDay: 3,
+          cookingTime: "MIN_20",
+        },
+      });
+
+      const upsertSpy = vi.spyOn(prisma.exercise, "upsert");
+
+      await adjustWeeklyPlan({ weekStart: "2026-01-26" }, TEST_USER_ID);
+
+      expect(upsertSpy).not.toHaveBeenCalled();
+      upsertSpy.mockRestore();
+    });
+  });
 });
 
 describe("POST /api/agent/weekly-plan authorization", () => {
