@@ -3269,5 +3269,28 @@
         "thumbnailUrl": null
       }
     ]
+  },
+  {
+    "slug": "remo-con-banda-elastica",
+    "name": "Remo con banda elástica",
+    "environment": "HOME",
+    "primaryMuscle": "Dorsales, romboides, bíceps",
+    "description": "Ejercicio de tirón horizontal para espalda y parte posterior del hombro. La idea es acercar los codos hacia atrás manteniendo el tronco estable, sin \"encoger\" los hombros.\n\nVersión simple (sentado): siéntate con piernas extendidas o ligeramente flexionadas, pasa la banda por la planta de los pies y sujeta los extremos. Empieza con brazos estirados, pecho \"orgulloso\" sin arquear la zona lumbar. Tira llevando los codos hacia atrás hasta que las manos lleguen cerca de las costillas, aprieta 1 s las escápulas y vuelve lento.\n\nDebe sentirse trabajo en espalda/brazos. Para si hay dolor agudo en hombro, codo o un pinchazo en la espalda.",
+    "cues": "Crece desde la coronilla: cuello largo, hombros lejos de las orejas\nPecho abierto sin sacar costillas (espalda neutra)\nTira con codos hacia atrás, no con las manos\nAprieta escápulas 1 s al final (sin hiperextender la espalda)\nVuelve lento: controla la banda, no dejes que te \"arrastre\"",
+    "commonMistakes": "Encoger hombros (trapecio arriba) en vez de tirar con espalda\nRedondear la espalda y colapsar el pecho\nEcharse demasiado hacia atrás para \"hacer palanca\"\nCodos muy abiertos (carga incómoda en hombro) sin control\nSoltar la vuelta rápido y perder tensión/estabilidad",
+    "regressions": "Usar banda más suave o agarrar más cerca (menos tensión)\nMenos recorrido: parar antes si pierdes postura\nRodillas algo flexionadas o sentarte en una silla para más estabilidad",
+    "progressions": "Banda más dura o más tensión (acortar banda)\nPausa de 2 s atrás manteniendo cuello relajado\nTempo: 2–3 s de vuelta (excéntrica lenta) sin perder postura",
+    "media": [
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=fT7nhdY19Fs",
+        "thumbnailUrl": "https://img.youtube.com/vi/fT7nhdY19Fs/hqdefault.jpg"
+      },
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/5/5e/Bent_over_rows_with_resistance_bands_01.gif",
+        "thumbnailUrl": null
+      }
+    ]
   }
 ]
