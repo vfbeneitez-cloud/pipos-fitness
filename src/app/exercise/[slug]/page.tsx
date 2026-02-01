@@ -104,7 +104,7 @@ export default async function ExercisePage({ params }: Props) {
                   <div className="relative w-full overflow-hidden rounded-2xl bg-black/5 pt-[56.25%]">
                     <iframe
                       className="absolute inset-0 h-full w-full"
-                      src={`https://www.youtube-nocookie.com/embed/${youtubeId}?rel=0`}
+                      src={`https://www.youtube.com/embed/${youtubeId}?rel=0`}
                       title="Vídeo del ejercicio"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                       referrerPolicy="strict-origin-when-cross-origin"
