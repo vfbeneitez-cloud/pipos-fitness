@@ -9,7 +9,7 @@ function requireAuthEnv() {
   if (!process.env.AUTH_URL) missing.push("AUTH_URL");
   if (!process.env.GOOGLE_CLIENT_ID) missing.push("GOOGLE_CLIENT_ID");
   if (!process.env.GOOGLE_CLIENT_SECRET) missing.push("GOOGLE_CLIENT_SECRET");
-  if (!process.env.DATABASE_URL) missing.push("DATABASE_URL");
+  // DATABASE_URL not checked here: may be Runtime-only on Vercel; build would fail at "Collecting page data"
   if (missing.length) {
     throw new Error(
       `[Auth] Missing env in production: ${missing.join(", ")}. Set them in Vercel → Settings → Environment Variables.`,
