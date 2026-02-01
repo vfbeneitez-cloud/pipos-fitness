@@ -3,7 +3,10 @@ import type { NextRequest } from "next/server";
 
 async function withErrorLog(
   req: NextRequest,
-  handler: (req: NextRequest, context: { params: Promise<Record<string, string | string[]>> }) => Promise<Response>,
+  handler: (
+    req: NextRequest,
+    context: { params: Promise<Record<string, string | string[]>> },
+  ) => Promise<Response>,
   context: { params: Promise<Record<string, string | string[]>> },
 ) {
   try {
@@ -16,10 +19,16 @@ async function withErrorLog(
   }
 }
 
-export function GET(req: NextRequest, context: { params: Promise<Record<string, string | string[]>> }) {
+export function GET(
+  req: NextRequest,
+  context: { params: Promise<Record<string, string | string[]>> },
+) {
   return withErrorLog(req, handlers.GET, context);
 }
 
-export function POST(req: NextRequest, context: { params: Promise<Record<string, string | string[]>> }) {
+export function POST(
+  req: NextRequest,
+  context: { params: Promise<Record<string, string | string[]>> },
+) {
   return withErrorLog(req, handlers.POST, context);
 }

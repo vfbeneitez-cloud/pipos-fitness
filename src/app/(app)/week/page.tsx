@@ -41,6 +41,7 @@ export default function WeekPage() {
   const [plan, setPlan] = useState<Plan | null | undefined>(undefined);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [regenLoading, setRegenLoading] = useState(false);
 
   const weekStart = getWeekStart(new Date());
   const todayIndex = (new Date().getDay() + 6) % 7;
@@ -65,6 +66,28 @@ export default function WeekPage() {
       setLoading(false);
     }
   }, [weekStart]);
+
+  const handleRegenerate = useCallback(async () => {
+    setRegenLoading(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/agent/weekly-plan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ weekStart }),
+      });
+      const data = (await res.json()) as { error?: string; error_code?: string; message?: string };
+      if (!res.ok) {
+        setError(getErrorMessage(data, "Error al regenerar plan."));
+        return;
+      }
+      await fetchPlan();
+    } catch {
+      setError("Error de red. Reintenta.");
+    } finally {
+      setRegenLoading(false);
+    }
+  }, [weekStart, fetchPlan]);
 
   useEffect(() => {
     fetchPlan();
@@ -150,6 +173,16 @@ export default function WeekPage() {
           {plan.lastRationale != null && plan.lastRationale !== "" && (
             <RationalePanel rationale={plan.lastRationale} generatedAt={plan.lastGeneratedAt} />
           )}
+          <div className="mb-6">
+            <button
+              type="button"
+              onClick={handleRegenerate}
+              disabled={regenLoading}
+              className="rounded-lg border border-zinc-300 px-4 py-2 text-sm dark:border-zinc-600 disabled:opacity-50"
+            >
+              {regenLoading ? "Regenerando…" : "Regenerar plan con IA"}
+            </button>
+          </div>
           <section className="mb-8" aria-labelledby="training-heading">
             <h2 id="training-heading" className="mb-3 text-lg font-medium">
               Entrenamiento

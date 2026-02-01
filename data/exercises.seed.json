@@ -184,6 +184,29 @@
     ]
   },
   {
+    "slug": "remo-barra",
+    "name": "Remo con barra",
+    "environment": "GYM",
+    "primaryMuscle": "Dorsales, romboides, bíceps",
+    "description": "Remo con barra en bisagra para trabajar espalda con control, sin balanceos y manteniendo postura estable.",
+    "cues": "Espalda estable, cadera atrás\nBarra hacia el ombligo\nCodos atrás\nBaja lento",
+    "commonMistakes": "Balancear el torso para mover más peso\nRedondear la espalda por exceso de carga\nEncoger hombros al tirar\nSoltar la bajada sin control",
+    "regressions": "Menos peso + pausa 1s arriba\nRemo con pecho apoyado (banco inclinado)\nRemo en polea (ya en catálogo)",
+    "progressions": "Tempo: bajada 2–3s\nPausa 1–2s arriba sin balanceo\nMás carga manteniendo técnica",
+    "media": [
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/0/04/Barbell-bent-over-row-1.png",
+        "thumbnailUrl": null
+      },
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=vT2GjY_Umpw",
+        "thumbnailUrl": "https://img.youtube.com/vi/vT2GjY_Umpw/hqdefault.jpg"
+      }
+    ]
+  },
+  {
     "slug": "remo-mancuerna-una-mano-banco",
     "name": "Remo con mancuerna a una mano (banco)",
     "environment": "GYM",
@@ -253,6 +276,29 @@
     ]
   },
   {
+    "slug": "sentadilla-barra-trasera",
+    "name": "Sentadilla trasera con barra",
+    "environment": "GYM",
+    "primaryMuscle": "Cuádriceps, glúteos, isquiotibiales, core",
+    "description": "Sentadilla con barra en la parte alta de la espalda para trabajar piernas y glúteos con un patrón básico de fuerza. Para MVP, es un ejercicio core de gym y muy compartible.\n\nTécnica: Usa rack: ajusta la altura para desencajar con control (sin ponerte de puntillas). Coloca la barra en la parte alta de la espalda (no en el cuello). Aprieta la parte alta de la espalda (espalda fuerte). Pies a anchura cómoda; mira al frente; abdomen firme. Baja llevando cadera y rodillas a la vez, con rodillas siguiendo la dirección de los pies. Profundidad: la máxima que puedas mantener con espalda estable y control (sin colapsar abajo). Sube empujando el suelo, manteniendo el tronco estable y la barra encima del medio del pie. Seguridad: si dudas, usa barras de seguridad del rack o spotter.",
+    "cues": "Barra estable, espalda fuerte\nRodillas siguen a los pies\nBaja controlado sin rebotar\nSube empujando el suelo\nUsa barras de seguridad si dudas",
+    "commonMistakes": "Talones se levantan (pierdes base).\nRodillas colapsan hacia dentro.\nPerder tensión y doblar la espalda abajo.\nRebotar en el fondo para subir.\nDesencajar/encajar la barra sin control.",
+    "regressions": "Sentadilla goblet (ya en catálogo) para aprender patrón\nSentadilla a caja (altura que te permita control)\nMenos carga + rango perfecto",
+    "progressions": "Pausa 1s abajo (sin perder tensión)\nTempo: bajada 2–3s\nMás carga manteniendo técnica",
+    "media": [
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/5/5d/Squats-1.png",
+        "thumbnailUrl": null
+      },
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=1oed-UmAxFs",
+        "thumbnailUrl": "https://img.youtube.com/vi/1oed-UmAxFs/hqdefault.jpg"
+      }
+    ]
+  },
+  {
     "slug": "gym-overhead-press-5",
     "name": "Overhead Press",
     "environment": "GYM",
@@ -295,6 +341,29 @@
         "type": "youtube",
         "url": "https://www.youtube.com/watch?v=poD_-zaG9hk",
         "thumbnailUrl": "https://img.youtube.com/vi/poD_-zaG9hk/hqdefault.jpg"
+      }
+    ]
+  },
+  {
+    "slug": "press-militar-barra",
+    "name": "Press militar con barra",
+    "environment": "GYM",
+    "primaryMuscle": "Deltoides, tríceps, trapecio superior",
+    "description": "Press militar con barra de pie para trabajar hombros con control, manteniendo el tronco estable y una línea vertical de la barra.",
+    "cues": "Glúteos firmes, costillas tranquilas\nBarra cerca de la cara\nMuñecas neutras\nArriba: barra sobre hombros\nBaja controlado sin rebote",
+    "commonMistakes": "Hiperextender lumbar para compensar\nEmpujar la barra hacia delante (pierdes línea)\nMuñecas dobladas hacia atrás\nEncoger hombros y perder control",
+    "regressions": "Menos peso + rango perfecto\nPress sentado si necesitas más estabilidad\nPress con mancuernas si te da mejor recorrido",
+    "progressions": "Pausa 1s arriba (control)\nTempo en la bajada 2–3s\nMás carga manteniendo la misma línea",
+    "media": [
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Barbell_shoulder_press_1.svg/764px-Barbell_shoulder_press_1.svg.png",
+        "thumbnailUrl": null
+      },
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=wol7Hko8RhY",
+        "thumbnailUrl": "https://img.youtube.com/vi/wol7Hko8RhY/hqdefault.jpg"
       }
     ]
   },
@@ -3083,6 +3152,29 @@
         "type": "youtube",
         "url": "https://www.youtube.com/watch?v=Dy28eq2PjcM",
         "thumbnailUrl": "https://img.youtube.com/vi/Dy28eq2PjcM/hqdefault.jpg"
+      }
+    ]
+  },
+  {
+    "slug": "paseo-del-granjero",
+    "name": "Paseo del granjero (Farmer carry)",
+    "environment": "MIXED",
+    "primaryMuscle": "Agarre, core, espalda alta",
+    "description": "Camina llevando dos mancuernas o kettlebells a los lados con el cuerpo alto y estable. Objetivo: agarre fuerte, core firme y hombros/espalda alta estables sin movimientos complejos.\n\nColócate de pie con el peso a los lados, costillas \"abajo\" y abdomen firme. Camina con pasos cortos y controlados, sin balancear el peso. Termina cuando puedas mantener la misma postura; si pierdes la técnica, reduce peso o distancia.",
+    "cues": "Crece alto: corona hacia arriba\nCostillas abajo y abdomen firme\nHombros lejos de las orejas (no encoger)\nPasos cortos y controlados\nPeso pegado al cuerpo, sin balanceo",
+    "commonMistakes": "Encoger hombros y tensar el cuello\nArquear la zona lumbar para \"sacar pecho\"\nCaminar con zancadas largas o con prisa\nElegir demasiado peso y torcer la postura\nBalancear las mancuernas al caminar",
+    "regressions": "Menos peso manteniendo postura perfecta\nMenos distancia/tiempo (10–20 m o 15–30 s)\nSostén estático de pie (15–30 s) antes de caminar",
+    "progressions": "Más distancia/tiempo sin perder técnica\nMás peso solo si no cambia la postura\nCaminar más lento para aumentar el control",
+    "media": [
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=p5MNNosenJc",
+        "thumbnailUrl": "https://img.youtube.com/vi/p5MNNosenJc/hqdefault.jpg"
+      },
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/5/56/USMC-111018-M-FY706-002.jpg",
+        "thumbnailUrl": null
       }
     ]
   }

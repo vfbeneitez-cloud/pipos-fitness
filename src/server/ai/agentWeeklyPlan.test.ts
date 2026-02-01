@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { prisma } from "@/src/server/db/prisma";
+import { main as seedMain } from "../../../prisma/seed";
 import { adjustWeeklyPlan } from "./agentWeeklyPlan";
 
 const TEST_USER_ID = "test-user-id";
@@ -171,13 +172,14 @@ describe("POST /api/agent/weekly-plan", () => {
         },
       });
 
+      await seedMain();
       const countBefore = await prisma.exercise.count();
 
       await adjustWeeklyPlan({ weekStart: "2026-01-26" }, TEST_USER_ID);
 
       const countAfter = await prisma.exercise.count();
       expect(countAfter).toBe(countBefore);
-    });
+    }, 60_000);
   });
 });
 

@@ -32,6 +32,11 @@ Regla: el identificador real es el `slug`. Los números (#) son solo referencia 
 - [ ] abduccion-cadera-maquina — Abducción de cadera en máquina (hip abductor)
 - [ ] aperturas-peck-deck — Aperturas en máquina (peck deck)
 - [ ] curl-biceps-barra-z — Curl de bíceps con barra Z
+- [ ] dominadas-asistidas-maquina — Dominadas asistidas en máquina
+- [ ] fondos-paralelas — Fondos en paralelas (dips)
+- [ ] press-inclinado-mancuernas — Press inclinado con mancuernas
+- [ ] press-banca-barra — Press de banca con barra
+- [ ] sentadilla-barra-trasera — Sentadilla trasera con barra
 
 > Nota: marcar el checkbox solo cuando se haya verificado manualmente:
 >
