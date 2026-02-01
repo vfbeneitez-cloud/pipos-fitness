@@ -1,9 +1,11 @@
 import * as Sentry from "@sentry/nextjs";
 import { z } from "zod";
 import { trackEvent } from "@/src/server/lib/events";
+import { logInfo, logError } from "@/src/server/lib/logger";
 import { prisma } from "@/src/server/db/prisma";
 import { getProvider } from "./getProvider";
 import type { AIProvider } from "./provider";
+import { MockProvider } from "./providers/mock";
 import {
   generateWeeklyTrainingPlan,
   type WeeklyTrainingPlan,
@@ -473,11 +475,30 @@ Propón ajustes seguros basados en adherencia y perfil.`;
     }
   } catch (error) {
     fallbackType = "provider_error";
+    const errMsg = error instanceof Error ? error.message : "unknown";
+    logError("agent", "OpenAI provider failed, using mock fallback", { error: errMsg });
     Sentry.captureException(error, {
       tags: { fallback_type: "provider_error" },
     });
-    rationale = "Error al procesar ajustes. Se mantiene el plan actual.";
-    adjustments = {};
+    try {
+      const mock = new MockProvider();
+      const fallbackRes = await mock.chat([
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt },
+      ]);
+      rationale =
+        fallbackRes.content.trim() || "He aplicado ajustes menores basados en tu progreso.";
+      if (adherence.training < 0.5) {
+        adjustments.daysPerWeek = Math.max(1, (profile?.daysPerWeek ?? 3) - 1);
+      }
+      if (adherence.nutrition < 0.5) {
+        adjustments.mealsPerDay = Math.max(2, (profile?.mealsPerDay ?? 3) - 1);
+        adjustments.cookingTime = "MIN_10";
+      }
+    } catch {
+      rationale = "He aplicado ajustes menores basados en tu progreso.";
+      adjustments = {};
+    }
   }
 
   trackEvent(
