@@ -15,7 +15,7 @@ function requireAuthEnv() {
       `[Auth] Missing env in production: ${missing.join(", ")}. Set them in Vercel → Settings → Environment Variables.`,
     );
   }
-  const url = process.env.AUTH_URL.trim();
+  const url = process.env.AUTH_URL as string;
   if (url.endsWith("/")) {
     throw new Error(
       "[Auth] AUTH_URL must not end with a trailing slash (e.g. https://pipos-fitness.vercel.app).",
