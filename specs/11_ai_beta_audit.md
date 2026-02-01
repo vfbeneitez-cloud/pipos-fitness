@@ -2,12 +2,12 @@
 
 ## 1) Rutas que llaman a OpenAI
 
-| Ruta / función | Condición | Llamada LLM |
-|----------------|-----------|-------------|
-| **createWeeklyPlan** (`src/server/api/weeklyPlan/route.ts`) | `process.env.OPENAI_API_KEY` definido | `generatePlanFromApi(provider, ...)` → `provider.chat()` (1 llamada) |
-| **adjustWeeklyPlan** (`src/server/ai/agentWeeklyPlan.ts`) | Siempre usa `getProvider()` (OpenAI si hay key, si no Mock) | 1) `provider.chat()` para ajustes (rationale + adjustments). 2) Si `OPENAI_API_KEY`: `generatePlanFromApi(provider, ...)` para plan completo (2 llamadas con API real) |
+| Ruta / función                                              | Condición                                                   | Llamada LLM                                                                                                                                                            |
+| ----------------------------------------------------------- | ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **createWeeklyPlan** (`src/server/api/weeklyPlan/route.ts`) | `process.env.OPENAI_API_KEY` definido                       | `generatePlanFromApi(provider, ...)` → `provider.chat()` (1 llamada)                                                                                                   |
+| **adjustWeeklyPlan** (`src/server/ai/agentWeeklyPlan.ts`)   | Siempre usa `getProvider()` (OpenAI si hay key, si no Mock) | 1) `provider.chat()` para ajustes (rationale + adjustments). 2) Si `OPENAI_API_KEY`: `generatePlanFromApi(provider, ...)` para plan completo (2 llamadas con API real) |
 
-- **HTTP:** POST `/api/weekly-plan` → `createWeeklyPlan`.  
+- **HTTP:** POST `/api/weekly-plan` → `createWeeklyPlan`.
 - **HTTP:** POST `/api/agent/weekly-plan` y POST `/api/cron/weekly-regenerate` → `adjustWeeklyPlan`.
 
 ---
@@ -83,10 +83,10 @@
 
 ## 4) Dónde se escribe en DB
 
-| Acción | Tabla | Ubicación |
-|--------|--------|-----------|
-| Plan semanal | **WeeklyPlan** (upsert por `userId` + `weekStart`) | `createWeeklyPlan`: `prisma.weeklyPlan.upsert` (trainingJson, nutritionJson, status). `adjustWeeklyPlan`: mismo upsert + `lastRationale`, `lastGeneratedAt`. |
-| Ejercicios nuevos/actualizados | **Exercise** | `createWeeklyPlan`: tras `generatePlanFromApi`, `prisma.exercise.upsert` por cada `planResult.exercisesToUpsert` (where: slug; update/create: slug, name, environment). `adjustWeeklyPlan`: mismo bloque de `exercisesToUpsert` y `prisma.exercise.upsert` cuando `useApiForPlan` y `planResult` no null. |
+| Acción                         | Tabla                                              | Ubicación                                                                                                                                                                                                                                                                                                 |
+| ------------------------------ | -------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Plan semanal                   | **WeeklyPlan** (upsert por `userId` + `weekStart`) | `createWeeklyPlan`: `prisma.weeklyPlan.upsert` (trainingJson, nutritionJson, status). `adjustWeeklyPlan`: mismo upsert + `lastRationale`, `lastGeneratedAt`.                                                                                                                                              |
+| Ejercicios nuevos/actualizados | **Exercise**                                       | `createWeeklyPlan`: tras `generatePlanFromApi`, `prisma.exercise.upsert` por cada `planResult.exercisesToUpsert` (where: slug; update/create: slug, name, environment). `adjustWeeklyPlan`: mismo bloque de `exercisesToUpsert` y `prisma.exercise.upsert` cuando `useApiForPlan` y `planResult` no null. |
 
 - **Exercise:** solo se tocan `slug`, `name`, `environment`. No se escriben `primaryMuscle`, `description`, `cues`, etc., desde el agente.
 
@@ -102,4 +102,4 @@
 
 ---
 
-*Solo reporte; sin cambios de código.*
+_Solo reporte; sin cambios de código._

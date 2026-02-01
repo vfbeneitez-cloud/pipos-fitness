@@ -4,7 +4,10 @@ import type { Prisma } from "@prisma/client";
 import { generateWeeklyTrainingPlan } from "@/src/core/training/generateWeeklyTrainingPlan";
 import { generateWeeklyNutritionPlan } from "@/src/core/nutrition/generateWeeklyNutritionPlan";
 import { getProvider } from "@/src/server/ai/getProvider";
-import { generatePlanFromApi, mapAiTrainingToExistingExercises } from "@/src/server/ai/agentWeeklyPlan";
+import {
+  generatePlanFromApi,
+  mapAiTrainingToExistingExercises,
+} from "@/src/server/ai/agentWeeklyPlan";
 import { trackEvent } from "@/src/server/lib/events";
 
 const GetQuery = z.object({
