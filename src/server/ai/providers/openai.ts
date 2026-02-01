@@ -19,7 +19,10 @@ export function buildOpenAIPayload(
   }
   const system = messages.find((m) => m.role === "system")?.content ?? "";
   const userParts = messages.filter((m) => m.role === "user").map((m) => m.content);
-  const input = userParts.length === 1 ? userParts[0]! : userParts.map((c) => ({ role: "user" as const, content: c }));
+  const input =
+    userParts.length === 1
+      ? userParts[0]!
+      : userParts.map((c) => ({ role: "user" as const, content: c }));
   return {
     model: "gpt-4o-mini",
     instructions: system,
