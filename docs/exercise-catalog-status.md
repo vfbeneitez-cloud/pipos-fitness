@@ -1,5 +1,7 @@
 # Exercise Catalog — Status (SOURCE OF TRUTH)
 
+**Ejercicios actualizados en catálogo:** 150 (en `data/exercises.seed.json`).
+
 Regla: el identificador real es el `slug`. Los números (#) son solo referencia humana.
 
 ## Accepted

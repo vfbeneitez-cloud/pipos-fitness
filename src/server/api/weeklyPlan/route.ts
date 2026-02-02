@@ -11,6 +11,7 @@ import {
   generatePlanFromApi,
   mapAiTrainingToExistingExercises,
 } from "@/src/server/ai/agentWeeklyPlan";
+import { trackAiPlanAudit } from "@/src/server/ai/aiAudit";
 import { trackEvent } from "@/src/server/lib/events";
 
 const GetQuery = z.object({
@@ -48,6 +49,9 @@ export async function getWeeklyPlan(url: string, userId: string) {
 }
 
 export async function createWeeklyPlan(body: unknown, userId: string) {
+  const t0 = Date.now();
+  const providerName = process.env.OPENAI_API_KEY ? "openai" : "mock";
+
   const parsed = PostBody.safeParse(body);
   if (!parsed.success)
     return { status: 400, body: { error: "INVALID_BODY", details: parsed.error.flatten() } };
@@ -56,7 +60,8 @@ export async function createWeeklyPlan(body: unknown, userId: string) {
   const weekStart = normalizeWeekStart(parsed.data.weekStart);
 
   const profile = await prisma.userProfile.findUnique({ where: { userId } });
-  const finalMealsPerDay = profile?.mealsPerDay ?? 3;
+  const rawMealsPerDay = profile?.mealsPerDay ?? 3;
+  const finalMealsPerDay = Math.min(4, Math.max(2, rawMealsPerDay));
   const finalCookingTime = profile?.cookingTime ?? "MIN_20";
 
   let training: ReturnType<typeof generateWeeklyTrainingPlan>;
@@ -64,6 +69,34 @@ export async function createWeeklyPlan(body: unknown, userId: string) {
 
   if (process.env.OPENAI_API_KEY) {
     const provider = getProvider();
+    const exercisePool = await prisma.exercise.findMany({
+      where: { ...(environment === "MIXED" ? {} : { environment }) },
+      select: { slug: true, name: true, environment: true, primaryMuscle: true },
+    });
+    if (exercisePool.length === 0) {
+      trackAiPlanAudit(
+        { kind: "fallback", fallbackType: "no_exercises_available" },
+        {
+          context: "createWeeklyPlan",
+          provider: providerName,
+          environment,
+          daysPerWeek,
+          sessionMinutes,
+          mealsPerDay: finalMealsPerDay,
+          cookingTime: finalCookingTime,
+          poolSize: 0,
+          durationMs: Date.now() - t0,
+        },
+      );
+      return {
+        status: 409,
+        body: {
+          error: "NO_EXERCISES_AVAILABLE",
+          message:
+            "Aún no tenemos ejercicios suficientes para crear tu plan. Inténtalo de nuevo más tarde.",
+        },
+      };
+    }
     const planResult = await generatePlanFromApi(provider, {
       profile,
       finalEnvironment: environment,
@@ -71,12 +104,9 @@ export async function createWeeklyPlan(body: unknown, userId: string) {
       finalSessionMinutes: sessionMinutes,
       finalMealsPerDay,
       finalCookingTime,
+      allowedExercises: exercisePool,
     });
     if (planResult) {
-      const exercisePool = await prisma.exercise.findMany({
-        where: { ...(environment === "MIXED" ? {} : { environment }) },
-        select: { slug: true, name: true, environment: true, primaryMuscle: true },
-      });
       const { training: mappedTraining, unmatchedCount } = mapAiTrainingToExistingExercises(
         planResult.training,
         exercisePool,
@@ -86,16 +116,47 @@ export async function createWeeklyPlan(body: unknown, userId: string) {
       if (unmatchedCount > 0) {
         trackEvent("ai_exercise_unmatched", { count: unmatchedCount });
       }
+      const sessionsCount = training?.sessions?.length ?? null;
+      const totalExercises = Array.isArray(training?.sessions)
+        ? training.sessions.reduce((acc, s) => acc + (s.exercises?.length ?? 0), 0)
+        : null;
+      trackAiPlanAudit(
+        { kind: "success" },
+        {
+          context: "createWeeklyPlan",
+          provider: providerName,
+          environment,
+          daysPerWeek,
+          sessionMinutes,
+          mealsPerDay: finalMealsPerDay,
+          cookingTime: finalCookingTime,
+          poolSize: exercisePool.length,
+          sessionsCount: sessionsCount ?? undefined,
+          totalExercises: totalExercises ?? undefined,
+          unmatchedCount,
+          durationMs: Date.now() - t0,
+        },
+      );
     } else {
-      const exercisePool = await prisma.exercise.findMany({
-        where: { ...(environment === "MIXED" ? {} : { environment }) },
-        select: { slug: true, name: true },
-      });
+      trackAiPlanAudit(
+        { kind: "fallback", fallbackType: "ai_invalid_or_constraints" },
+        {
+          context: "createWeeklyPlan",
+          provider: providerName,
+          environment,
+          daysPerWeek,
+          sessionMinutes,
+          mealsPerDay: finalMealsPerDay,
+          cookingTime: finalCookingTime,
+          poolSize: exercisePool.length,
+          durationMs: Date.now() - t0,
+        },
+      );
       training = generateWeeklyTrainingPlan({
         environment,
         daysPerWeek,
         sessionMinutes,
-        exercisePool,
+        exercisePool: exercisePool.map((e) => ({ slug: e.slug, name: e.name })),
       });
       nutrition = generateWeeklyNutritionPlan({
         mealsPerDay: finalMealsPerDay,
@@ -110,6 +171,30 @@ export async function createWeeklyPlan(body: unknown, userId: string) {
       where: { ...(environment === "MIXED" ? {} : { environment }) },
       select: { slug: true, name: true },
     });
+    if (exercisePool.length === 0) {
+      trackAiPlanAudit(
+        { kind: "fallback", fallbackType: "no_exercises_available" },
+        {
+          context: "createWeeklyPlan",
+          provider: providerName,
+          environment,
+          daysPerWeek,
+          sessionMinutes,
+          mealsPerDay: finalMealsPerDay,
+          cookingTime: finalCookingTime,
+          poolSize: 0,
+          durationMs: Date.now() - t0,
+        },
+      );
+      return {
+        status: 409,
+        body: {
+          error: "NO_EXERCISES_AVAILABLE",
+          message:
+            "Aún no tenemos ejercicios suficientes para crear tu plan. Inténtalo de nuevo más tarde.",
+        },
+      };
+    }
     training = generateWeeklyTrainingPlan({
       environment,
       daysPerWeek,
@@ -123,6 +208,20 @@ export async function createWeeklyPlan(body: unknown, userId: string) {
       allergies: profile?.allergies ?? null,
       dislikes: profile?.dislikes ?? null,
     });
+    trackAiPlanAudit(
+      { kind: "success" },
+      {
+        context: "createWeeklyPlan",
+        provider: providerName,
+        environment,
+        daysPerWeek,
+        sessionMinutes,
+        mealsPerDay: finalMealsPerDay,
+        cookingTime: finalCookingTime,
+        poolSize: exercisePool.length,
+        durationMs: Date.now() - t0,
+      },
+    );
   }
 
   const plan = await prisma.weeklyPlan.upsert({

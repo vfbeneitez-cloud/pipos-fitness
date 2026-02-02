@@ -1,15 +1,15 @@
-"use client";
+import { getGoogleOAuthConfig } from "@/src/server/auth/config";
+import { SignInClient } from "./SignInClient";
 
-import { signIn } from "next-auth/react";
+type PageProps = {
+  searchParams?: Promise<{ error?: string }>;
+};
 
-export default function SignInPage() {
-  return (
-    <main>
-      <h1>Inicia sesión</h1>
+export default async function SignInPage({ searchParams }: PageProps) {
+  const params = (await (searchParams ?? Promise.resolve({}))) as {
+    error?: string;
+  };
+  const googleAuthEnabled = getGoogleOAuthConfig() !== null;
 
-      <button onClick={() => signIn("google", { callbackUrl: "/week" })}>
-        Continuar con Google
-      </button>
-    </main>
-  );
+  return <SignInClient googleAuthEnabled={googleAuthEnabled} error={params.error ?? null} />;
 }

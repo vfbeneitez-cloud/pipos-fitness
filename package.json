@@ -12,6 +12,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:db": "RUN_DB_TESTS=true vitest run",
     "format": "prettier -w .",
     "format:check": "prettier -c .",
     "check-youtube": "tsx scripts/check-youtube-urls.ts"

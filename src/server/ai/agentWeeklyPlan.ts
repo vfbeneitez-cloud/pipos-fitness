@@ -3,6 +3,7 @@ import { z } from "zod";
 import { trackEvent } from "@/src/server/lib/events";
 import { logInfo, logError } from "@/src/server/lib/logger";
 import { prisma } from "@/src/server/db/prisma";
+import { trackAiPlanAudit } from "@/src/server/ai/aiAudit";
 import { getProvider } from "./getProvider";
 import type { AIProvider } from "./provider";
 import { MockProvider } from "./providers/mock";
@@ -13,9 +14,18 @@ import {
 import { generateWeeklyNutritionPlan } from "@/src/core/nutrition/generateWeeklyNutritionPlan";
 import type { Prisma } from "@prisma/client";
 
+const ALLOWED_EXERCISES_MAX = 160;
+
 const BodySchema = z.object({
   weekStart: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
 });
+
+function pickAllowedExercisesDeterministic<
+  T extends { slug: string; name: string; environment: string },
+>(exercises: T[], opts: { max: number }): T[] {
+  const sorted = [...exercises].sort((a, b) => a.slug.localeCompare(b.slug));
+  return sorted.slice(0, opts.max);
+}
 
 function normalizeWeekStart(weekStart: string): Date {
   return new Date(`${weekStart}T00:00:00.000Z`);
@@ -122,6 +132,7 @@ async function generatePlanFromApi(
     finalSessionMinutes: number;
     finalMealsPerDay: number;
     finalCookingTime: string;
+    allowedExercises: Array<{ slug: string; name: string; environment: string }>;
   },
 ): Promise<{
   training: ReturnType<typeof generateWeeklyTrainingPlan>;
@@ -146,12 +157,43 @@ Responde SOLO con un JSON válido (sin markdown) con esta estructura exacta:
   }
 }`;
 
-  const userPrompt = `Perfil: nivel ${profile?.level ?? "BEGINNER"}, objetivo ${profile?.goal ?? "general fitness"}, entorno ${args.finalEnvironment}, ${args.finalDaysPerWeek} días/semana, ${args.finalSessionMinutes} min/sesión.
-Nutrición: ${args.finalMealsPerDay} comidas/día, tiempo cocina ${args.finalCookingTime}, dieta ${profile?.dietaryStyle ?? "ninguna"}, alergias ${profile?.allergies ?? "ninguna"}, dislikes ${profile?.dislikes ?? "ninguna"}.
-${profile?.injuryNotes ? `Notas lesiones: ${profile.injuryNotes}` : ""}
-${profile?.equipmentNotes ? `Equipamiento: ${profile.equipmentNotes}` : ""}
+  if (args.allowedExercises.length > ALLOWED_EXERCISES_MAX) {
+    trackEvent("ai_allowed_exercises_trimmed", {
+      from: args.allowedExercises.length,
+      to: ALLOWED_EXERCISES_MAX,
+      environment: args.finalEnvironment,
+    });
+  }
 
-Genera el plan personalizado en JSON.`;
+  const trimmedAllowed = pickAllowedExercisesDeterministic(args.allowedExercises, {
+    max: ALLOWED_EXERCISES_MAX,
+  });
+
+  const userInput = {
+    profile: {
+      level: profile?.level ?? "BEGINNER",
+      goal: profile?.goal ?? "general fitness",
+      injuryNotes: profile?.injuryNotes ?? null,
+      equipmentNotes: profile?.equipmentNotes ?? null,
+      dietaryStyle: profile?.dietaryStyle ?? null,
+      allergies: profile?.allergies ?? null,
+      dislikes: profile?.dislikes ?? null,
+    },
+    constraints: {
+      environment: args.finalEnvironment,
+      daysPerWeek: args.finalDaysPerWeek,
+      sessionMinutes: args.finalSessionMinutes,
+      mealsPerDay: Math.min(4, Math.max(2, args.finalMealsPerDay)),
+      cookingTime: args.finalCookingTime,
+    },
+    allowedExercises: trimmedAllowed.map((e) => ({
+      slug: e.slug,
+      name: e.name,
+      environment: e.environment,
+    })),
+  };
+
+  const userPrompt = JSON.stringify(userInput);
 
   try {
     const res = await provider.chat(
@@ -171,6 +213,54 @@ Genera el plan personalizado en JSON.`;
       return null;
     }
     const data = parsed.data;
+
+    // --- Soft enforcement: slugs fuera del allowlist recortado (pero existentes en DB) ---
+    // pool completo (DB) = args.allowedExercises
+    const fullBySlug = new Set(args.allowedExercises.map((e) => e.slug.toLowerCase()));
+    const fullByName = new Set(args.allowedExercises.map((e) => e.name.toLowerCase().trim()));
+
+    // allowlist enviado al modelo = trimmedAllowed
+    const promptAllowSlugs = new Set(trimmedAllowed.map((e) => e.slug.toLowerCase()));
+
+    let outsidePromptCount = 0;
+    let notInPoolCount = 0;
+
+    for (const s of data.training.sessions) {
+      for (const ex of s.exercises) {
+        const slugKey = ex.slug.toLowerCase();
+        const nameKey = ex.name.toLowerCase().trim();
+
+        const inFullPool = fullBySlug.has(slugKey) || fullByName.has(nameKey);
+        if (!inFullPool) {
+          notInPoolCount += 1;
+          continue;
+        }
+
+        // Está en DB, pero el modelo lo eligió fuera del subset que le dimos
+        if (!promptAllowSlugs.has(slugKey)) {
+          outsidePromptCount += 1;
+        }
+      }
+    }
+
+    if (notInPoolCount > 0) {
+      Sentry.captureMessage("weekly_plan_fallback_ai_exercise_not_in_pool", {
+        tags: { fallback_type: "ai_exercise_not_in_pool" },
+        extra: { count: notInPoolCount },
+      });
+      return null;
+    }
+
+    if (outsidePromptCount > 0) {
+      trackEvent("ai_slug_outside_prompt_allowlist", {
+        count: outsidePromptCount,
+        environment: args.finalEnvironment,
+        allowlistSize: trimmedAllowed.length,
+        poolSize: args.allowedExercises.length,
+      });
+    }
+    // --- fin soft enforcement ---
+
     const seen = new Set<string>();
     const exercisesToUpsert: Array<{ slug: string; name: string; environment: string }> = [];
     for (const s of data.training.sessions) {
@@ -347,9 +437,6 @@ export async function adjustWeeklyPlan(body: unknown, userId: string) {
   const adherence = calculateAdherence(trainingLogs, nutritionLogs);
 
   const provider = getProvider();
-  const providerName = process.env.OPENAI_API_KEY ? "openai" : "mock";
-  logInfo("agent", "Weekly plan provider", { provider: providerName });
-
   const systemPrompt = `Eres un asistente de entrenamiento y nutrición. Analiza el perfil del usuario y sus logs recientes para proponer ajustes seguros al plan semanal.
 
 Reglas:
@@ -413,7 +500,7 @@ Propón ajustes seguros basados en adherencia y perfil.`;
       { role: "system", content: systemPrompt },
       { role: "user", content: userPrompt },
     ]);
-    if (providerName === "openai") {
+    if (process.env.OPENAI_API_KEY) {
       logInfo("agent", "Weekly plan generated with OpenAI");
     }
 
@@ -527,12 +614,37 @@ Propón ajustes seguros basados en adherencia y perfil.`;
     profile?.cookingTime ??
     "MIN_20";
 
+  const t0 = Date.now();
+  const providerName = process.env.OPENAI_API_KEY ? "openai" : "mock";
   const useApiForPlan = Boolean(process.env.OPENAI_API_KEY);
 
   let training: ReturnType<typeof generateWeeklyTrainingPlan>;
   let nutrition: ReturnType<typeof generateWeeklyNutritionPlan>;
+  let unmatchedCountForAudit: number | undefined;
+  let poolSizeForAudit = 0;
 
   if (useApiForPlan) {
+    const exercisePool = await prisma.exercise.findMany({
+      where: { ...(finalEnvironment === "MIXED" ? {} : { environment: finalEnvironment }) },
+      select: { slug: true, name: true, environment: true, primaryMuscle: true },
+    });
+    poolSizeForAudit = exercisePool.length;
+    if (exercisePool.length === 0) {
+      trackAiPlanAudit(
+        { kind: "fallback", fallbackType: "no_exercises_available" },
+        {
+          context: "adjustWeeklyPlan",
+          provider: providerName as "openai" | "mock",
+          environment: finalEnvironment,
+          daysPerWeek: finalDaysPerWeek,
+          sessionMinutes: finalSessionMinutes,
+          mealsPerDay: finalMealsPerDay,
+          cookingTime: finalCookingTime,
+          poolSize: exercisePool.length,
+          durationMs: Date.now() - t0,
+        },
+      );
+    }
     const planResult = await generatePlanFromApi(provider, {
       profile,
       finalEnvironment,
@@ -540,23 +652,35 @@ Propón ajustes seguros basados en adherencia y perfil.`;
       finalSessionMinutes,
       finalMealsPerDay,
       finalCookingTime,
+      allowedExercises: exercisePool,
     });
     if (planResult) {
-      const exercisePool = await prisma.exercise.findMany({
-        where: { ...(finalEnvironment === "MIXED" ? {} : { environment: finalEnvironment }) },
-        select: { slug: true, name: true, environment: true, primaryMuscle: true },
-      });
       const { training: mappedTraining, unmatchedCount } = mapAiTrainingToExistingExercises(
         planResult.training,
         exercisePool,
       );
       training = mappedTraining as WeeklyTrainingPlan;
       nutrition = planResult.nutrition;
+      unmatchedCountForAudit = unmatchedCount;
       if (unmatchedCount > 0) {
         trackEvent("ai_exercise_unmatched", { count: unmatchedCount });
       }
     } else {
-      const exercisePool = await prisma.exercise.findMany({
+      trackAiPlanAudit(
+        { kind: "fallback", fallbackType: "ai_invalid_or_constraints" },
+        {
+          context: "adjustWeeklyPlan",
+          provider: providerName as "openai" | "mock",
+          environment: finalEnvironment,
+          daysPerWeek: finalDaysPerWeek,
+          sessionMinutes: finalSessionMinutes,
+          mealsPerDay: finalMealsPerDay,
+          cookingTime: finalCookingTime,
+          poolSize: poolSizeForAudit,
+          durationMs: Date.now() - t0,
+        },
+      );
+      const fallbackPool = await prisma.exercise.findMany({
         where: { ...(finalEnvironment === "MIXED" ? {} : { environment: finalEnvironment }) },
         select: { slug: true, name: true },
       });
@@ -564,7 +688,7 @@ Propón ajustes seguros basados en adherencia y perfil.`;
         environment: finalEnvironment,
         daysPerWeek: finalDaysPerWeek,
         sessionMinutes: finalSessionMinutes,
-        exercisePool,
+        exercisePool: fallbackPool,
       });
       nutrition = generateWeeklyNutritionPlan({
         mealsPerDay: finalMealsPerDay,
@@ -579,6 +703,7 @@ Propón ajustes seguros basados en adherencia y perfil.`;
       where: { ...(finalEnvironment === "MIXED" ? {} : { environment: finalEnvironment }) },
       select: { slug: true, name: true },
     });
+    poolSizeForAudit = exercisePool.length;
     training = generateWeeklyTrainingPlan({
       environment: finalEnvironment,
       daysPerWeek: finalDaysPerWeek,
@@ -593,6 +718,28 @@ Propón ajustes seguros basados en adherencia y perfil.`;
       dislikes: profile?.dislikes ?? null,
     });
   }
+
+  const sessionsCount = training?.sessions?.length ?? null;
+  const totalExercises = Array.isArray(training?.sessions)
+    ? training.sessions.reduce((acc, s) => acc + (s.exercises?.length ?? 0), 0)
+    : null;
+  trackAiPlanAudit(
+    { kind: "success" },
+    {
+      context: "adjustWeeklyPlan",
+      provider: providerName as "openai" | "mock",
+      environment: finalEnvironment,
+      daysPerWeek: finalDaysPerWeek,
+      sessionMinutes: finalSessionMinutes,
+      mealsPerDay: finalMealsPerDay,
+      cookingTime: finalCookingTime,
+      poolSize: poolSizeForAudit,
+      sessionsCount: sessionsCount ?? undefined,
+      totalExercises: totalExercises ?? undefined,
+      unmatchedCount: unmatchedCountForAudit,
+      durationMs: Date.now() - t0,
+    },
+  );
 
   const now = new Date();
   const rationaleStr = rationale.trim();

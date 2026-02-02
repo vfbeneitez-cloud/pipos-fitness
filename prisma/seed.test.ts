@@ -1,31 +1,42 @@
-import { describe, it, expect, beforeAll } from "vitest";
-import * as path from "path";
-import * as fs from "fs";
-import { main } from "./seed";
-import { prisma } from "../src/server/db/prisma";
+import { describe, it, expect, beforeAll, afterAll } from "vitest";
+import fs from "node:fs";
+import path from "node:path";
+import { prisma } from "@/src/server/db/prisma";
+import { main as seedMain } from "./seed";
 
-const seedPath = path.join(process.cwd(), "data", "exercises.seed.json");
+const hasDb = Boolean(process.env.DATABASE_URL);
+const runDbTests = process.env.RUN_DB_TESTS === "true";
 
-describe("seed", () => {
+const seedFilePath = path.join(process.cwd(), "data", "exercises.seed.json");
+const hasSeedFile = fs.existsSync(seedFilePath);
+
+const shouldRun = runDbTests && hasDb && hasSeedFile;
+
+(shouldRun ? describe.sequential : describe.sequential.skip)("prisma seed (DB)", () => {
   beforeAll(async () => {
-    if (!fs.existsSync(seedPath)) {
-      throw new Error(
-        "data/exercises.seed.json not found; run scripts/generate-exercises-seed.ts first",
-      );
-    }
-    await main();
-  }, 60_000);
+    await seedMain();
+  }, 120_000);
 
-  it("seeds at least 100 exercises", async () => {
+  afterAll(async () => {
+    await prisma.$disconnect();
+  });
+
+  it("should seed at least 100 exercises", async () => {
     const count = await prisma.exercise.count();
     expect(count).toBeGreaterThanOrEqual(100);
   });
 
-  it("has at least 15 exercises per environment (GYM, HOME, CALISTHENICS, POOL)", async () => {
-    const envs = ["GYM", "HOME", "CALISTHENICS", "POOL"] as const;
-    for (const env of envs) {
-      const count = await prisma.exercise.count({ where: { environment: env } });
-      expect(count).toBeGreaterThanOrEqual(15);
-    }
+  it("should have coverage per environment", async () => {
+    const byEnv = await prisma.exercise.groupBy({
+      by: ["environment"],
+      _count: { _all: true },
+    });
+
+    const map = new Map(byEnv.map((r) => [r.environment, r._count._all]));
+
+    expect(map.get("GYM") ?? 0).toBeGreaterThanOrEqual(15);
+    expect(map.get("HOME") ?? 0).toBeGreaterThanOrEqual(15);
+    expect(map.get("CALISTHENICS") ?? 0).toBeGreaterThanOrEqual(15);
+    expect(map.get("POOL") ?? 0).toBeGreaterThanOrEqual(15);
   });
 });

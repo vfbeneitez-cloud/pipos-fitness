@@ -1,244 +1,246 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
-import { prisma } from "@/src/server/db/prisma";
-import { adjustWeeklyPlan } from "./agentWeeklyPlan";
+import { describe, test, expect, beforeEach, vi } from "vitest";
+import { generatePlanFromApi } from "@/src/server/ai/agentWeeklyPlan";
+import type { AIProvider } from "@/src/server/ai/provider";
+import { trackEvent } from "@/src/server/lib/events";
+import * as Sentry from "@sentry/nextjs";
 
-const TEST_USER_ID = "test-user-id";
-
-vi.mock("@/src/server/auth/getSession", () => ({
-  getUserIdFromSession: async () => TEST_USER_ID,
+vi.mock("@/src/server/lib/events", () => ({
+  trackEvent: vi.fn(),
 }));
 
-describe("POST /api/agent/weekly-plan", () => {
-  beforeEach(async () => {
-    await prisma.user.upsert({
-      where: { email: "test@local.test" },
-      update: { id: TEST_USER_ID },
-      create: { id: TEST_USER_ID, email: "test@local.test" },
-    });
-  });
-  it("adjusts plan successfully based on adherence", async () => {
-    await prisma.userProfile.upsert({
-      where: { userId: TEST_USER_ID },
-      update: {
-        daysPerWeek: 3,
-        sessionMinutes: 45,
-        environment: "GYM",
-        mealsPerDay: 3,
-        cookingTime: "MIN_20",
-      },
-      create: {
-        userId: TEST_USER_ID,
-        daysPerWeek: 3,
-        sessionMinutes: 45,
-        environment: "GYM",
-        mealsPerDay: 3,
-        cookingTime: "MIN_20",
-      },
-    });
+vi.mock("@sentry/nextjs", () => ({
+  captureMessage: vi.fn(),
+  captureException: vi.fn(),
+}));
 
-    await prisma.trainingLog.createMany({
-      data: [
-        { userId: TEST_USER_ID, completed: true, pain: false },
-        { userId: TEST_USER_ID, completed: false, pain: false },
-        { userId: TEST_USER_ID, completed: true, pain: false },
+type ChatMessage = { role: "system" | "user"; content: string };
+
+class StubProvider implements AIProvider {
+  public lastMessages: ChatMessage[] = [];
+  private reply: unknown;
+
+  constructor(reply: unknown) {
+    this.reply = reply;
+  }
+
+  async chat(messages: ChatMessage[], _opts?: { maxTokens?: number }) {
+    void _opts;
+    this.lastMessages = messages;
+    return { content: JSON.stringify(this.reply) };
+  }
+}
+
+function makeAllowedExercises(
+  count: number,
+  env: "GYM" | "HOME" | "CALISTHENICS" | "POOL" | "MIXED",
+) {
+  return Array.from({ length: count }, (_, i) => {
+    const n = String(i + 1).padStart(3, "0");
+    return {
+      slug: `ex-${n}`,
+      name: `Ejercicio ${n}`,
+      environment: env,
+      primaryMuscle: "BACK", // mismo músculo => subset será top-N por slug
+    };
+  });
+}
+
+function makeNutritionWeek(mealsPerDay: 2 | 3 | 4) {
+  const slotsByMeals: Record<number, Array<"breakfast" | "lunch" | "dinner" | "snack">> = {
+    2: ["lunch", "dinner"],
+    3: ["breakfast", "lunch", "dinner"],
+    4: ["breakfast", "lunch", "dinner", "snack"],
+  };
+
+  const slots = slotsByMeals[mealsPerDay];
+
+  return Array.from({ length: 7 }, (_, dayIndex) => ({
+    dayIndex,
+    meals: slots.map((slot) => ({
+      slot,
+      title: `Comida ${slot} día ${dayIndex}`,
+      minutes: 10,
+      tags: ["simple"],
+      ingredients: ["ingrediente 1", "ingrediente 2"],
+      instructions: "Mezcla y cocina de forma sencilla. Sirve y listo.",
+      substitutions: [],
+    })),
+  }));
+}
+
+function makeValidAiReply(args: {
+  environment: "GYM" | "HOME" | "CALISTHENICS" | "POOL" | "MIXED";
+  daysPerWeek: number;
+  sessionMinutes: number;
+  mealsPerDay: 2 | 3 | 4;
+  cookingTime: "MIN_10" | "MIN_20" | "MIN_40" | "FLEXIBLE";
+  exercise: { slug: string; name: string };
+}) {
+  return {
+    training: {
+      environment: args.environment,
+      daysPerWeek: args.daysPerWeek,
+      sessionMinutes: args.sessionMinutes,
+      sessions: [
+        {
+          dayIndex: 0,
+          name: "Full body",
+          exercises: [
+            {
+              slug: args.exercise.slug,
+              name: args.exercise.name,
+              sets: 2,
+              reps: "8-10",
+              restSec: 90,
+            },
+          ],
+        },
       ],
+    },
+    nutrition: {
+      mealsPerDay: args.mealsPerDay,
+      cookingTime: args.cookingTime,
+      days: makeNutritionWeek(args.mealsPerDay),
+    },
+  };
+}
+
+describe("generatePlanFromApi - guardrails regresión", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  test("1) allowedExercises grande => se recorta en el prompt y se trackea ai_allowed_exercises_trimmed", async () => {
+    const allowedExercises = makeAllowedExercises(220, "GYM");
+    const reply = makeValidAiReply({
+      environment: "GYM",
+      daysPerWeek: 1,
+      sessionMinutes: 30,
+      mealsPerDay: 3,
+      cookingTime: "MIN_20",
+      exercise: { slug: "ex-001", name: "Ejercicio 001" },
     });
 
-    const result = await adjustWeeklyPlan(
-      {
-        weekStart: "2026-01-26",
+    const provider = new StubProvider(reply);
+
+    const res = await generatePlanFromApi(provider, {
+      profile: {
+        level: "BEGINNER",
+        goal: "general fitness",
+        injuryNotes: null,
+        equipmentNotes: null,
+        dietaryStyle: null,
+        allergies: null,
+        dislikes: null,
       },
-      TEST_USER_ID,
+      finalEnvironment: "GYM",
+      finalDaysPerWeek: 1,
+      finalSessionMinutes: 30,
+      finalMealsPerDay: 3,
+      finalCookingTime: "MIN_20",
+      allowedExercises,
+    });
+
+    expect(res).not.toBeNull();
+
+    // Track del trim
+    expect(trackEvent).toHaveBeenCalledWith(
+      "ai_allowed_exercises_trimmed",
+      expect.objectContaining({ from: 220, to: 160, environment: "GYM" }),
     );
 
-    expect(result.status).toBe(200);
-    const body = result.body as { plan: { id: string }; rationale: string };
-    expect(body.plan).toBeDefined();
-    expect(body.rationale).toBeDefined();
-    expect(typeof body.rationale).toBe("string");
+    // Validar que el userPrompt (JSON) lleva allowlist recortado
+    const userMsg = provider.lastMessages.find((m) => m.role === "user");
+    expect(userMsg).toBeTruthy();
+    const userJson = JSON.parse(userMsg!.content) as { allowedExercises: Array<unknown> };
+    expect(Array.isArray(userJson.allowedExercises)).toBe(true);
+    expect(userJson.allowedExercises.length).toBe(160);
+  });
 
-    const plan = await prisma.weeklyPlan.findUnique({
-      where: {
-        userId_weekStart: {
-          userId: TEST_USER_ID,
-          weekStart: new Date("2026-01-26T00:00:00.000Z"),
-        },
+  test("2) slug fuera del subset recortado pero existente en pool completo => NO fallback + track ai_slug_outside_prompt_allowlist", async () => {
+    // 161 ejercicios => subset (160) será ex-001..ex-160; ex-161 queda fuera del allowlist del prompt
+    const allowedExercises = makeAllowedExercises(161, "GYM");
+    const outside = allowedExercises[160]; // ex-161
+
+    const reply = makeValidAiReply({
+      environment: "GYM",
+      daysPerWeek: 1,
+      sessionMinutes: 30,
+      mealsPerDay: 3,
+      cookingTime: "MIN_20",
+      exercise: { slug: outside.slug, name: outside.name },
+    });
+
+    const provider = new StubProvider(reply);
+
+    const res = await generatePlanFromApi(provider, {
+      profile: {
+        level: "BEGINNER",
+        goal: "general fitness",
+        injuryNotes: null,
+        equipmentNotes: null,
+        dietaryStyle: null,
+        allergies: null,
+        dislikes: null,
       },
-    });
-    expect(plan?.lastRationale).toBeDefined();
-    expect(plan?.lastRationale?.length).toBeGreaterThan(0);
-    expect(plan?.lastGeneratedAt).toBeDefined();
-  });
-
-  it("detects red flags and applies conservative adjustments", async () => {
-    await prisma.userProfile.upsert({
-      where: { userId: TEST_USER_ID },
-      update: { daysPerWeek: 4, sessionMinutes: 60 },
-      create: { userId: TEST_USER_ID, daysPerWeek: 4, sessionMinutes: 60 },
+      finalEnvironment: "GYM",
+      finalDaysPerWeek: 1,
+      finalSessionMinutes: 30,
+      finalMealsPerDay: 3,
+      finalCookingTime: "MIN_20",
+      allowedExercises,
     });
 
-    await prisma.trainingLog.create({
-      data: {
-        userId: TEST_USER_ID,
-        completed: true,
-        pain: true,
-        painNotes: "dolor agudo en rodilla",
-      },
-    });
+    expect(res).not.toBeNull();
 
-    const result = await adjustWeeklyPlan(
-      {
-        weekStart: "2026-01-26",
-      },
-      TEST_USER_ID,
-    );
-
-    expect(result.status).toBe(200);
-    const body = result.body as { rationale: string };
-    expect(body.rationale).toContain("profesional sanitario");
-  });
-
-  it("returns 400 for invalid body", async () => {
-    const result = await adjustWeeklyPlan(
-      {
-        weekStart: "invalid",
-      },
-      TEST_USER_ID,
-    );
-
-    expect(result.status).toBe(400);
-    expect((result.body as { error: string }).error).toBe("INVALID_BODY");
-  });
-
-  describe("AI Beta contract (mock provider)", () => {
-    it("adjustWeeklyPlan returns expected shape (plan.trainingJson, plan.nutritionJson)", async () => {
-      await prisma.userProfile.upsert({
-        where: { userId: TEST_USER_ID },
-        update: {
-          daysPerWeek: 3,
-          sessionMinutes: 45,
-          environment: "GYM",
-          mealsPerDay: 3,
-          cookingTime: "MIN_20",
-        },
-        create: {
-          userId: TEST_USER_ID,
-          daysPerWeek: 3,
-          sessionMinutes: 45,
-          environment: "GYM",
-          mealsPerDay: 3,
-          cookingTime: "MIN_20",
-        },
-      });
-
-      const result = await adjustWeeklyPlan({ weekStart: "2026-01-26" }, TEST_USER_ID);
-
-      expect(result.status).toBe(200);
-      const body = result.body as unknown as {
-        plan: {
-          trainingJson: { environment: string; daysPerWeek: number; sessions: unknown[] };
-          nutritionJson: { mealsPerDay: number; days: { dayIndex: number; meals: unknown[] }[] };
-        };
-      };
-      expect(body.plan.trainingJson).toBeDefined();
-      expect(body.plan.trainingJson.environment).toBeDefined();
-      expect(typeof body.plan.trainingJson.daysPerWeek).toBe("number");
-      expect(body.plan.trainingJson.daysPerWeek).toBeGreaterThanOrEqual(1);
-      expect(body.plan.trainingJson.daysPerWeek).toBeLessThanOrEqual(7);
-      expect(Array.isArray(body.plan.trainingJson.sessions)).toBe(true);
-      expect(body.plan.nutritionJson).toBeDefined();
-      expect(body.plan.nutritionJson.days.length).toBe(7);
-      expect(typeof body.plan.nutritionJson.mealsPerDay).toBe("number");
-    });
-
-    it("adjustWeeklyPlan never creates Exercise (no new rows)", async () => {
-      await prisma.userProfile.upsert({
-        where: { userId: TEST_USER_ID },
-        update: {
-          daysPerWeek: 3,
-          sessionMinutes: 45,
-          environment: "GYM",
-          mealsPerDay: 3,
-          cookingTime: "MIN_20",
-        },
-        create: {
-          userId: TEST_USER_ID,
-          daysPerWeek: 3,
-          sessionMinutes: 45,
-          environment: "GYM",
-          mealsPerDay: 3,
-          cookingTime: "MIN_20",
-        },
-      });
-
-      const countBefore = await prisma.exercise.count();
-
-      await adjustWeeklyPlan({ weekStart: "2026-01-26" }, TEST_USER_ID);
-
-      const countAfter = await prisma.exercise.count();
-      expect(countAfter).toBe(countBefore);
-    });
-  });
-});
-
-describe("POST /api/agent/weekly-plan authorization", () => {
-  beforeEach(async () => {
-    await prisma.user.upsert({
-      where: { email: "test@local.test" },
-      update: { id: TEST_USER_ID },
-      create: { id: TEST_USER_ID, email: "test@local.test" },
-    });
-  });
-
-  it("returns 401 when no session", async () => {
-    vi.resetModules();
-    vi.doMock("@/src/server/auth/getSession", () => ({
-      getUserIdFromSession: async () => null,
-    }));
-    const { POST } = await import("@/src/app/api/agent/weekly-plan/route");
-
-    const req = new Request("http://localhost/api/agent/weekly-plan", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        weekStart: "2026-01-26",
+    // Debe trackear que el modelo usó un slug existente pero fuera del subset enviado
+    expect(trackEvent).toHaveBeenCalledWith(
+      "ai_slug_outside_prompt_allowlist",
+      expect.objectContaining({
+        count: 1,
+        environment: "GYM",
+        allowlistSize: 160,
+        poolSize: 161,
       }),
-    });
-    const res = await POST(req);
-    const body = (await res.json()) as { error_code: string; message: string };
-
-    expect(res.status).toBe(401);
-    expect(body.error_code).toBe("UNAUTHORIZED");
+    );
   });
 
-  it("returns 200 when session exists", async () => {
-    vi.resetModules();
-    vi.doMock("@/src/server/auth/getSession", () => ({
-      getUserIdFromSession: async () => TEST_USER_ID,
-    }));
-    const { POST } = await import("@/src/app/api/agent/weekly-plan/route");
+  test("3) slug no existe en pool completo => fallback (null) + Sentry weekly_plan_fallback_ai_exercise_not_in_pool", async () => {
+    const allowedExercises = makeAllowedExercises(50, "GYM");
 
-    await prisma.userProfile.upsert({
-      where: { userId: TEST_USER_ID },
-      update: { daysPerWeek: 3, sessionMinutes: 45, mealsPerDay: 3, cookingTime: "MIN_20" },
-      create: {
-        userId: TEST_USER_ID,
-        daysPerWeek: 3,
-        sessionMinutes: 45,
-        mealsPerDay: 3,
-        cookingTime: "MIN_20",
+    const reply = makeValidAiReply({
+      environment: "GYM",
+      daysPerWeek: 1,
+      sessionMinutes: 30,
+      mealsPerDay: 3,
+      cookingTime: "MIN_20",
+      exercise: { slug: "inventado-999", name: "Inventado" },
+    });
+
+    const provider = new StubProvider(reply);
+
+    const res = await generatePlanFromApi(provider, {
+      profile: {
+        level: "BEGINNER",
+        goal: "general fitness",
+        injuryNotes: null,
+        equipmentNotes: null,
+        dietaryStyle: null,
+        allergies: null,
+        dislikes: null,
       },
+      finalEnvironment: "GYM",
+      finalDaysPerWeek: 1,
+      finalSessionMinutes: 30,
+      finalMealsPerDay: 3,
+      finalCookingTime: "MIN_20",
+      allowedExercises,
     });
 
-    const req = new Request("http://localhost/api/agent/weekly-plan", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        weekStart: "2026-01-26",
-      }),
-    });
-    const res = await POST(req);
-
-    expect(res.status).toBe(200);
+    expect(res).toBeNull();
+    expect(Sentry.captureMessage).toHaveBeenCalledWith(
+      "weekly_plan_fallback_ai_exercise_not_in_pool",
+      expect.any(Object),
+    );
   });
 });

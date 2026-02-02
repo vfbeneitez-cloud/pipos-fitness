@@ -759,29 +759,6 @@
     ]
   },
   {
-    "slug": "curl-biceps-mancuernas",
-    "name": "Curl de bíceps con mancuernas (de pie)",
-    "environment": "GYM",
-    "primaryMuscle": "Bíceps",
-    "description": "Flexión de codo con mancuernas para trabajar bíceps con un patrón muy simple. En MVP conviene por ser universal y fácil de registrar.\n\nTécnica: De pie, pies firmes, abdomen suave pero activo (sin arquear). Brazos a los lados, codos cerca del torso. Sube la mancuerna flexionando el codo sin balancear el cuerpo. Muñeca neutra. Baja lento hasta estirar el codo sin soltar la carga.",
-    "cues": "Codos cerca del cuerpo\nSin balanceo: torso estable\nMuñeca neutra\nSube controlado, baja lento",
-    "commonMistakes": "Balanceo para mover más peso: baja carga.\nCodos que se van hacia delante: vuelve a codos al lado.\nMuñecas dobladas: neutras.\nSoltar la bajada sin control.",
-    "regressions": "Menos peso + tempo (bajada 2–3s)\nCurl alterno (una mancuerna cada vez) si coordinar ambas cuesta",
-    "progressions": "Pausa 1s arriba\nTempo más lento en la bajada\nCurl inclinado (opcional futuro)",
-    "media": [
-      {
-        "type": "image",
-        "url": "https://upload.wikimedia.org/wikipedia/commons/8/86/Dumbbell-biceps-curl-1.png",
-        "thumbnailUrl": null
-      },
-      {
-        "type": "youtube",
-        "url": "https://www.youtube.com/watch?v=ykJmrZ5v0Oo",
-        "thumbnailUrl": "https://img.youtube.com/vi/ykJmrZ5v0Oo/hqdefault.jpg"
-      }
-    ]
-  },
-  {
     "slug": "curl-biceps-barra-z",
     "name": "Curl de bíceps con barra Z",
     "environment": "GYM",
@@ -3290,6 +3267,504 @@
         "type": "image",
         "url": "https://upload.wikimedia.org/wikipedia/commons/5/5e/Bent_over_rows_with_resistance_bands_01.gif",
         "thumbnailUrl": null
+      }
+    ]
+  },
+  {
+    "slug": "press-de-hombros-con-banda",
+    "name": "Press de hombros con banda (overhead press)",
+    "environment": "HOME",
+    "primaryMuscle": "Deltoides, tríceps, trapecio superior",
+    "description": "Empuja una banda elástica por encima de la cabeza manteniendo el tronco estable. Es un básico para fortalecer hombros sin necesidad de pesas.",
+    "cues": "Pisa el centro de la banda con ambos pies; sujeta los extremos a la altura de los hombros\nActiva abdomen y glúteos: costillas \"abajo\", sin arquear la zona lumbar\nEmpuja hacia arriba y ligeramente hacia delante (para que la banda no choque con la cara)\nBaja controlado hasta la altura de los hombros; repite sin prisas",
+    "commonMistakes": "Arquear la zona lumbar para \"ayudar\" (pierdes estabilidad y sobrecargas la espalda)\nEncoger los hombros hacia las orejas al final del movimiento\nDoblar las muñecas hacia atrás (pierdes control)\nUsar demasiada tensión y acortar el rango de movimiento",
+    "regressions": "Press sentado (más estabilidad, menos compensaciones)\nRecorrido parcial sin dolor (solo hasta donde mantengas control y postura)",
+    "progressions": "Acorta la banda o usa una más dura (más tensión)\nPress en semi-rodilla (half-kneeling) para exigir más control del tronco\nPausa de 1 segundo arriba sin encoger hombros",
+    "media": [
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=7eTDEyrnCxo",
+        "thumbnailUrl": "https://img.youtube.com/vi/7eTDEyrnCxo/hqdefault.jpg"
+      },
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/9/92/Overhead_press_demonstration_with_resistance_bands.gif",
+        "thumbnailUrl": null
+      }
+    ]
+  },
+  {
+    "slug": "superman",
+    "name": "Superman (extensión de espalda en el suelo)",
+    "environment": "HOME",
+    "primaryMuscle": "Espalda baja, glúteos",
+    "description": "Ejercicio isométrico en el suelo para activar espalda y glúteos con control. La clave es buscar tensión suave y postura larga, no \"levantar alto\".\n\nTúmbate boca abajo con brazos estirados al frente (o pegados al cuerpo si es más cómodo). Activa abdomen y glúteos y eleva ligeramente brazos y piernas (pocos centímetros). Mantén 1–3 segundos y baja con control. Si notas un pinchazo o molestia en la zona lumbar, reduce el rango o cambia a una regresión.",
+    "cues": "Rango pequeño: levanta poco, con control\nCuello largo: mirada al suelo (no saques barbilla)\nAbdomen y glúteos activos antes de elevar\nPiensa en \"alargarte\", no en arquearte\nBaja suave: no te dejes caer",
+    "commonMistakes": "Buscar mucha altura y arquear la zona lumbar\nMirar al frente y comprimir el cuello\nSubir rápido y perder control\nTensión en hombros/cuello en vez de trabajo repartido\nAguantar la respiración",
+    "regressions": "Solo brazos o solo piernas (no todo a la vez)\nBrazos pegados al cuerpo (menos exigencia para hombros)\nBird-dog como alternativa más estable",
+    "progressions": "Mantener 3–5 s sin perder postura\nAlternar brazo/pierna opuestos (tipo \"swimmer\" lento)\nMás repeticiones manteniendo el mismo rango pequeño",
+    "media": [
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=z6PJMT2y8GQ",
+        "thumbnailUrl": "https://img.youtube.com/vi/z6PJMT2y8GQ/hqdefault.jpg"
+      },
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/7/7c/Superman_exercise%2C_isometric_back_hyperextension.png",
+        "thumbnailUrl": null
+      }
+    ]
+  },
+  {
+    "slug": "press-de-pecho-con-banda",
+    "name": "Press de pecho con banda (de pie)",
+    "environment": "HOME",
+    "primaryMuscle": "Pectorales, deltoides anterior, tríceps",
+    "description": "Ejercicio de empuje horizontal con banda para pecho y tríceps, fácil de dosificar ajustando la tensión. La clave es empujar sin encoger hombros y sin arquear la zona lumbar.\n\nAncla la banda detrás de ti a la altura del pecho (poste/puerta segura) o pásala alrededor de la espalda si no tienes anclaje. Coloca las manos a la altura del pecho, codos a ~30–60° del cuerpo y abdomen firme (costillas \"abajo\"). Empuja al frente hasta estirar los brazos sin perder postura y vuelve lento con control. Si notas dolor agudo en hombro o un pinzamiento, reduce tensión/rango y revisa el ángulo de codos.",
+    "cues": "Costillas abajo y abdomen firme: no arquees la espalda\nHombros lejos de las orejas (no encoger)\nCodos a 30–60° del cuerpo (no totalmente abiertos)\nEmpuja al frente y vuelve lento, controlando la banda\nCuello largo: no saques la barbilla",
+    "commonMistakes": "Arquear la zona lumbar para \"ayudar\" al empuje\nEncoger hombros y cargar el cuello\nCodos demasiado abiertos (puede molestar el hombro)\nPerder control al volver (la banda te arrastra)\nAnclaje inestable o a una altura rara (tira hacia arriba/abajo)",
+    "regressions": "Menos tensión (acércate al anclaje o usa banda más suave)\nRecorrido parcial sin dolor (solo hasta donde mantengas postura)\nVersión en pared (wall push-up) si el hombro se queja con la banda",
+    "progressions": "Más tensión (aléjate del anclaje o usa banda más dura)\nPausa de 1 s con brazos extendidos sin encoger hombros\nTempo: vuelve en 2–3 s manteniendo control",
+    "media": [
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=po8JwkjexbU",
+        "thumbnailUrl": "https://img.youtube.com/vi/po8JwkjexbU/hqdefault.jpg"
+      },
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/8/88/Chest_press-CDC_strength_training_for_older_adults.gif",
+        "thumbnailUrl": null
+      }
+    ]
+  },
+  {
+    "slug": "flexiones-en-pared",
+    "name": "Flexiones en pared (Wall push-up)",
+    "environment": "HOME",
+    "primaryMuscle": "Pectorales, deltoides anterior, tríceps",
+    "description": "Regresión de flexiones ideal para empezar: empuje horizontal con poca carga, muy útil para aprender postura, control escapular y ritmo sin castigar muñecas u hombros.\n\nColócate frente a una pared, manos apoyadas a la altura del pecho y un poco más separadas que los hombros. Da 1–2 pasos atrás para crear una inclinación cómoda. Mantén cuerpo en línea (cabeza–caderas–talones), abdomen firme y glúteos activos. Flexiona codos para acercar el pecho a la pared y empuja para volver. Si aparece dolor agudo en hombro o muñeca, ajusta altura de manos, distancia o rango.",
+    "cues": "Cuerpo en bloque: cabeza, caderas y talones alineados\nAbdomen y glúteos activos: no hundas la zona lumbar\nCodos a 30–60° del cuerpo (no totalmente abiertos)\nBaja controlado y empuja controlado\nHombros lejos de las orejas: cuello largo",
+    "commonMistakes": "Arquear la zona lumbar (caderas se quedan atrás)\nEncoger hombros hacia las orejas al empujar\nCodos demasiado abiertos (puede molestar el hombro)\nRebotar en la pared o moverse sin control\nPoner manos demasiado altas o bajas y perder comodidad",
+    "regressions": "Más inclinación: acércate a la pared (menos carga)\nMenos rango: baja solo hasta donde mantengas postura\nManos un poco más altas si el hombro se queja",
+    "progressions": "Más distancia a la pared (más inclinación y carga)\nPausa de 1 s cerca de la pared sin perder postura\nPasar a flexiones inclinadas en banco/mesa estable",
+    "media": [
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=YB0egDzsu18",
+        "thumbnailUrl": "https://img.youtube.com/vi/YB0egDzsu18/hqdefault.jpg"
+      },
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/7/7a/Wallpushup-CDC_strength_training_for_older_adults.gif",
+        "thumbnailUrl": null
+      }
+    ]
+  },
+  {
+    "slug": "elevacion-de-rodillas-sentado",
+    "name": "Elevación de rodillas sentado (seated knee lift)",
+    "environment": "HOME",
+    "primaryMuscle": "Core (transverso, recto abdominal, oblicuos)",
+    "description": "Ejercicio suave y accesible para entrenar control del tronco en posición sentada. La prioridad es mantener el cuerpo estable y levantar la rodilla con un rango pequeño y controlado.\n\nSiéntate en una silla estable, espalda \"larga\" y pecho cómodo (sin sacar costillas). Sujeta el borde de la silla si lo necesitas. Eleva una rodilla unos centímetros manteniendo la pelvis quieta y baja lento. Alterna lados. Debe sentirse trabajo en abdomen y/o flexor de cadera, sin pinchazo lumbar. Si aparece dolor agudo o se te va la postura, reduce el rango o descansa.",
+    "cues": "Siéntate alto: espalda larga, cuello relajado\nAbdomen firme: evita inclinarte hacia atrás para \"ayudar\"\nRango pequeño: sube la rodilla pocos centímetros\nBaja lento y controlado (no dejes caer la pierna)\nMantén pelvis estable: no te balancees",
+    "commonMistakes": "Inclinarse hacia atrás para facilitar el movimiento\nBalancear el tronco o girar la pelvis\nSubir demasiado alto y perder control/postura\nEncoger hombros y tensar cuello\nHacerlo rápido y sin control en la bajada",
+    "regressions": "Levantar menos (rango más pequeño)\nHacer una pierna y pausar (sin alternar rápido)\nAgarrarse a la silla para más estabilidad",
+    "progressions": "Pausa de 1–2 s arriba sin perder postura\nMás repeticiones manteniendo el mismo rango y control\nExtender ligeramente la rodilla al final (solo si no cambia la postura)",
+    "media": [
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=jOkyzjQVGh8",
+        "thumbnailUrl": "https://img.youtube.com/vi/jOkyzjQVGh8/hqdefault.jpg"
+      },
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/3/39/SeatedLegRaise.gif",
+        "thumbnailUrl": null
+      }
+    ]
+  },
+  {
+    "slug": "abduccion-de-cadera-de-pie",
+    "name": "Abducción de cadera de pie (standing hip abduction)",
+    "environment": "HOME",
+    "primaryMuscle": "Glúteos",
+    "description": "Ejercicio simple para fortalecer la parte lateral de la cadera (glúteo medio) y mejorar estabilidad al caminar o subir escaleras.\n\nDe pie, sujétate a una silla o pared para equilibrio. Mantén el tronco alto y la pelvis estable. Lleva una pierna hacia el lado unos centímetros sin girar la cadera ni inclinarte. Pausa 1 segundo y vuelve lento. Debe sentirse trabajo en el lateral de la cadera de la pierna que se mueve; si sientes un pinchazo en la espalda o se te va la postura, reduce el rango o la velocidad.",
+    "cues": "Tronco alto: no te inclines hacia el lado\nPelvis estable: cadera y hombros miran al frente\nSube la pierna pocos centímetros con control\nPausa 1 s arriba, vuelve lento\nPie de apoyo firme, rodilla suave (no bloqueada)",
+    "commonMistakes": "Inclinar el tronco para \"hacer trampa\"\nGirar la cadera o abrir el pie hacia fuera\nSubir demasiado y perder pelvis estable\nMover la pierna rápido sin control en la bajada\nEncoger hombros o tensar el cuello",
+    "regressions": "Menos rango (subir menos)\nSujeción más estable (dos manos en una encimera/silla)\nHacer pausas más cortas (sin aguantar arriba)",
+    "progressions": "Pausa de 2 s arriba sin perder postura\nBanda elástica ligera en tobillos/rodillas (solo si no cambia la técnica)\nTempo: 2–3 s bajando (excéntrica lenta)",
+    "media": [
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=qBqKuEQl9sI",
+        "thumbnailUrl": "https://img.youtube.com/vi/qBqKuEQl9sI/hqdefault.jpg"
+      },
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/d/db/Hip_abduction-CDC_strength_training_for_older_adults.gif",
+        "thumbnailUrl": null
+      }
+    ]
+  },
+  {
+    "slug": "deslizamiento-de-talon",
+    "name": "Deslizamiento de talón (heel slide)",
+    "environment": "HOME",
+    "primaryMuscle": "Isquiotibiales",
+    "description": "Ejercicio suave en el suelo para trabajar control de rodilla/cadera y movilidad, con activación ligera de la parte posterior de la pierna. Es ideal para días de baja intensidad.\n\nTúmbate boca arriba con una pierna estirada y la otra con la rodilla flexionada. Desliza el talón de la pierna flexionada por el suelo acercándolo hacia el glúteo y luego estira de nuevo la pierna con control. Mantén la pelvis estable y respira con normalidad. No debe doler: si aparece dolor agudo en rodilla o cadera, reduce el rango o descansa.",
+    "cues": "Desliza lento: ida y vuelta con control\nPelvis estable: evita balancearte\nRango cómodo: sin dolor\nMantén el pie en contacto con el suelo durante el deslizamiento\nRespira fluido (sin aguantar el aire)",
+    "commonMistakes": "Hacerlo rápido y sin control\nLevantar el pie del suelo y perder la línea del movimiento\nBalancear la pelvis o arquear la zona lumbar\nForzar el talón demasiado cerca del glúteo con dolor\nAguantar la respiración",
+    "regressions": "Menos rango y más lento\nAyuda con una toalla bajo el talón para deslizar mejor\nMenos repeticiones con descansos",
+    "progressions": "Pausa de 1–2 s al final del deslizamiento sin dolor\nMás repeticiones manteniendo el mismo control\nAñadir una toalla deslizante para más suavidad (si el suelo frena)",
+    "media": [
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=U_9X9b1dG8k",
+        "thumbnailUrl": "https://img.youtube.com/vi/U_9X9b1dG8k/hqdefault.jpg"
+      },
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/5/5f/Heel_slide-CDC_strength_training_for_older_adults.gif",
+        "thumbnailUrl": null
+      }
+    ]
+  },
+  {
+    "slug": "abduccion-de-cadera-tumbado",
+    "name": "Abducción de cadera tumbado (side-lying hip abduction)",
+    "environment": "HOME",
+    "primaryMuscle": "Glúteos",
+    "description": "Ejercicio clásico para fortalecer el glúteo medio (lateral de la cadera) y mejorar la estabilidad de la pelvis. La clave es mover la pierna sin \"abrir\" la cadera ni balancear el cuerpo.\n\nTúmbate de lado con el cuerpo en línea recta. La pierna de abajo puede estar ligeramente flexionada para dar estabilidad. Mantén las caderas apiladas (una encima de la otra) y el tronco quieto. Eleva la pierna de arriba unos centímetros con control, pausa breve y baja lento. Debe sentirse trabajo en el lateral de la cadera; si notas pinzazo lumbar o se te va la postura, reduce rango y velocidad.",
+    "cues": "Caderas apiladas: no gires la pelvis hacia atrás\nPierna de arriba larga; sube poco y con control\nPie neutro o ligeramente con la punta hacia delante (evita rotar hacia fuera)\nPausa 1 s arriba sin perder alineación\nBaja lento (2–3 s) sin dejar caer la pierna",
+    "commonMistakes": "Rodar la pelvis hacia atrás para levantar más (pierde el objetivo)\nRotar el pie hacia fuera para \"hacer trampa\"\nSubir demasiado alto y compensar con lumbar\nBalancear el tronco o empujar con el hombro\nHacer repeticiones rápidas sin control en la bajada",
+    "regressions": "Rango más pequeño (subir menos)\nApoyar una mano delante del pecho para más estabilidad\nFlexionar un poco la rodilla de la pierna de arriba (palanca más corta)",
+    "progressions": "Pausa de 2 s arriba manteniendo pelvis estable\nTempo: 3 s bajando (excéntrica lenta)\nAñadir banda ligera o tobillera ligera solo si no cambia la técnica",
+    "media": [
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=EwBJKBa4PKU",
+        "thumbnailUrl": "https://img.youtube.com/vi/EwBJKBa4PKU/hqdefault.jpg"
+      },
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/5/54/Side_Leg_Raise.jpg",
+        "thumbnailUrl": null
+      }
+    ]
+  },
+  {
+    "slug": "estiramiento-de-pecho-en-puerta",
+    "name": "Estiramiento de pecho en puerta (doorway chest stretch)",
+    "environment": "HOME",
+    "primaryMuscle": "Pectorales, deltoides anterior",
+    "description": "Estiramiento suave del pecho y la parte frontal del hombro usando el marco de una puerta. Útil para contrarrestar posturas encorvadas (pantalla/escritorio).\n\nColoca el antebrazo en el marco de una puerta con el codo aproximadamente a la altura del hombro (o un poco más bajo si es más cómodo). Da un paso adelante y gira el cuerpo ligeramente alejándote del brazo hasta notar un estiramiento suave en el pecho. Mantén respiración fluida. Debe ser una tensión agradable, no dolor punzante en el hombro. Si duele, baja el codo, reduce el giro o acorta el paso.",
+    "cues": "Tensión suave: 3–6/10, sin dolor\nHombro lejos de la oreja (no encoger)\nCodo a la altura del hombro o un poco más bajo\nGira el cuerpo suave, sin forzar\nRespira lento y regular durante todo el estiramiento",
+    "commonMistakes": "Forzar demasiado y provocar dolor en el hombro\nColocar el codo muy alto y pinzar la parte frontal del hombro\nEncoger el hombro hacia la oreja\nRebotar (movimientos bruscos) en lugar de sostener suave\nAguantar la respiración",
+    "regressions": "Menos paso adelante (menos tensión)\nCodo más bajo (más cómodo para el hombro)\nHacerlo en una pared en lugar de puerta si no hay marco estable",
+    "progressions": "Mantener 30–45 s con respiración tranquila\nProbar 2 ángulos: codo un poco más bajo y un poco más alto (solo si no molesta)\nAñadir una ligera retracción escapular (pecho abierto) sin arquear lumbar",
+    "media": [
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=B9uY01NoqBg",
+        "thumbnailUrl": "https://img.youtube.com/vi/B9uY01NoqBg/hqdefault.jpg"
+      },
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/7/73/Chest_stretch-CDC_strength_training_for_older_adults.gif",
+        "thumbnailUrl": null
+      }
+    ]
+  },
+  {
+    "slug": "estiramiento-de-pantorrilla-en-pared",
+    "name": "Estiramiento de pantorrilla en pared (calf stretch)",
+    "environment": "HOME",
+    "primaryMuscle": "Gemelos (pantorrilla)",
+    "description": "Estiramiento simple de pantorrilla usando una pared. Útil si caminas mucho, corres o notas rigidez en tobillos.\n\nApoya ambas manos en la pared. Lleva una pierna atrás y la otra adelante. Mantén el talón de la pierna de atrás en el suelo y la rodilla estirada (sin bloquear agresivamente). Empuja suavemente la cadera hacia la pared hasta notar tensión en la pantorrilla. Mantén respiración tranquila. Debe ser un estiramiento agradable, no dolor punzante en el tendón de Aquiles o el tobillo. Si molesta, acorta el paso o reduce la tensión.",
+    "cues": "Talón atrás pegado al suelo\nPunta del pie mirando al frente (no de lado)\nRodilla trasera estirada pero suave\nCadera avanza despacio hasta tensión agradable\nRespira lento y mantén el cuello relajado",
+    "commonMistakes": "Levantar el talón de atrás (pierdes el estiramiento)\nGirar el pie hacia fuera y cargar el tobillo\nRebotar en lugar de sostener suave\nForzar hasta dolor en Aquiles\nArquear la espalda en vez de mover la cadera",
+    "regressions": "Paso más corto (menos tensión)\nFlexionar un poco la rodilla trasera si el Aquiles molesta\nMenos tiempo (10–20 s) y repetir",
+    "progressions": "Mantener 30–45 s sin dolor\nRepetir 2–3 veces por lado\nHacer una segunda variante con rodilla trasera ligeramente flexionada para sóleo (si no molesta)",
+    "media": [
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=YMmgqO8Jo-k",
+        "thumbnailUrl": "https://img.youtube.com/vi/YMmgqO8Jo-k/hqdefault.jpg"
+      },
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/2/2a/Calf_stretch-CDC_strength_training_for_older_adults.gif",
+        "thumbnailUrl": null
+      }
+    ]
+  },
+  {
+    "slug": "estiramiento-de-isquios-sentado",
+    "name": "Estiramiento de isquios sentado (seated hamstring stretch)",
+    "environment": "HOME",
+    "primaryMuscle": "Isquiotibiales",
+    "description": "Estiramiento suave de la parte posterior del muslo (isquios) en posición sentada. Útil para rigidez tras caminar, correr o estar mucho tiempo sentado.\n\nSiéntate en el borde de una silla estable. Estira una pierna al frente con el talón apoyado en el suelo y la punta del pie hacia arriba. Mantén la espalda larga (sin encorvarte) e inclínate ligeramente desde la cadera hasta notar una tensión agradable en la parte posterior del muslo. Mantén respiración tranquila. Debe ser tensión suave, no dolor punzante detrás de la rodilla. Si molesta, reduce el rango y vuelve a una postura más alta.",
+    "cues": "Tensión suave (3–6/10): sin dolor\nEspalda larga: inclínate desde la cadera, no encorvando el cuello\nTalón en el suelo, punta del pie hacia arriba\nHombros relajados, cuello largo\nRespira lento durante 20–30 s",
+    "commonMistakes": "Redondear la espalda y forzar el cuello hacia delante\nRebotar (movimientos bruscos) en vez de sostener\nForzar hasta dolor detrás de la rodilla\nBloquear la respiración\nElevar el talón o girar el pie hacia fuera",
+    "regressions": "Menos inclinación (mantente más alto)\nRodilla ligeramente flexionada si la tensión es excesiva\nMenos tiempo (10–15 s) y repetir",
+    "progressions": "Mantener 30–45 s sin dolor\nRepetir 2–3 veces por lado\nAñadir una exhalación larga al final para relajar (sin empujar más)",
+    "media": [
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=R1G0oYQ3s0g",
+        "thumbnailUrl": "https://img.youtube.com/vi/R1G0oYQ3s0g/hqdefault.jpg"
+      },
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/6/65/Hamstring_stretch-CDC_strength_training_for_older_adults.gif",
+        "thumbnailUrl": null
+      }
+    ]
+  },
+  {
+    "slug": "estiramiento-de-cuadriceps-de-pie",
+    "name": "Estiramiento de cuádriceps de pie (standing quad stretch)",
+    "environment": "HOME",
+    "primaryMuscle": "Cuádriceps",
+    "description": "Estiramiento suave de la parte frontal del muslo (cuádriceps) en posición de pie. Útil tras caminar, correr o entrenar piernas.\n\nDe pie, sujétate a una pared o silla para equilibrio. Dobla una rodilla y acerca el talón hacia el glúteo sujetando el tobillo o el empeine (sin tirar fuerte). Mantén las rodillas relativamente juntas y la pelvis estable. Debes notar tensión agradable en la parte frontal del muslo. Evita arquear la zona lumbar. Si aparece dolor punzante en rodilla o cadera, reduce la tensión o cambia a una variante tumbado.",
+    "cues": "Tensión suave (3–6/10): sin dolor\nRodillas relativamente juntas (sin abrir mucho la pierna)\nPelvis estable: evita arquear la espalda\nHombros relajados y cuello largo\nRespira lento 20–30 s",
+    "commonMistakes": "Tirar fuerte del pie y generar dolor en la rodilla\nArquear la zona lumbar para \"ganar rango\"\nAbrir la rodilla hacia fuera y perder el estiramiento\nRebotar en lugar de sostener suave\nAguantar la respiración",
+    "regressions": "Sujetar el pie con una toalla/cinta si no llegas cómodo\nMenos tensión (acercar menos el talón)\nHacerlo tumbado de lado si el equilibrio es un problema",
+    "progressions": "Mantener 30–45 s sin dolor\nRepetir 2–3 veces por lado\nAñadir una ligera retroversión pélvica (sin forzar) para evitar arquear lumbar",
+    "media": [
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=9Wb5qk9y6nA",
+        "thumbnailUrl": "https://img.youtube.com/vi/9Wb5qk9y6nA/hqdefault.jpg"
+      },
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/9/9f/Quadriceps_stretch-CDC_strength_training_for_older_adults.gif",
+        "thumbnailUrl": null
+      }
+    ]
+  },
+  {
+    "slug": "estiramiento-de-espalda-manos-al-frente",
+    "name": "Estiramiento de espalda (manos al frente)",
+    "environment": "HOME",
+    "primaryMuscle": "Espalda, hombros",
+    "description": "Estiramiento suave para la parte media/alta de la espalda y hombros, útil para aliviar rigidez tras estar sentado. El objetivo es una tensión agradable, sin dolor.\n\nDe pie o sentado, entrelaza las manos al frente y estira los brazos como si quisieras \"empujar\" algo delante de ti. Redondea ligeramente la parte alta de la espalda (sin forzar el cuello) y deja que los omóplatos se separen. Mantén respiración lenta y regular durante 20–30 segundos. Debe ser suave: si aparece dolor punzante en hombro o espalda, reduce el rango o para.",
+    "cues": "Brazos al frente y hombros lejos de las orejas\nRedondea suave la espalda alta (sin colapsar el cuello)\nEmpuja las manos al frente para separar escápulas\nTensión agradable (3–6/10), sin dolor\nRespira lento durante todo el estiramiento",
+    "commonMistakes": "Forzar el cuello (meter barbilla o mirar al suelo con tensión)\nSubir hombros hacia las orejas\nEmpujar demasiado fuerte y provocar dolor\nAguantar la respiración\nArquear la zona lumbar en vez de redondear suave la espalda alta",
+    "regressions": "Menos rango (brazos menos lejos)\nHacerlo sentado para más estabilidad\nMenos tiempo (10–15 s) y repetir",
+    "progressions": "Mantener 30–45 s con respiración tranquila\nRepetir 2–3 veces\nAñadir una exhalación larga y suave para relajar (sin empujar más)",
+    "media": [
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=FpIfMyfpCk0",
+        "thumbnailUrl": "https://img.youtube.com/vi/FpIfMyfpCk0/hqdefault.jpg"
+      },
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/5/59/Backstretch-CDC_strength_training_for_older_adults.gif",
+        "thumbnailUrl": null
+      }
+    ]
+  },
+  {
+    "slug": "estiramiento-de-triceps-por-encima-de-la-cabeza",
+    "name": "Estiramiento de tríceps por encima de la cabeza (overhead triceps stretch)",
+    "environment": "HOME",
+    "primaryMuscle": "Tríceps",
+    "description": "Estiramiento suave para la parte posterior del brazo (tríceps) y la zona posterior del hombro. Útil tras entrenar empuje o si notas rigidez en hombros.\n\nDe pie o sentado, eleva un brazo y flexiona el codo llevando la mano hacia la parte alta de la espalda. Con la otra mano, sujeta el codo y acércalo suavemente hacia el centro sin forzar. Mantén el pecho relajado, hombros bajos (sin encoger) y respiración tranquila. Debe ser tensión agradable, no dolor punzante en el hombro. Si molesta, baja el codo, reduce la tensión o hazlo con una toalla/cinta.",
+    "cues": "Tensión suave (3–6/10), sin dolor\nHombros bajos: no encoger hacia las orejas\nAcerca el codo suave, sin tirones\nCuello largo, costillas relajadas (sin arquear la espalda)\nRespira lento 20–30 s",
+    "commonMistakes": "Forzar el codo y provocar pinzamiento en el hombro\nArquear la zona lumbar para ganar rango\nEncoger hombros y tensar el cuello\nRebotar en lugar de sostener suave\nAguantar la respiración",
+    "regressions": "Menos tensión (codo más abierto)\nUsar una toalla/cinta para sujetar el brazo si no llegas cómodo\nMenos tiempo (10–15 s) y repetir",
+    "progressions": "Mantener 30–45 s sin dolor\nRepetir 2–3 veces por lado\nAñadir una exhalación larga para relajar (sin empujar más)",
+    "media": [
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=2A0G5vQ8QpY",
+        "thumbnailUrl": "https://img.youtube.com/vi/2A0G5vQ8QpY/hqdefault.jpg"
+      },
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/2/27/Triceps_stretch-CDC_strength_training_for_older_adults.gif",
+        "thumbnailUrl": null
+      }
+    ]
+  },
+  {
+    "slug": "gato-vaca",
+    "name": "Gato-vaca (cat-cow)",
+    "environment": "HOME",
+    "primaryMuscle": "Espalda baja, isquiotibiales, glúteos, trapecio",
+    "description": "Movimiento suave de columna para movilizar la espalda y \"despertar\" el cuerpo sin intensidad. Útil como calentamiento corto o en días de descanso activo.\n\nColócate a cuatro apoyos (manos debajo de hombros, rodillas debajo de caderas). Empieza con una postura neutra y mueve lentamente con la respiración: al exhalar, redondea la espalda llevando el ombligo hacia dentro y dejando caer la cabeza de forma relajada (sin forzar el cuello); al inhalar, vuelve a una extensión suave levantando el pecho y llevando el coxis ligeramente hacia arriba (sin colapsar la zona lumbar). Hazlo lento, con rango cómodo. Si aparece dolor agudo, mareo u hormigueo, detén el ejercicio.",
+    "cues": "Manos bajo hombros, rodillas bajo caderas\nMovimiento lento guiado por la respiración\nCuello relajado (sin \"tirar\" con la cabeza)\nRango cómodo: no busques máximo arqueo\nReparte el movimiento por toda la columna, no solo en lumbar",
+    "commonMistakes": "Moverse demasiado rápido y sin control\nBloquear codos y \"hundirse\" en hombros\nForzar el cuello (mirar arriba con tensión)\nExagerar la curva lumbar (molestia en espalda baja)\nDesplazar caderas hacia atrás/adelante en vez de articular la columna",
+    "regressions": "Rango más corto (solo un poco de redondeo/extensión)\nApoyar antebrazos si molestan muñecas (manteniendo movimiento suave)\nHacerlo sentado (versión suave de gato-vaca en silla)",
+    "progressions": "Pausar 1–2 respiraciones en cada posición (sin forzar)\nAñadir 1–2 minutos continuos como parte del calentamiento\nCombinar con respiración lenta (exhalación más larga) para relajar",
+    "media": [
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=kqnua4rHVVA",
+        "thumbnailUrl": "https://img.youtube.com/vi/kqnua4rHVVA/hqdefault.jpg"
+      },
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/b/be/Yoga_at_Your_Park_-_Bitilasana.jpg"
+      }
+    ]
+  },
+  {
+    "slug": "press-de-pecho-en-el-suelo-con-mancuernas",
+    "name": "Press de pecho en el suelo con mancuernas (floor press)",
+    "environment": "HOME",
+    "primaryMuscle": "Pectorales",
+    "description": "Variante de press de pecho sin banco: se hace tumbado en el suelo. Suele ser más tolerable para el hombro porque limita la profundidad (los codos tocan el suelo antes).\n\nTúmbate boca arriba con rodillas flexionadas y pies apoyados. Lleva las mancuernas sobre el pecho con muñecas neutras (no dobladas). Baja lento hasta que la parte posterior de los brazos toque el suelo con control (sin \"rebotar\"), manteniendo los codos a ~30–60° del cuerpo (ni pegados, ni abiertos a 90°). Empuja hacia arriba hasta extender los brazos sin perder el control del hombro.\n\nSeguridad: si aparece dolor agudo en hombro, reduce el rango, usa agarre neutro (palmas mirándose) y baja peso. No fuerces si hay pinchazo o inestabilidad.",
+    "cues": "Muñecas rectas: la mancuerna encima del antebrazo\nAgarre neutro o semi-neutro si el hombro se queja\nCodos a 30–60° del cuerpo (no abiertos a 90°)\nBaja lento hasta tocar el suelo suave (sin rebote)\nEmpuja estable: hombros \"anclados\" al suelo, sin encoger el cuello",
+    "commonMistakes": "Rebotar con los brazos en el suelo para ganar impulso\nAbrir codos demasiado (molesta el hombro)\nDoblar muñecas hacia atrás\nPerder tensión y \"bailar\" con las mancuernas arriba\nSubir los hombros hacia las orejas",
+    "regressions": "Menos peso o incluso sin mancuernas (patrón de empuje)\nAgarre neutro (palmas mirándose) y rango más corto\nUna mancuerna a la vez (solo si hay control y no se compensa)",
+    "progressions": "Pausa de 1 s con brazos tocando el suelo (sin rebote)\nTempo: 2–3 s bajando, sube controlado\nMás carga solo si la técnica se mantiene idéntica",
+    "media": [
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=AqYFvc9t_vU",
+        "thumbnailUrl": "https://img.youtube.com/vi/AqYFvc9t_vU/hqdefault.jpg"
+      },
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/8/88/Chest_press-CDC_strength_training_for_older_adults.gif"
+      }
+    ]
+  },
+  {
+    "slug": "curl-de-biceps-con-mancuernas",
+    "name": "Curl de bíceps con mancuernas (de pie)",
+    "environment": "MIXED",
+    "primaryMuscle": "Bíceps",
+    "description": "Ejercicio básico para fortalecer bíceps con mancuernas, válido tanto en casa como en gimnasio. La prioridad es control: subir sin balanceo y bajar lento.\n\nDe pie, con el tronco alto y el abdomen suave pero firme, sujeta una mancuerna en cada mano con brazos a los lados. Mantén los codos cerca del cuerpo. Flexiona los codos para subir las mancuernas, evitando que los codos se vayan hacia delante o que el cuerpo se balancee. En la bajada, controla 2–3 segundos.\n\nSeguridad: si aparece dolor agudo en codo/muñeca u hormigueo, reduce peso, usa agarre neutro (tipo martillo) o para el ejercicio.",
+    "cues": "Codos cerca del cuerpo: no los adelantes\nMuñecas neutras (no dobladas hacia atrás)\nSube sin balanceo; tronco quieto\nBaja lento 2–3 s (control en la excéntrica)\nHombros bajos: evita encoger el cuello",
+    "commonMistakes": "Balancear el cuerpo para ayudar a subir\nAdelantar los codos y convertirlo en un movimiento de hombro\nDoblar muñecas hacia atrás\nRecortar rango (no estirar ni flexionar de forma controlada)\nBajar rápido y sin control",
+    "regressions": "Menos peso y más control\nCurl alterno (un brazo cada vez) con el otro brazo quieto\nAgarre neutro (curl martillo) si la muñeca/codo se queja",
+    "progressions": "Pausa de 1 s arriba sin mover los codos\nTempo: 3 s bajando + subida controlada\nSubir peso solo si no aparece balanceo ni se adelantan codos",
+    "media": [
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=ZhTX4O3HcqE",
+        "thumbnailUrl": "https://img.youtube.com/vi/ZhTX4O3HcqE/hqdefault.jpg"
+      },
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/6/66/Biceps_curl-CDC_strength_training_for_older_adults.gif"
+      }
+    ]
+  },
+  {
+    "slug": "extension-de-rodilla-sentado",
+    "name": "Extensión de rodilla sentado (knee extension / LAQ)",
+    "environment": "HOME",
+    "primaryMuscle": "Cuádriceps",
+    "description": "Ejercicio simple para activar cuádriceps y mejorar control de la rodilla en posición sentada. La prioridad es movimiento lento, sin rebotes y sin dolor.\n\nSiéntate en una silla estable con la espalda \"larga\" y pies apoyados. Contrae el muslo y estira una rodilla hasta donde sea cómodo, manteniendo el muslo quieto. Pausa 1–2 segundos y baja lento con control. Alterna piernas.\n\nSeguridad: si aparece dolor agudo en la parte frontal de la rodilla, sensación de pinzamiento o dolor que empeora al repetir, reduce el rango y la velocidad; si sigue, para el ejercicio.",
+    "cues": "Siéntate alto: espalda larga y hombros relajados\nMuslo quieto: mueve la rodilla, no toda la pierna desde la cadera\nSube controlado, pausa 1–2 s, baja lento\nRango cómodo: sin dolor\nRespira normal (sin aguantar el aire)",
+    "commonMistakes": "Patear rápido y sin control\nRebotar arriba para \"hacer más\"\nInclinarse hacia atrás para ayudar al movimiento\nBloquear la rodilla con fuerza o buscar extensión agresiva\nSubir el muslo o mover la cadera en lugar de la rodilla",
+    "regressions": "Rango más corto (estirar menos)\nPausa más corta arriba (sin mantener)\nMenos repeticiones con descansos",
+    "progressions": "Pausa 2–3 s arriba sin cambiar postura\nBajada más lenta (2–3 s)\nAñadir una tobillera ligera solo si no aparece dolor y la técnica se mantiene",
+    "media": [
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=VuJZ6dqMf8M",
+        "thumbnailUrl": "https://img.youtube.com/vi/VuJZ6dqMf8M/hqdefault.jpg"
+      },
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/0/05/Knee_extension-CDC_strength_training_for_older_adults.gif"
+      }
+    ]
+  },
+  {
+    "slug": "curl-abdominal-parcial",
+    "name": "Curl abdominal parcial (abdominal curl / curl-up)",
+    "environment": "HOME",
+    "primaryMuscle": "Core (transverso, recto abdominal, oblicuos)",
+    "description": "Ejercicio de abdomen en el suelo con rango corto. El objetivo no es sentarse, sino despegar ligeramente hombros/escápulas manteniendo el cuello relajado.\n\nTúmbate boca arriba con rodillas flexionadas y pies apoyados. Coloca las manos sobre los muslos o cruzadas sobre el pecho (sin tirar de la cabeza). Exhala suave y eleva la parte alta de la espalda solo unos centímetros, como si quisieras \"acercar las costillas a la pelvis\". Mantén 1 segundo y baja lento.\n\nSeguridad: si notas tensión en cuello, reduce el rango, apoya la cabeza unos segundos o prueba una variante más suave (inclinación pélvica, dead bug modificado). Evita dolor lumbar: mantén abdomen activo y rango corto.",
+    "cues": "Rango corto: sube pocos centímetros\nCuello largo: barbilla ligeramente hacia dentro (sin aplastarla)\nExhala al subir, inhala al bajar\nManos sin tirar de la cabeza\nBaja lento: controla la vuelta",
+    "commonMistakes": "Tirar del cuello o de la cabeza con las manos\nSubir demasiado y convertirlo en un sit-up\nArquear la zona lumbar y perder control\nHacer repeticiones rápidas y sin control\nAguantar la respiración",
+    "regressions": "Rango más corto (casi imperceptible)\nManos en muslos para guiar el movimiento\nCambiar a inclinación pélvica si molesta el cuello",
+    "progressions": "Pausa 2 s arriba sin tensión en cuello\nMás repeticiones manteniendo rango corto y control\nTempo: 3 s bajando (excéntrica lenta)",
+    "media": [
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=pUiJ6EIjIjw",
+        "thumbnailUrl": "https://img.youtube.com/vi/pUiJ6EIjIjw/hqdefault.jpg"
+      },
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/9/9c/Abdominal_curl-CDC_strength_training_for_older_adults.gif"
+      }
+    ]
+  },
+  {
+    "slug": "marcha-en-el-sitio",
+    "name": "Marcha en el sitio (marching in place)",
+    "environment": "HOME",
+    "primaryMuscle": "Full body",
+    "description": "Cardio suave y accesible: marchar en el sitio elevando rodillas de forma cómoda. Ideal para subir pulsaciones sin impacto alto y sin material.\n\nDe pie, mantén el tronco alto y el abdomen suave pero firme. Eleva una rodilla y luego la otra alternando como si caminaras, moviendo los brazos de forma natural. Ajusta la intensidad con el ritmo y la altura de rodilla. Debe ser cómodo y sostenible. Si hay mareo, dolor en pecho, falta de aire desproporcionada o dolor articular agudo, detén el ejercicio.",
+    "cues": "Tronco alto: no te encorves\nRitmo cómodo: puedes hablar frases cortas\nRodillas a una altura que puedas controlar (no hace falta alto)\nBrazos acompañan el movimiento para equilibrio\nPies apoyan suave: evita golpear el suelo",
+    "commonMistakes": "Ir demasiado rápido y perder control/respiración\nEncoger hombros y tensar el cuello\nGolpear fuerte el suelo (más impacto del necesario)\nBalancear el tronco hacia atrás/adelante\nIgnorar señales de mareo o dolor",
+    "regressions": "Menos ritmo (más lento)\nMenos altura de rodilla\nApoyo ligero en pared o respaldo de silla para equilibrio",
+    "progressions": "Más ritmo manteniendo postura\nMás altura de rodilla si es cómodo\nIntervalos: 20–30 s más rápido + 30–60 s suave",
+    "media": [
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=VwM2Y6xkGx8",
+        "thumbnailUrl": "https://img.youtube.com/vi/VwM2Y6xkGx8/hqdefault.jpg"
+      },
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/6/67/Marching_in_place-CDC_strength_training_for_older_adults.gif"
+      }
+    ]
+  },
+  {
+    "slug": "paso-lateral-sin-salto",
+    "name": "Paso lateral sin salto (step touch)",
+    "environment": "HOME",
+    "primaryMuscle": "Full body",
+    "description": "Movimiento cardiovascular de bajo impacto: alternas pasos laterales llevando el peso de un pie al otro. Útil como calentamiento suave, para subir pulsaciones sin saltar y para practicar control y equilibrio en apoyo unilateral.",
+    "cues": "Empieza de pie, pies al ancho de caderas, rodillas ligeramente flexionadas y tronco alto.\nDa un paso lateral y transfiere el peso de forma clara al pie que pisa (no solo \"arrastrar\").\nEl otro pie se acerca y toca el suelo suave (\"tap\") sin golpear; luego cambia de lado.\nMantén caderas y rodillas alineadas con los pies (evita que la rodilla se meta hacia dentro).\nApoya el pie con control: talón y antepié estables, sin colapsar el arco del pie.\nRespira fluido y mantén un ritmo conversacional si es trabajo suave.",
+    "commonMistakes": "Bloquear las rodillas o hacer el movimiento rígido (impacto innecesario).\nInclinar el tronco hacia el lado del paso en vez de mover el peso con control.\nRodillas colapsando hacia dentro al apoyar.\nArrastrar los pies y perder estabilidad (especialmente en suelo con poca fricción).\nIr demasiado rápido al principio y acabar pisando sin control.",
+    "regressions": "Reduce el rango: pasos más cortos y más lentos.\nHazlo junto a una pared/silla para apoyo ligero si hay inseguridad de equilibrio.\nPausa 1 segundo al transferir el peso en cada paso para mejorar control.",
+    "progressions": "Aumenta el tempo manteniendo la técnica (sin saltar).\nAñade brazos (apertura/cierre suave) para subir demanda cardiovascular.\nHazlo por intervalos (p. ej., 20–40 s trabajo / 20–40 s suave) manteniendo respiración controlada.",
+    "media": [
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=-y-SSN_eMAs",
+        "thumbnailUrl": "https://img.youtube.com/vi/-y-SSN_eMAs/hqdefault.jpg"
+      },
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/1/1d/Aerobathon_gets_blood_pumping_140312-Z-KY529-085.jpg"
+      }
+    ]
+  },
+  {
+    "slug": "elevacion-de-puntas-de-pie",
+    "name": "Elevación de puntas de pie (toe raises / dorsiflexión)",
+    "environment": "HOME",
+    "primaryMuscle": "Piernas y glúteos",
+    "description": "Ejercicio para fortalecer la parte frontal de la pierna (tibial anterior) elevando las puntas del pie mientras los talones se mantienen en el suelo. Útil para control del tobillo y para caminar con más estabilidad.\n\nDe pie, sujétate a una pared o respaldo de silla si lo necesitas. Mantén el tronco alto y el peso repartido. Sin despegar los talones, eleva las puntas de los pies (dorsiflexión) de forma controlada. Pausa 1 segundo arriba y baja lento.\n\nSeguridad: si aparece dolor agudo en el tobillo, empeora un dolor en espinilla o notas hormigueo, reduce rango y volumen; si persiste, para.",
+    "cues": "Talones pegados al suelo: lo que sube son las puntas\nTronco alto y pelvis estable (sin echarte hacia atrás)\nSube controlado, pausa 1 s, baja lento\nRodillas suaves (no bloqueadas)\nUsa apoyo ligero si pierdes equilibrio",
+    "commonMistakes": "Levantar los talones (lo conviertes en gemelo/calf raise)\nEchar el cuerpo hacia atrás para \"ayudar\"\nRebotar arriba y bajar sin control\nRango excesivo con dolor en la espinilla\nHacerlo sin apoyo cuando el equilibrio no da",
+    "regressions": "Menos rango (subir menos las puntas)\nMenos repeticiones, con pausas\nVersión sentado (mismo gesto, más estable)",
+    "progressions": "Pausa 2–3 s arriba sin compensar con el tronco\nTempo: 3 s bajando (excéntrica lenta)\nMás repeticiones manteniendo talones abajo y control",
+    "media": [
+      {
+        "type": "youtube",
+        "url": "https://www.youtube.com/watch?v=enJ6yYJerVw",
+        "thumbnailUrl": "https://img.youtube.com/vi/enJ6yYJerVw/hqdefault.jpg"
+      },
+      {
+        "type": "image",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/3/38/Exercise_Ankle_Bends.png"
       }
     ]
   }
