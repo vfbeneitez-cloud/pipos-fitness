@@ -86,7 +86,7 @@ function detectRedFlags(logs: Array<{ pain: boolean; painNotes: string | null }>
  */
 export const AiPlanOutputSchema = z.object({
   training: z.object({
-    environment: z.enum(["GYM", "HOME", "CALISTHENICS", "POOL", "MIXED"]),
+    environment: z.enum(["GYM", "HOME", "CALISTHENICS", "POOL", "MIXED", "ESTIRAMIENTOS"]),
     daysPerWeek: z.number(),
     sessionMinutes: z.number(),
     sessions: z.array(
@@ -198,7 +198,7 @@ Devuelve SOLO JSON válido (sin markdown, sin texto adicional).
 Debes devolver EXACTAMENTE este shape:
 {
   "training": {
-    "environment": "GYM|HOME|CALISTHENICS|POOL|MIXED",
+    "environment": "GYM|HOME|CALISTHENICS|POOL|MIXED|ESTIRAMIENTOS",
     "daysPerWeek": number,
     "sessionMinutes": number,
     "sessions": [
@@ -264,12 +264,19 @@ SALIDA COMPACTA (OBLIGATORIO):
       outputSchemaHint: "AiPlanOutputSchema",
     };
     // Nota: El output total (7 días nutrición) es grande; forzar contenido compacto.
-    const response = await provider.chat(
-      [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: JSON.stringify(userPayload) },
-      ],
-      { maxTokens: 3000 },
+    const createPlanMessages = [
+      { role: "system" as const, content: systemPrompt },
+      { role: "user" as const, content: JSON.stringify(userPayload) },
+    ];
+    console.log(
+      "[AI prompt - create plan] system:",
+      systemPrompt.slice(0, 300) + (systemPrompt.length > 300 ? "..." : ""),
+    );
+    console.log("[AI prompt - create plan] user (payload):", JSON.stringify(userPayload, null, 2));
+    const response = await provider.chat(createPlanMessages, { maxTokens: 3000 });
+    console.log(
+      "[AI response - create plan]",
+      response.content.slice(0, 1500) + (response.content.length > 1500 ? "\n... (truncado)" : ""),
     );
 
     let parsed: unknown;
@@ -609,10 +616,16 @@ Propón ajustes seguros basados en adherencia y perfil.`;
   } = {};
 
   try {
+    console.log(
+      "[AI prompt - adjust plan] system:",
+      systemPrompt.slice(0, 400) + (systemPrompt.length > 400 ? "..." : ""),
+    );
+    console.log("[AI prompt - adjust plan] user:", userPrompt);
     const response = await provider.chat([
       { role: "system", content: systemPrompt },
       { role: "user", content: userPrompt },
     ]);
+    console.log("[AI response - adjust plan]", response.content);
     if (process.env.OPENAI_API_KEY) {
       logInfo("agent", "Weekly plan generated with OpenAI");
     }
@@ -707,7 +720,14 @@ Propón ajustes seguros basados en adherencia y perfil.`;
   const finalDaysPerWeek = adjustments.daysPerWeek ?? profile?.daysPerWeek ?? 3;
   const finalSessionMinutes = adjustments.sessionMinutes ?? profile?.sessionMinutes ?? 45;
   const finalEnvironment =
-    (adjustments.environment as "GYM" | "HOME" | "CALISTHENICS" | "POOL" | "MIXED" | undefined) ??
+    (adjustments.environment as
+      | "GYM"
+      | "HOME"
+      | "CALISTHENICS"
+      | "POOL"
+      | "MIXED"
+      | "ESTIRAMIENTOS"
+      | undefined) ??
     profile?.environment ??
     "GYM";
   const finalMealsPerDay = adjustments.mealsPerDay ?? profile?.mealsPerDay ?? 3;
