@@ -277,7 +277,7 @@ export default function OnboardingPage() {
                 id="mealsPerDay"
                 type="number"
                 min={2}
-                max={5}
+                max={4}
                 value={mealsPerDay}
                 onChange={(e) => setMealsPerDay(Number(e.target.value))}
                 className="mt-1 w-full rounded border border-zinc-300 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-800"

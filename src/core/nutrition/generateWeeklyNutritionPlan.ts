@@ -28,7 +28,6 @@ const SLOT_SETS: Record<number, Meal["slot"][]> = {
   2: ["lunch", "dinner"],
   3: ["breakfast", "lunch", "dinner"],
   4: ["breakfast", "lunch", "dinner", "snack"],
-  5: ["breakfast", "snack", "lunch", "snack", "dinner"],
 };
 
 type Recipe = Omit<Meal, "slot">;
@@ -143,7 +142,7 @@ export function generateWeeklyNutritionPlan(args: {
   allergies?: string | null;
   dislikes?: string | null;
 }): WeeklyNutritionPlan {
-  const mealsPerDay = Math.min(Math.max(args.mealsPerDay, 2), 5);
+  const mealsPerDay = Math.min(4, Math.max(args.mealsPerDay, 2));
   const slots = SLOT_SETS[mealsPerDay] ?? SLOT_SETS[3];
 
   const pool = filterRecipes(args);
@@ -151,7 +150,14 @@ export function generateWeeklyNutritionPlan(args: {
   const safePool = pool.length ? pool : RECIPES;
 
   const days: NutritionDay[] = Array.from({ length: 7 }).map((_, dayIndex) => {
-    const meals = slots.map((slot) => makeMeal(slot, pick(safePool)));
+    const usedTitles = new Set<string>();
+    const meals = slots.map((slot) => {
+      const available = safePool.filter((r) => !usedTitles.has(r.title));
+      const poolForPick = available.length > 0 ? available : safePool;
+      const recipe = pick(poolForPick);
+      usedTitles.add(recipe.title);
+      return makeMeal(slot, recipe);
+    });
     return { dayIndex, meals };
   });
 
@@ -163,4 +169,33 @@ export function generateWeeklyNutritionPlan(args: {
     dislikes: args.dislikes ?? null,
     days,
   };
+}
+
+/** No repetir plato (title) dentro del mismo día. Repara IA o cualquier fuente. */
+export function repairDuplicateTitlesInPlan(plan: WeeklyNutritionPlan): WeeklyNutritionPlan {
+  const pool = filterRecipes({
+    cookingTime: plan.cookingTime,
+    dietaryStyle: plan.dietaryStyle,
+    allergies: plan.allergies,
+    dislikes: plan.dislikes,
+  });
+  const safePool = pool.length ? pool : RECIPES;
+
+  const days: NutritionDay[] = plan.days.map((day) => {
+    const usedTitles = new Set<string>();
+    const meals = day.meals.map((meal) => {
+      if (usedTitles.has(meal.title)) {
+        const available = safePool.filter((r) => !usedTitles.has(r.title));
+        const poolForPick = available.length > 0 ? available : safePool;
+        const recipe = pick(poolForPick);
+        usedTitles.add(recipe.title);
+        return makeMeal(meal.slot, recipe);
+      }
+      usedTitles.add(meal.title);
+      return meal;
+    });
+    return { dayIndex: day.dayIndex, meals };
+  });
+
+  return { ...plan, days };
 }

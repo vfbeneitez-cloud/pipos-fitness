@@ -17,7 +17,7 @@ const ProfileBody = z.object({
   allergies: z.string().optional(),
   dislikes: z.string().optional(),
   cookingTime: CookingTimeSchema.optional(),
-  mealsPerDay: z.number().int().min(2).max(5).optional(),
+  mealsPerDay: z.number().int().min(2).max(4).optional(),
 });
 
 export async function upsertProfile(userId: string, body: unknown) {

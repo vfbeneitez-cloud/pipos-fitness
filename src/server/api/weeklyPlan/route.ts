@@ -5,7 +5,11 @@ import {
   generateWeeklyTrainingPlan,
   type WeeklyTrainingPlan,
 } from "@/src/core/training/generateWeeklyTrainingPlan";
-import { generateWeeklyNutritionPlan } from "@/src/core/nutrition/generateWeeklyNutritionPlan";
+import {
+  generateWeeklyNutritionPlan,
+  repairDuplicateTitlesInPlan,
+} from "@/src/core/nutrition/generateWeeklyNutritionPlan";
+import { validateNutritionBeforePersist } from "@/src/server/plan/validateWeeklyPlan";
 import { getProvider } from "@/src/server/ai/getProvider";
 import {
   generatePlanFromApi,
@@ -112,7 +116,7 @@ export async function createWeeklyPlan(body: unknown, userId: string) {
         exercisePool,
       );
       training = mappedTraining as WeeklyTrainingPlan;
-      nutrition = planResult.nutrition;
+      nutrition = repairDuplicateTitlesInPlan(planResult.nutrition);
       if (unmatchedCount > 0) {
         trackEvent("ai_exercise_unmatched", { count: unmatchedCount });
       }
@@ -222,6 +226,23 @@ export async function createWeeklyPlan(body: unknown, userId: string) {
         durationMs: Date.now() - t0,
       },
     );
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const v = validateNutritionBeforePersist(nutrition as any);
+  if (!v.ok) {
+    trackEvent(
+      "weekly_plan_invalid_before_persist",
+      { reason: v.reason, context: "createWeeklyPlan" },
+      { sentry: true },
+    );
+    nutrition = generateWeeklyNutritionPlan({
+      mealsPerDay: finalMealsPerDay,
+      cookingTime: finalCookingTime,
+      dietaryStyle: profile?.dietaryStyle ?? null,
+      allergies: profile?.allergies ?? null,
+      dislikes: profile?.dislikes ?? null,
+    });
   }
 
   const plan = await prisma.weeklyPlan.upsert({

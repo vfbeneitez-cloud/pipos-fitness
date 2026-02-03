@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, useMemo } from "react";
 import Link from "next/link";
+import { SLOT_LABEL } from "@/src/app/lib/slotLabels";
 import { getWeekStart, DAY_NAMES } from "@/src/app/lib/week";
 import { getErrorMessage } from "@/src/app/lib/errorMessage";
 import { ErrorBanner } from "@/src/app/components/ErrorBanner";
@@ -321,7 +322,7 @@ function NutritionToday({
           className="flex items-center justify-between rounded-lg border border-zinc-200 p-3 dark:border-zinc-700"
         >
           <div>
-            <span className="font-medium capitalize">{m.slot}</span>: {m.title} ({m.minutes} min)
+            {SLOT_LABEL[m.slot as keyof typeof SLOT_LABEL]}: {m.title} ({m.minutes} min)
           </div>
           <SwapMealButton
             userId={userId}

@@ -11,7 +11,11 @@ import {
   generateWeeklyTrainingPlan,
   type WeeklyTrainingPlan,
 } from "@/src/core/training/generateWeeklyTrainingPlan";
-import { generateWeeklyNutritionPlan } from "@/src/core/nutrition/generateWeeklyNutritionPlan";
+import {
+  generateWeeklyNutritionPlan,
+  repairDuplicateTitlesInPlan,
+} from "@/src/core/nutrition/generateWeeklyNutritionPlan";
+import { validateNutritionBeforePersist } from "@/src/server/plan/validateWeeklyPlan";
 import type { Prisma } from "@prisma/client";
 
 const ALLOWED_EXERCISES_MAX = 160;
@@ -29,6 +33,19 @@ function pickAllowedExercisesDeterministic<
 
 function normalizeWeekStart(weekStart: string): Date {
   return new Date(`${weekStart}T00:00:00.000Z`);
+}
+
+function pickTrainingDayIndices(daysPerWeek: number): number[] {
+  const patterns: Record<number, number[]> = {
+    1: [0],
+    2: [0, 3],
+    3: [0, 2, 4],
+    4: [0, 2, 4, 6],
+    5: [0, 1, 3, 5, 6],
+    6: [0, 1, 2, 4, 5, 6],
+    7: [0, 1, 2, 3, 4, 5, 6],
+  };
+  return patterns[Math.min(7, Math.max(1, daysPerWeek))] ?? [0, 2, 4];
 }
 
 type RedFlag = {
@@ -115,6 +132,21 @@ export const AiPlanOutputSchema = z.object({
 
 const PlanFromApiSchema = AiPlanOutputSchema;
 
+function validateAiPlanAgainstConstraints(
+  data: z.infer<typeof AiPlanOutputSchema>,
+  expected: { preferredTrainingDayIndices: number[] },
+): { ok: true } | { ok: false; reason: string } {
+  const expectedIdx = new Set(expected.preferredTrainingDayIndices);
+  const gotIdx = data.training.sessions.map((s) => s.dayIndex);
+  if (gotIdx.length !== expected.preferredTrainingDayIndices.length) {
+    return { ok: false, reason: "training_sessions_length_mismatch" };
+  }
+  for (const i of gotIdx) {
+    if (!expectedIdx.has(i)) return { ok: false, reason: "training_dayIndex_not_preferred" };
+  }
+  return { ok: true };
+}
+
 async function generatePlanFromApi(
   provider: AIProvider,
   args: {
@@ -142,6 +174,7 @@ async function generatePlanFromApi(
   const profile = args.profile;
   const systemPrompt = `Eres un generador de planes semanales de entrenamiento y nutrición. Genera un plan PERSONALIZADO según el perfil del usuario.
 Reglas: NO diagnóstico médico. Respeta alergias, dislikes y preferencias dietéticas. Para principiantes: volumen moderado y técnica. Para lesiones: evita ejercicios de riesgo.
+TRAINING: Debes usar EXACTAMENTE preferredTrainingDayIndices como dayIndex de las sesiones (mismos valores, sin extras).
 Responde SOLO con un JSON válido (sin markdown) con esta estructura exacta:
 {
   "training": {
@@ -151,7 +184,7 @@ Responde SOLO con un JSON válido (sin markdown) con esta estructura exacta:
     "sessions": [{ "dayIndex": 0-6, "name": "Session A", "exercises": [{ "slug": "slug-ejercicio", "name": "Nombre", "sets": 3, "reps": "8-12", "restSec": 90 }] }]
   },
   "nutrition": {
-    "mealsPerDay": 2-5,
+    "mealsPerDay": 2-4,
     "cookingTime": "MIN_10|MIN_20|MIN_40|FLEXIBLE",
     "days": [{ "dayIndex": 0-6, "meals": [{ "slot": "breakfast|lunch|dinner|snack", "title": "...", "minutes": número, "tags": [], "ingredients": [], "instructions": "...", "substitutions": [{ "title": "...", "minutes": número }] }] }]
   }
@@ -185,6 +218,7 @@ Responde SOLO con un JSON válido (sin markdown) con esta estructura exacta:
       sessionMinutes: args.finalSessionMinutes,
       mealsPerDay: Math.min(4, Math.max(2, args.finalMealsPerDay)),
       cookingTime: args.finalCookingTime,
+      preferredTrainingDayIndices: pickTrainingDayIndices(args.finalDaysPerWeek),
     },
     allowedExercises: trimmedAllowed.map((e) => ({
       slug: e.slug,
@@ -213,6 +247,16 @@ Responde SOLO con un JSON válido (sin markdown) con esta estructura exacta:
       return null;
     }
     const data = parsed.data;
+
+    const validation = validateAiPlanAgainstConstraints(data, {
+      preferredTrainingDayIndices: pickTrainingDayIndices(args.finalDaysPerWeek),
+    });
+    if (!validation.ok) {
+      Sentry.captureMessage("weekly_plan_fallback_ai_constraints", {
+        tags: { fallback_type: "ai_constraints", reason: validation.reason },
+      });
+      return null;
+    }
 
     // --- Soft enforcement: slugs fuera del allowlist recortado (pero existentes en DB) ---
     // pool completo (DB) = args.allowedExercises
@@ -453,7 +497,7 @@ Responde SOLO con un JSON válido:
     "daysPerWeek": número (1-7) o null si mantener,
     "sessionMinutes": número (15-180) o null si mantener,
     "environment": "GYM|HOME|CALISTHENICS|POOL|MIXED" o null si mantener,
-    "mealsPerDay": número (2-5) o null si mantener,
+    "mealsPerDay": número (2-4) o null si mantener,
     "cookingTime": "MIN_10|MIN_20|MIN_40|FLEXIBLE" o null si mantener
   }
 }`;
@@ -660,7 +704,7 @@ Propón ajustes seguros basados en adherencia y perfil.`;
         exercisePool,
       );
       training = mappedTraining as WeeklyTrainingPlan;
-      nutrition = planResult.nutrition;
+      nutrition = repairDuplicateTitlesInPlan(planResult.nutrition);
       unmatchedCountForAudit = unmatchedCount;
       if (unmatchedCount > 0) {
         trackEvent("ai_exercise_unmatched", { count: unmatchedCount });
@@ -743,6 +787,24 @@ Propón ajustes seguros basados en adherencia y perfil.`;
 
   const now = new Date();
   const rationaleStr = rationale.trim();
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const v = validateNutritionBeforePersist(nutrition as any);
+  if (!v.ok) {
+    trackEvent(
+      "weekly_plan_invalid_before_persist",
+      { reason: v.reason, context: "adjustWeeklyPlan" },
+      { sentry: true },
+    );
+    nutrition = generateWeeklyNutritionPlan({
+      mealsPerDay: finalMealsPerDay,
+      cookingTime: finalCookingTime,
+      dietaryStyle: profile?.dietaryStyle ?? null,
+      allergies: profile?.allergies ?? null,
+      dislikes: profile?.dislikes ?? null,
+    });
+  }
+
   const plan = await prisma.weeklyPlan.upsert({
     where: { userId_weekStart: { userId, weekStart: weekStartDate } },
     update: {

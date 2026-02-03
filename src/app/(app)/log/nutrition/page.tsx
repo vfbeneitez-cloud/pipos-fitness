@@ -3,9 +3,9 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { getDemoUserId } from "@/src/app/lib/demo";
 import { ErrorBanner } from "@/src/app/components/ErrorBanner";
 import { getErrorMessage } from "@/src/app/lib/errorMessage";
+import { SLOT_LABEL } from "@/src/app/lib/slotLabels";
 import { getWeekStart, getTodayDayIndex } from "@/src/app/lib/week";
 
 const HUNGER_OPTIONS: { value: "low" | "ok" | "high"; label: string }[] = [
@@ -14,7 +14,8 @@ const HUNGER_OPTIONS: { value: "low" | "ok" | "high"; label: string }[] = [
   { value: "high", label: "Mucha" },
 ];
 
-type NutritionDay = { dayIndex: number };
+type Meal = { slot: string; title: string; minutes: number };
+type NutritionDay = { dayIndex: number; meals?: Meal[] };
 type Plan = {
   id?: string;
   nutritionJson?: { days?: NutritionDay[] };
@@ -36,7 +37,7 @@ export default function LogNutritionPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const nutritionDay = plan?.nutritionJson?.days?.find((d) => d.dayIndex === dayIndex);
+  const nutritionDay = plan?.nutritionJson?.days?.[dayIndex];
   const hasNoMenu = plan !== undefined && (plan === null || !nutritionDay);
 
   const weekStart = getWeekStart(new Date());
@@ -63,16 +64,15 @@ export default function LogNutritionPage() {
     void fetchPlan();
   }, [fetchPlan]);
 
+  useEffect(() => {
+    if (hasNoMenu && followedMenu === null) setFollowedMenu(false);
+  }, [hasNoMenu, followedMenu]);
+
   const canSubmit =
     followedMenu !== null && (followedMenu === false || (followedMenu === true && hunger != null));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const userId = getDemoUserId();
-    if (!userId) {
-      setError("Sesión no encontrada.");
-      return;
-    }
     if (!canSubmit) return;
     setError(null);
     setLoading(true);
@@ -81,8 +81,7 @@ export default function LogNutritionPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          userId,
-          followedPlan: followedMenu,
+          followedPlan: followedMenu ?? false,
           hunger: followedMenu ? hunger : undefined,
           notes: notes.trim() || undefined,
         }),
@@ -116,10 +115,25 @@ export default function LogNutritionPage() {
       </h1>
 
       {hasNoMenu && (
-        <p className="mb-4 text-sm text-zinc-600 dark:text-zinc-400">
-          Hoy no había menú programado. Registraré la comida igualmente.
+        <p className="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-200">
+          Aún no hay menú para este día.
         </p>
       )}
+
+      {nutritionDay?.meals?.length ? (
+        <ul className="mb-6 space-y-2">
+          {nutritionDay.meals.map((m, i) => (
+            <li
+              key={i}
+              className="flex items-center justify-between rounded-lg border border-zinc-200 p-3 dark:border-zinc-700"
+            >
+              <span className="font-medium">
+                {SLOT_LABEL[m.slot as keyof typeof SLOT_LABEL]}: {m.title} ({m.minutes} min)
+              </span>
+            </li>
+          ))}
+        </ul>
+      ) : null}
 
       {error && (
         <div className="mb-4">
