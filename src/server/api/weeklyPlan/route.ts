@@ -110,66 +110,46 @@ export async function createWeeklyPlan(body: unknown, userId: string) {
       finalCookingTime,
       allowedExercises: exercisePool,
     });
-    if (planResult) {
-      const { training: mappedTraining, unmatchedCount } = mapAiTrainingToExistingExercises(
-        planResult.training,
-        exercisePool,
-      );
-      training = mappedTraining as WeeklyTrainingPlan;
-      nutrition = repairDuplicateTitlesInPlan(planResult.nutrition);
-      if (unmatchedCount > 0) {
-        trackEvent("ai_exercise_unmatched", { count: unmatchedCount });
-      }
-      const sessionsCount = training?.sessions?.length ?? null;
-      const totalExercises = Array.isArray(training?.sessions)
-        ? training.sessions.reduce((acc, s) => acc + (s.exercises?.length ?? 0), 0)
-        : null;
-      trackAiPlanAudit(
-        { kind: "success" },
-        {
-          context: "createWeeklyPlan",
-          provider: providerName,
-          environment,
-          daysPerWeek,
-          sessionMinutes,
-          mealsPerDay: finalMealsPerDay,
-          cookingTime: finalCookingTime,
-          poolSize: exercisePool.length,
-          sessionsCount: sessionsCount ?? undefined,
-          totalExercises: totalExercises ?? undefined,
-          unmatchedCount,
-          durationMs: Date.now() - t0,
+    if (!planResult.ok) {
+      return {
+        status: 502,
+        body: {
+          error: "AI_PLAN_FAILED",
+          reason: planResult.reason,
+          detail: planResult.detail,
         },
-      );
-    } else {
-      trackAiPlanAudit(
-        { kind: "fallback", fallbackType: "ai_invalid_or_constraints" },
-        {
-          context: "createWeeklyPlan",
-          provider: providerName,
-          environment,
-          daysPerWeek,
-          sessionMinutes,
-          mealsPerDay: finalMealsPerDay,
-          cookingTime: finalCookingTime,
-          poolSize: exercisePool.length,
-          durationMs: Date.now() - t0,
-        },
-      );
-      training = generateWeeklyTrainingPlan({
+      };
+    }
+    const { training: mappedTraining, unmatchedCount } = mapAiTrainingToExistingExercises(
+      planResult.training,
+      exercisePool,
+    );
+    training = mappedTraining as WeeklyTrainingPlan;
+    nutrition = repairDuplicateTitlesInPlan(planResult.nutrition);
+    if (unmatchedCount > 0) {
+      trackEvent("ai_exercise_unmatched", { count: unmatchedCount });
+    }
+    const sessionsCount = training?.sessions?.length ?? null;
+    const totalExercises = Array.isArray(training?.sessions)
+      ? training.sessions.reduce((acc, s) => acc + (s.exercises?.length ?? 0), 0)
+      : null;
+    trackAiPlanAudit(
+      { kind: "success" },
+      {
+        context: "createWeeklyPlan",
+        provider: providerName,
         environment,
         daysPerWeek,
         sessionMinutes,
-        exercisePool: exercisePool.map((e) => ({ slug: e.slug, name: e.name })),
-      });
-      nutrition = generateWeeklyNutritionPlan({
         mealsPerDay: finalMealsPerDay,
         cookingTime: finalCookingTime,
-        dietaryStyle: profile?.dietaryStyle ?? null,
-        allergies: profile?.allergies ?? null,
-        dislikes: profile?.dislikes ?? null,
-      });
-    }
+        poolSize: exercisePool.length,
+        sessionsCount: sessionsCount ?? undefined,
+        totalExercises: totalExercises ?? undefined,
+        unmatchedCount,
+        durationMs: Date.now() - t0,
+      },
+    );
   } else {
     const exercisePool = await prisma.exercise.findMany({
       where: { ...(environment === "MIXED" ? {} : { environment }) },

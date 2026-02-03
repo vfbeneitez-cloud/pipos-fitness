@@ -2,7 +2,8 @@ import * as Sentry from "@sentry/nextjs";
 import { logInfo } from "@/src/server/lib/logger";
 import type { AIProvider, AgentMessage, AgentResponse } from "../provider";
 
-const OPENAI_TIMEOUT_MS = 12_000;
+// Vercel Hobby = 10s; dejar margen para respuesta + fallback
+const OPENAI_TIMEOUT_MS = 8_000;
 const CHAT_ENDPOINT = "https://api.openai.com/v1/chat/completions";
 const RATE_LIMIT_BACKOFF_MS = 2000;
 const MAX_ATTEMPTS = 3;
@@ -62,7 +63,7 @@ function sleep(ms: number): Promise<void> {
  *
  * - JSON estricto: response_format { type: "json_object" }.
  * - Temperature 0.2; max_tokens: caller pasa límite (p. ej. 4000), default 2000.
- * - Timeout 12s; 1 retry solo en 5xx y timeout (429 no reintenta).
+ * - Timeout 8s (Vercel Hobby 10s); retry en 5xx/timeout (429 backoff).
  */
 export class OpenAIProvider implements AIProvider {
   private apiKey: string;

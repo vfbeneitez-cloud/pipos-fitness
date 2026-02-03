@@ -166,11 +166,15 @@ async function generatePlanFromApi(
     finalCookingTime: string;
     allowedExercises: Array<{ slug: string; name: string; environment: string }>;
   },
-): Promise<{
-  training: ReturnType<typeof generateWeeklyTrainingPlan>;
-  nutrition: ReturnType<typeof generateWeeklyNutritionPlan>;
-  exercisesToUpsert: Array<{ slug: string; name: string; environment: string }>;
-} | null> {
+): Promise<
+  | {
+      ok: true;
+      training: ReturnType<typeof generateWeeklyTrainingPlan>;
+      nutrition: ReturnType<typeof generateWeeklyNutritionPlan>;
+      exercisesToUpsert: Array<{ slug: string; name: string; environment: string }>;
+    }
+  | { ok: false; reason: string; detail?: string }
+> {
   try {
     const pool = args.allowedExercises;
     const allowlist =
@@ -265,7 +269,7 @@ SALIDA COMPACTA (OBLIGATORIO):
         { role: "system", content: systemPrompt },
         { role: "user", content: JSON.stringify(userPayload) },
       ],
-      { maxTokens: 4500 },
+      { maxTokens: 3000 },
     );
 
     let parsed: unknown;
@@ -276,7 +280,8 @@ SALIDA COMPACTA (OBLIGATORIO):
         tags: { fallback_type: "ai_invalid_output" },
         extra: { err, content: response.content.slice(0, 500) },
       });
-      return null;
+      const contentSnippet = response.content.slice(0, 500);
+      return { ok: false, reason: "invalid_json", detail: contentSnippet };
     }
 
     const validation = AiPlanOutputSchema.safeParse(parsed);
@@ -285,7 +290,11 @@ SALIDA COMPACTA (OBLIGATORIO):
         tags: { fallback_type: "ai_invalid_output" },
         extra: { errors: validation.error.flatten() },
       });
-      return null;
+      return {
+        ok: false,
+        reason: "validation_failed",
+        detail: JSON.stringify(validation.error.flatten()),
+      };
     }
 
     const data = validation.data;
@@ -330,7 +339,11 @@ SALIDA COMPACTA (OBLIGATORIO):
         tags: { fallback_type: "training_dayIndex_not_preferred" },
         extra: { gotIdx, expectedIdx, sessionsLen: data.training.sessions.length },
       });
-      return null;
+      return {
+        ok: false,
+        reason: "training_dayIndex_not_preferred",
+        detail: JSON.stringify({ gotIdx, expectedIdx }),
+      };
     }
 
     const poolBySlug = new Map(pool.map((e) => [e.slug.toLowerCase(), e]));
@@ -354,7 +367,11 @@ SALIDA COMPACTA (OBLIGATORIO):
               allowlistSize: allowlist.length,
             },
           });
-          return null;
+          return {
+            ok: false,
+            reason: "exercise_not_in_pool",
+            detail: `slug: ${ex.slug}, name: ${ex.name}`,
+          };
         }
         if (!promptAllowSlugs.has(slugLower)) {
           outsidePromptAllowlistCount += 1;
@@ -380,6 +397,7 @@ SALIDA COMPACTA (OBLIGATORIO):
     }
 
     return {
+      ok: true as const,
       training: data.training,
       nutrition: data.nutrition,
       exercisesToUpsert,
@@ -388,7 +406,9 @@ SALIDA COMPACTA (OBLIGATORIO):
     Sentry.captureException(error, {
       tags: { context: "generatePlanFromApi" },
     });
-    return null;
+    const message = error instanceof Error ? error.message : String(error);
+    const name = error instanceof Error ? error.name : "Error";
+    return { ok: false, reason: "provider_error", detail: `${name}: ${message}` };
   }
 }
 
@@ -660,31 +680,20 @@ Propón ajustes seguros basados en adherencia y perfil.`;
       }
     }
   } catch (error) {
-    fallbackType = "provider_error";
-    const errMsg = error instanceof Error ? error.message : "unknown";
-    logError("agent", "OpenAI provider failed, using mock fallback", { error: errMsg });
+    const errMsg = error instanceof Error ? error.message : String(error);
+    const errName = error instanceof Error ? error.name : "Error";
+    logError("agent", "OpenAI provider failed", { error: errMsg });
     Sentry.captureException(error, {
       tags: { fallback_type: "provider_error" },
     });
-    try {
-      const mock = new MockProvider();
-      const fallbackRes = await mock.chat([
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userPrompt },
-      ]);
-      rationale =
-        fallbackRes.content.trim() || "He aplicado ajustes menores basados en tu progreso.";
-      if (adherence.training < 0.5) {
-        adjustments.daysPerWeek = Math.max(1, (profile?.daysPerWeek ?? 3) - 1);
-      }
-      if (adherence.nutrition < 0.5) {
-        adjustments.mealsPerDay = Math.max(2, (profile?.mealsPerDay ?? 3) - 1);
-        adjustments.cookingTime = "MIN_10";
-      }
-    } catch {
-      rationale = "He aplicado ajustes menores basados en tu progreso.";
-      adjustments = {};
-    }
+    return {
+      status: 502,
+      body: {
+        error: "AI_PROVIDER_ERROR",
+        message: errMsg,
+        detail: `${errName}: ${errMsg}`,
+      },
+    };
   }
 
   trackEvent(
@@ -747,49 +756,25 @@ Propón ajustes seguros basados en adherencia y perfil.`;
       finalCookingTime,
       allowedExercises: exercisePool,
     });
-    if (planResult) {
-      const { training: mappedTraining, unmatchedCount } = mapAiTrainingToExistingExercises(
-        planResult.training,
-        exercisePool,
-      );
-      training = mappedTraining as WeeklyTrainingPlan;
-      nutrition = repairDuplicateTitlesInPlan(planResult.nutrition);
-      unmatchedCountForAudit = unmatchedCount;
-      if (unmatchedCount > 0) {
-        trackEvent("ai_exercise_unmatched", { count: unmatchedCount });
-      }
-    } else {
-      trackAiPlanAudit(
-        { kind: "fallback", fallbackType: "ai_invalid_or_constraints" },
-        {
-          context: "adjustWeeklyPlan",
-          provider: providerName as "openai" | "mock",
-          environment: finalEnvironment,
-          daysPerWeek: finalDaysPerWeek,
-          sessionMinutes: finalSessionMinutes,
-          mealsPerDay: finalMealsPerDay,
-          cookingTime: finalCookingTime,
-          poolSize: poolSizeForAudit,
-          durationMs: Date.now() - t0,
+    if (!planResult.ok) {
+      return {
+        status: 502,
+        body: {
+          error: "AI_PLAN_FAILED",
+          reason: planResult.reason,
+          detail: planResult.detail,
         },
-      );
-      const fallbackPool = await prisma.exercise.findMany({
-        where: { ...(finalEnvironment === "MIXED" ? {} : { environment: finalEnvironment }) },
-        select: { slug: true, name: true },
-      });
-      training = generateWeeklyTrainingPlan({
-        environment: finalEnvironment,
-        daysPerWeek: finalDaysPerWeek,
-        sessionMinutes: finalSessionMinutes,
-        exercisePool: fallbackPool,
-      });
-      nutrition = generateWeeklyNutritionPlan({
-        mealsPerDay: finalMealsPerDay,
-        cookingTime: finalCookingTime,
-        dietaryStyle: profile?.dietaryStyle ?? null,
-        allergies: profile?.allergies ?? null,
-        dislikes: profile?.dislikes ?? null,
-      });
+      };
+    }
+    const { training: mappedTraining, unmatchedCount } = mapAiTrainingToExistingExercises(
+      planResult.training,
+      exercisePool,
+    );
+    training = mappedTraining as WeeklyTrainingPlan;
+    nutrition = repairDuplicateTitlesInPlan(planResult.nutrition);
+    unmatchedCountForAudit = unmatchedCount;
+    if (unmatchedCount > 0) {
+      trackEvent("ai_exercise_unmatched", { count: unmatchedCount });
     }
   } else {
     const exercisePool = await prisma.exercise.findMany({

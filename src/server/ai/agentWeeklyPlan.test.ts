@@ -141,7 +141,7 @@ describe("generatePlanFromApi - guardrails regresión", () => {
       allowedExercises,
     });
 
-    expect(res).not.toBeNull();
+    expect(res?.ok).toBe(true);
 
     // Track del trim
     expect(trackEvent).toHaveBeenCalledWith(
@@ -237,7 +237,8 @@ describe("generatePlanFromApi - guardrails regresión", () => {
       allowedExercises,
     });
 
-    expect(res).toBeNull();
+    expect(res?.ok).toBe(false);
+    expect(res?.reason).toBe("exercise_not_in_pool");
     expect(Sentry.captureMessage).toHaveBeenCalledWith(
       "weekly_plan_fallback_ai_exercise_not_in_pool",
       expect.any(Object),

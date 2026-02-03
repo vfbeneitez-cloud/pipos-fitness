@@ -3,6 +3,7 @@ import { prisma } from "@/src/server/db/prisma";
 import { createWeeklyPlan, getWeeklyPlan } from "./route";
 import { adjustWeeklyPlan } from "@/src/server/ai/agentWeeklyPlan";
 import { getProvider } from "@/src/server/ai/getProvider";
+import { MockProvider } from "@/src/server/ai/providers/mock";
 import * as Sentry from "@sentry/nextjs";
 
 type TrainingEnvironment = "GYM" | "HOME" | "CALISTHENICS" | "POOL" | "MIXED";
@@ -23,6 +24,8 @@ describe("weekly plan v0", () => {
       update: {},
       create: { id: TEST_USER_ID, email: "test@local.test" },
     });
+    delete process.env.OPENAI_API_KEY;
+    vi.mocked(getProvider).mockReturnValue(new MockProvider() as never);
   });
   it("creates and fetches a weekly plan", async () => {
     await prisma.userProfile.upsert({
@@ -164,7 +167,7 @@ describe("weekly plan v0", () => {
   });
 
   describe("AI Beta contract (simulated OpenAI invalid JSON)", () => {
-    it("falls back to deterministic plan and records fallback_type ai_invalid_output", async () => {
+    it("returns 502 with API error when OpenAI returns invalid JSON (no fallback)", async () => {
       await prisma.userProfile.upsert({
         where: { userId: TEST_USER_ID },
         update: { mealsPerDay: 3, cookingTime: "MIN_10" },
@@ -186,12 +189,11 @@ describe("weekly plan v0", () => {
       if (prevKey !== undefined) process.env.OPENAI_API_KEY = prevKey;
       else delete process.env.OPENAI_API_KEY;
 
-      expect(res.status).toBe(200);
-      const plan = res.body as { trainingJson: unknown; nutritionJson: unknown };
-      expect(plan.trainingJson).toBeDefined();
-      expect(plan.nutritionJson).toBeDefined();
-      expect(plan.nutritionJson).toHaveProperty("days");
-      expect((plan.nutritionJson as { days: unknown[] }).days.length).toBe(7);
+      expect(res.status).toBe(502);
+      const body = res.body as { error: string; reason: string; detail?: string };
+      expect(body.error).toBe("AI_PLAN_FAILED");
+      expect(body.reason).toBe("invalid_json");
+      expect(body.detail).toBeDefined();
 
       expect(Sentry.captureMessage).toHaveBeenCalledWith(
         "weekly_plan_fallback_ai_invalid_output",
@@ -211,6 +213,9 @@ describe("weekly plan v0", () => {
         environment: "GYM",
       },
     });
+    const prevKey = process.env.OPENAI_API_KEY;
+    delete process.env.OPENAI_API_KEY;
+    vi.mocked(getProvider).mockReturnValue(new MockProvider() as never);
     await createWeeklyPlan(
       {
         weekStart: "2026-01-26",
@@ -221,6 +226,7 @@ describe("weekly plan v0", () => {
       TEST_USER_ID,
     );
     await adjustWeeklyPlan({ weekStart: "2026-01-26" }, TEST_USER_ID);
+    if (prevKey !== undefined) process.env.OPENAI_API_KEY = prevKey;
 
     const getRes = await getWeeklyPlan(
       "http://localhost/api/weekly-plan?weekStart=2026-01-26",
@@ -242,6 +248,8 @@ describe("weekly plan authorization", () => {
       update: {},
       create: { id: TEST_USER_ID, email: "test@local.test" },
     });
+    delete process.env.OPENAI_API_KEY;
+    vi.mocked(getProvider).mockReturnValue(new MockProvider() as never);
   });
 
   describe("GET /api/weekly-plan", () => {
