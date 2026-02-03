@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { getDemoUserId } from "@/src/app/lib/demo";
 import { ErrorBanner } from "@/src/app/components/ErrorBanner";
 import { getErrorMessage } from "@/src/app/lib/errorMessage";
 import { getWeekStart, getTodayDayIndex } from "@/src/app/lib/week";
@@ -80,11 +79,6 @@ export default function LogTrainingPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const userId = getDemoUserId();
-    if (!userId) {
-      setError("Sesión no encontrada.");
-      return;
-    }
     if (!canSubmit) return;
     setError(null);
     setLoading(true);
@@ -92,7 +86,6 @@ export default function LogTrainingPage() {
       const completed = done === true;
       const sessionName = session?.name ?? "Entrenamiento libre";
       const payload: Record<string, unknown> = {
-        userId,
         completed,
         difficulty: completed ? difficulty : undefined,
         pain: completed ? pain : false,
