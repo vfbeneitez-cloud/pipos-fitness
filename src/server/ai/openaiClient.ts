@@ -8,7 +8,7 @@
 import * as Sentry from "@sentry/nextjs";
 
 const OPENAI_API_URL = "https://api.openai.com/v1/chat/completions";
-const DEFAULT_TIMEOUT_MS = 15000;
+const DEFAULT_TIMEOUT_MS = 8000; // Vercel Hobby = 10s, dejamos margen
 const MAX_RETRIES = 2;
 const RETRY_DELAY_MS = 1000;
 

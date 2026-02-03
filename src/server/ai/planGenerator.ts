@@ -217,8 +217,8 @@ export class PlanGenerator {
         ],
         {
           temperature: 0.3,
-          maxTokens: 4000,
-          timeoutMs: 20000,
+          maxTokens: 2000, // Reducido para respuesta más rápida
+          timeoutMs: 8000, // Vercel Hobby limit = 10s
         },
       );
 
