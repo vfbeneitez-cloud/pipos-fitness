@@ -18,18 +18,18 @@ import {
 import { validateNutritionBeforePersist } from "@/src/server/plan/validateWeeklyPlan";
 import type { Prisma } from "@prisma/client";
 
-const ALLOWED_EXERCISES_MAX = 160;
+// const ALLOWED_EXERCISES_MAX = 160; // No usado en nueva implementación
 
 const BodySchema = z.object({
   weekStart: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
 });
 
-function pickAllowedExercisesDeterministic<
-  T extends { slug: string; name: string; environment: string },
->(exercises: T[], opts: { max: number }): T[] {
-  const sorted = [...exercises].sort((a, b) => a.slug.localeCompare(b.slug));
-  return sorted.slice(0, opts.max);
-}
+// function pickAllowedExercisesDeterministic<
+//   T extends { slug: string; name: string; environment: string },
+// >(exercises: T[], opts: { max: number }): T[] {
+//   const sorted = [...exercises].sort((a, b) => a.slug.localeCompare(b.slug));
+//   return sorted.slice(0, opts.max);
+// } // No usado en nueva implementación
 
 function normalizeWeekStart(weekStart: string): Date {
   return new Date(`${weekStart}T00:00:00.000Z`);
@@ -130,25 +130,28 @@ export const AiPlanOutputSchema = z.object({
   }),
 });
 
-const PlanFromApiSchema = AiPlanOutputSchema;
+// const PlanFromApiSchema = AiPlanOutputSchema; // No usado en nueva implementación
 
-function validateAiPlanAgainstConstraints(
-  data: z.infer<typeof AiPlanOutputSchema>,
-  expected: { preferredTrainingDayIndices: number[] },
-): { ok: true } | { ok: false; reason: string } {
-  const expectedIdx = new Set(expected.preferredTrainingDayIndices);
-  const gotIdx = data.training.sessions.map((s) => s.dayIndex);
-  if (gotIdx.length !== expected.preferredTrainingDayIndices.length) {
-    return { ok: false, reason: "training_sessions_length_mismatch" };
-  }
-  for (const i of gotIdx) {
-    if (!expectedIdx.has(i)) return { ok: false, reason: "training_dayIndex_not_preferred" };
-  }
-  return { ok: true };
-}
+// function validateAiPlanAgainstConstraints(
+//   data: z.infer<typeof AiPlanOutputSchema>,
+//   expected: { preferredTrainingDayIndices: number[] },
+// ): { ok: true } | { ok: false; reason: string } {
+//   const expectedIdx = new Set(expected.preferredTrainingDayIndices);
+//   const gotIdx = data.training.sessions.map((s) => s.dayIndex);
+//   if (gotIdx.length !== expected.preferredTrainingDayIndices.length) {
+//     return { ok: false, reason: "training_sessions_length_mismatch" };
+//   }
+//   for (const i of gotIdx) {
+//     if (!expectedIdx.has(i)) return { ok: false, reason: "training_dayIndex_not_preferred" };
+//   }
+//   return { ok: true };
+// } // No usado en nueva implementación
 
+/**
+ * Nueva implementación limpia usando PlanGenerator
+ */
 async function generatePlanFromApi(
-  provider: AIProvider,
+  _provider: AIProvider, // Ignorado, usamos PlanGenerator directamente
   args: {
     profile: {
       level?: string | null;
@@ -171,174 +174,49 @@ async function generatePlanFromApi(
   nutrition: ReturnType<typeof generateWeeklyNutritionPlan>;
   exercisesToUpsert: Array<{ slug: string; name: string; environment: string }>;
 } | null> {
-  const profile = args.profile;
-  const systemPrompt = `Eres un generador de planes semanales de entrenamiento y nutrición. Genera un plan PERSONALIZADO según el perfil del usuario.
-Reglas: NO diagnóstico médico. Respeta alergias, dislikes y preferencias dietéticas. Para principiantes: volumen moderado y técnica. Para lesiones: evita ejercicios de riesgo.
-TRAINING: Debes usar EXACTAMENTE preferredTrainingDayIndices como dayIndex de las sesiones (mismos valores, sin extras).
-Responde SOLO con un JSON válido (sin markdown) con esta estructura exacta:
-{
-  "training": {
-    "environment": "GYM|HOME|CALISTHENICS|POOL|MIXED",
-    "daysPerWeek": número,
-    "sessionMinutes": número,
-    "sessions": [{ "dayIndex": 0-6, "name": "Session A", "exercises": [{ "slug": "slug-ejercicio", "name": "Nombre", "sets": 3, "reps": "8-12", "restSec": 90 }] }]
-  },
-  "nutrition": {
-    "mealsPerDay": 2-4,
-    "cookingTime": "MIN_10|MIN_20|MIN_40|FLEXIBLE",
-    "days": [{ "dayIndex": 0-6, "meals": [{ "slot": "breakfast|lunch|dinner|snack", "title": "...", "minutes": número, "tags": [], "ingredients": [], "instructions": "...", "substitutions": [{ "title": "...", "minutes": número }] }] }]
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) {
+    return null;
   }
-}`;
-
-  if (args.allowedExercises.length > ALLOWED_EXERCISES_MAX) {
-    trackEvent("ai_allowed_exercises_trimmed", {
-      from: args.allowedExercises.length,
-      to: ALLOWED_EXERCISES_MAX,
-      environment: args.finalEnvironment,
-    });
-  }
-
-  const trimmedAllowed = pickAllowedExercisesDeterministic(args.allowedExercises, {
-    max: ALLOWED_EXERCISES_MAX,
-  });
-
-  const userInput = {
-    profile: {
-      level: profile?.level ?? "BEGINNER",
-      goal: profile?.goal ?? "general fitness",
-      injuryNotes: profile?.injuryNotes ?? null,
-      equipmentNotes: profile?.equipmentNotes ?? null,
-      dietaryStyle: profile?.dietaryStyle ?? null,
-      allergies: profile?.allergies ?? null,
-      dislikes: profile?.dislikes ?? null,
-    },
-    constraints: {
-      environment: args.finalEnvironment,
-      daysPerWeek: args.finalDaysPerWeek,
-      sessionMinutes: args.finalSessionMinutes,
-      mealsPerDay: Math.min(4, Math.max(2, args.finalMealsPerDay)),
-      cookingTime: args.finalCookingTime,
-      preferredTrainingDayIndices: pickTrainingDayIndices(args.finalDaysPerWeek),
-    },
-    allowedExercises: trimmedAllowed.map((e) => ({
-      slug: e.slug,
-      name: e.name,
-      environment: e.environment,
-    })),
-  };
-
-  const userPrompt = JSON.stringify(userInput);
 
   try {
-    const res = await provider.chat(
-      [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userPrompt },
-      ],
-      { maxTokens: 4000 },
-    );
-    const jsonMatch = res.content.match(/\{[\s\S]*\}/);
-    const raw = jsonMatch ? JSON.parse(jsonMatch[0]) : JSON.parse(res.content);
-    const parsed = PlanFromApiSchema.safeParse(raw);
-    if (!parsed.success) {
-      Sentry.captureMessage("weekly_plan_fallback_ai_invalid_output", {
-        tags: { fallback_type: "ai_invalid_output" },
-      });
-      return null;
-    }
-    const data = parsed.data;
+    const { PlanGenerator } = await import("./planGenerator");
+    const generator = new PlanGenerator(apiKey);
 
-    const validation = validateAiPlanAgainstConstraints(data, {
-      preferredTrainingDayIndices: pickTrainingDayIndices(args.finalDaysPerWeek),
+    // Calcular training day indices
+    const trainingDayIndices = pickTrainingDayIndices(args.finalDaysPerWeek);
+
+    const result = await generator.generatePlan({
+      userId: "system", // Placeholder, no se usa en generación
+      level: (args.profile?.level as "BEGINNER" | "INTERMEDIATE" | "ADVANCED") || "BEGINNER",
+      goal: args.profile?.goal || undefined,
+      injuryNotes: args.profile?.injuryNotes || undefined,
+      equipmentNotes: args.profile?.equipmentNotes || undefined,
+      environment: args.finalEnvironment as "GYM" | "HOME" | "CALISTHENICS" | "POOL" | "MIXED",
+      daysPerWeek: args.finalDaysPerWeek,
+      sessionMinutes: args.finalSessionMinutes,
+      trainingDayIndices,
+      allowedExercises: args.allowedExercises,
+      mealsPerDay: args.finalMealsPerDay,
+      cookingTime: args.finalCookingTime as "MIN_10" | "MIN_20" | "MIN_40" | "FLEXIBLE",
+      dietaryStyle: args.profile?.dietaryStyle || undefined,
+      allergies: args.profile?.allergies || undefined,
+      dislikes: args.profile?.dislikes || undefined,
     });
-    if (!validation.ok) {
-      Sentry.captureMessage("weekly_plan_fallback_ai_constraints", {
-        tags: { fallback_type: "ai_constraints", reason: validation.reason },
-      });
+
+    if (!result) {
       return null;
     }
 
-    // --- Soft enforcement: slugs fuera del allowlist recortado (pero existentes en DB) ---
-    // pool completo (DB) = args.allowedExercises
-    const fullBySlug = new Set(args.allowedExercises.map((e) => e.slug.toLowerCase()));
-    const fullByName = new Set(args.allowedExercises.map((e) => e.name.toLowerCase().trim()));
-
-    // allowlist enviado al modelo = trimmedAllowed
-    const promptAllowSlugs = new Set(trimmedAllowed.map((e) => e.slug.toLowerCase()));
-
-    let outsidePromptCount = 0;
-    let notInPoolCount = 0;
-
-    for (const s of data.training.sessions) {
-      for (const ex of s.exercises) {
-        const slugKey = ex.slug.toLowerCase();
-        const nameKey = ex.name.toLowerCase().trim();
-
-        const inFullPool = fullBySlug.has(slugKey) || fullByName.has(nameKey);
-        if (!inFullPool) {
-          notInPoolCount += 1;
-          continue;
-        }
-
-        // Está en DB, pero el modelo lo eligió fuera del subset que le dimos
-        if (!promptAllowSlugs.has(slugKey)) {
-          outsidePromptCount += 1;
-        }
-      }
-    }
-
-    if (notInPoolCount > 0) {
-      Sentry.captureMessage("weekly_plan_fallback_ai_exercise_not_in_pool", {
-        tags: { fallback_type: "ai_exercise_not_in_pool" },
-        extra: { count: notInPoolCount },
-      });
-      return null;
-    }
-
-    if (outsidePromptCount > 0) {
-      trackEvent("ai_slug_outside_prompt_allowlist", {
-        count: outsidePromptCount,
-        environment: args.finalEnvironment,
-        allowlistSize: trimmedAllowed.length,
-        poolSize: args.allowedExercises.length,
-      });
-    }
-    // --- fin soft enforcement ---
-
-    const seen = new Set<string>();
-    const exercisesToUpsert: Array<{ slug: string; name: string; environment: string }> = [];
-    for (const s of data.training.sessions) {
-      for (const ex of s.exercises) {
-        if (!seen.has(ex.slug)) {
-          seen.add(ex.slug);
-          exercisesToUpsert.push({
-            slug: ex.slug,
-            name: ex.name,
-            environment: data.training.environment,
-          });
-        }
-      }
-    }
     return {
-      training: data.training,
-      nutrition: {
-        ...data.nutrition,
-        dietaryStyle: data.nutrition.dietaryStyle ?? profile?.dietaryStyle ?? null,
-        allergies: data.nutrition.allergies ?? profile?.allergies ?? null,
-        dislikes: data.nutrition.dislikes ?? profile?.dislikes ?? null,
-      },
-      exercisesToUpsert,
+      training: result.training,
+      nutrition: result.nutrition,
+      exercisesToUpsert: result.exercisesUsed,
     };
-  } catch (err) {
-    const isProviderError =
-      err instanceof Error &&
-      (err.name === "AbortError" || err.message.startsWith("OpenAI API error"));
-    Sentry.captureMessage(
-      isProviderError
-        ? "weekly_plan_fallback_provider_error"
-        : "weekly_plan_fallback_ai_invalid_output",
-      { tags: { fallback_type: isProviderError ? "provider_error" : "ai_invalid_output" } },
-    );
+  } catch (error) {
+    Sentry.captureException(error, {
+      tags: { context: "generatePlanFromApi" },
+    });
     return null;
   }
 }
