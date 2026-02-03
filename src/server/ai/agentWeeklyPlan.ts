@@ -18,18 +18,18 @@ import {
 import { validateNutritionBeforePersist } from "@/src/server/plan/validateWeeklyPlan";
 import type { Prisma } from "@prisma/client";
 
-// const ALLOWED_EXERCISES_MAX = 160; // No usado en nueva implementación
+const ALLOWED_EXERCISES_MAX = 160;
 
 const BodySchema = z.object({
   weekStart: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
 });
 
-// function pickAllowedExercisesDeterministic<
-//   T extends { slug: string; name: string; environment: string },
-// >(exercises: T[], opts: { max: number }): T[] {
-//   const sorted = [...exercises].sort((a, b) => a.slug.localeCompare(b.slug));
-//   return sorted.slice(0, opts.max);
-// } // No usado en nueva implementación
+function pickAllowedExercisesDeterministic<
+  T extends { slug: string; name: string; environment: string },
+>(exercises: T[], opts: { max: number }): T[] {
+  const sorted = [...exercises].sort((a, b) => a.slug.localeCompare(b.slug));
+  return sorted.slice(0, opts.max);
+}
 
 function normalizeWeekStart(weekStart: string): Date {
   return new Date(`${weekStart}T00:00:00.000Z`);
@@ -147,11 +147,8 @@ export const AiPlanOutputSchema = z.object({
 //   return { ok: true };
 // } // No usado en nueva implementación
 
-/**
- * Nueva implementación limpia usando PlanGenerator
- */
 async function generatePlanFromApi(
-  _provider: AIProvider, // Ignorado, usamos PlanGenerator directamente
+  provider: AIProvider,
   args: {
     profile: {
       level?: string | null;
@@ -174,44 +171,218 @@ async function generatePlanFromApi(
   nutrition: ReturnType<typeof generateWeeklyNutritionPlan>;
   exercisesToUpsert: Array<{ slug: string; name: string; environment: string }>;
 } | null> {
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) {
-    return null;
-  }
-
   try {
-    const { PlanGenerator } = await import("./planGenerator");
-    const generator = new PlanGenerator(apiKey);
+    const pool = args.allowedExercises;
+    const allowlist =
+      pool.length > ALLOWED_EXERCISES_MAX
+        ? pickAllowedExercisesDeterministic(pool, { max: ALLOWED_EXERCISES_MAX })
+        : pool;
 
-    // Calcular training day indices
+    if (pool.length > allowlist.length) {
+      trackEvent("ai_allowed_exercises_trimmed", {
+        from: pool.length,
+        to: allowlist.length,
+        environment: args.finalEnvironment,
+      });
+    }
+
     const trainingDayIndices = pickTrainingDayIndices(args.finalDaysPerWeek);
+    const systemPrompt = `Eres un asistente experto en fitness y nutrición.
 
-    const result = await generator.generatePlan({
-      userId: "system", // Placeholder, no se usa en generación
-      level: (args.profile?.level as "BEGINNER" | "INTERMEDIATE" | "ADVANCED") || "BEGINNER",
-      goal: args.profile?.goal || undefined,
-      injuryNotes: args.profile?.injuryNotes || undefined,
-      equipmentNotes: args.profile?.equipmentNotes || undefined,
-      environment: args.finalEnvironment as "GYM" | "HOME" | "CALISTHENICS" | "POOL" | "MIXED",
-      daysPerWeek: args.finalDaysPerWeek,
-      sessionMinutes: args.finalSessionMinutes,
+Devuelve SOLO JSON válido (sin markdown, sin texto adicional).
+
+Debes devolver EXACTAMENTE este shape:
+{
+  "training": {
+    "environment": "GYM|HOME|CALISTHENICS|POOL|MIXED",
+    "daysPerWeek": number,
+    "sessionMinutes": number,
+    "sessions": [
+      {
+        "dayIndex": number,
+        "name": string,
+        "exercises": [
+          { "slug": string, "name": string, "sets": number, "reps": string, "restSec": number }
+        ]
+      }
+    ]
+  },
+  "nutrition": {
+    "mealsPerDay": number,
+    "cookingTime": "MIN_10|MIN_20|MIN_40|FLEXIBLE",
+    "dietaryStyle": string|null,
+    "allergies": string|null,
+    "dislikes": string|null,
+    "days": [
+      {
+        "dayIndex": number,
+        "meals": [
+          {
+            "slot": "breakfast|lunch|dinner|snack",
+            "title": string,
+            "minutes": number,
+            "tags": string[],
+            "ingredients": string[],
+            "instructions": string,
+            "substitutions": [{ "title": string, "minutes": number }]
+          }
+        ]
+      }
+    ]
+  }
+}
+
+REGLAS OBLIGATORIAS:
+- training.environment == finalEnvironment; training.daysPerWeek == finalDaysPerWeek; training.sessionMinutes == finalSessionMinutes.
+- training.sessions.length == finalDaysPerWeek.
+- Usa EXACTAMENTE los dayIndex indicados en trainingDayIndices (uno por sesión, sin repetir).
+- Usa SOLO ejercicios de allowedExercises (match por slug exacto). No inventes slugs.
+- nutrition.mealsPerDay == finalMealsPerDay; nutrition.cookingTime == finalCookingTime.
+- nutrition.days.length == 7 con dayIndex 0..6 sin repetir.
+- En cada día: meals.length == mealsPerDay y no repitas slot.
+- title descriptivo (>=10 chars), ingredients >=2, instructions >=20 chars, substitutions >=1.
+
+SALIDA COMPACTA (OBLIGATORIO):
+- tags: [] (vacío) salvo que sea realmente necesario.
+- ingredients: EXACTAMENTE 2 strings cortos por comida.
+- instructions: 20-40 caracteres (una frase corta).
+- substitutions: EXACTAMENTE 1 item por comida con title corto y minutes <= 20.
+- training: 1-3 ejercicios por sesión (evita listas largas).`;
+    const userPayload = {
+      profile: args.profile,
+      finalEnvironment: args.finalEnvironment,
+      finalDaysPerWeek: args.finalDaysPerWeek,
+      finalSessionMinutes: args.finalSessionMinutes,
       trainingDayIndices,
-      allowedExercises: args.allowedExercises,
-      mealsPerDay: args.finalMealsPerDay,
-      cookingTime: args.finalCookingTime as "MIN_10" | "MIN_20" | "MIN_40" | "FLEXIBLE",
-      dietaryStyle: args.profile?.dietaryStyle || undefined,
-      allergies: args.profile?.allergies || undefined,
-      dislikes: args.profile?.dislikes || undefined,
-    });
+      finalMealsPerDay: args.finalMealsPerDay,
+      finalCookingTime: args.finalCookingTime,
+      allowedExercises: allowlist,
+      outputSchemaHint: "AiPlanOutputSchema",
+    };
+    // Nota: El output total (7 días nutrición) es grande; forzar contenido compacto.
+    const response = await provider.chat(
+      [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: JSON.stringify(userPayload) },
+      ],
+      { maxTokens: 4500 },
+    );
 
-    if (!result) {
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(response.content);
+    } catch (err) {
+      Sentry.captureMessage("weekly_plan_fallback_ai_invalid_output", {
+        tags: { fallback_type: "ai_invalid_output" },
+        extra: { err, content: response.content.slice(0, 500) },
+      });
       return null;
     }
 
+    const validation = AiPlanOutputSchema.safeParse(parsed);
+    if (!validation.success) {
+      Sentry.captureMessage("weekly_plan_fallback_ai_invalid_output", {
+        tags: { fallback_type: "ai_invalid_output" },
+        extra: { errors: validation.error.flatten() },
+      });
+      return null;
+    }
+
+    const data = validation.data;
+
+    // Guardrails: asegurar que el output respeta constraints críticos
+    if (
+      data.training.environment !== args.finalEnvironment ||
+      data.training.daysPerWeek !== args.finalDaysPerWeek ||
+      data.training.sessionMinutes !== args.finalSessionMinutes ||
+      data.nutrition.mealsPerDay !== args.finalMealsPerDay ||
+      data.nutrition.cookingTime !== args.finalCookingTime
+    ) {
+      Sentry.captureMessage("weekly_plan_fallback_ai_invalid_output", {
+        tags: { fallback_type: "ai_constraints_mismatch" },
+        extra: {
+          expected: {
+            environment: args.finalEnvironment,
+            daysPerWeek: args.finalDaysPerWeek,
+            sessionMinutes: args.finalSessionMinutes,
+            mealsPerDay: args.finalMealsPerDay,
+            cookingTime: args.finalCookingTime,
+          },
+          got: {
+            environment: data.training.environment,
+            daysPerWeek: data.training.daysPerWeek,
+            sessionMinutes: data.training.sessionMinutes,
+            mealsPerDay: data.nutrition.mealsPerDay,
+            cookingTime: data.nutrition.cookingTime,
+          },
+        },
+      });
+      return null;
+    }
+
+    const gotIdx = data.training.sessions.map((s) => s.dayIndex).sort((a, b) => a - b);
+    const expectedIdx = [...trainingDayIndices].sort((a, b) => a - b);
+    if (
+      data.training.sessions.length !== args.finalDaysPerWeek ||
+      JSON.stringify(gotIdx) !== JSON.stringify(expectedIdx)
+    ) {
+      Sentry.captureMessage("weekly_plan_fallback_ai_invalid_output", {
+        tags: { fallback_type: "training_dayIndex_not_preferred" },
+        extra: { gotIdx, expectedIdx, sessionsLen: data.training.sessions.length },
+      });
+      return null;
+    }
+
+    const poolBySlug = new Map(pool.map((e) => [e.slug.toLowerCase(), e]));
+    const promptAllowSlugs = new Set(allowlist.map((e) => e.slug.toLowerCase()));
+    let outsidePromptAllowlistCount = 0;
+    const exercisesToUpsert: Array<{ slug: string; name: string; environment: string }> = [];
+    const seen = new Set<string>();
+
+    for (const s of data.training.sessions) {
+      for (const ex of s.exercises) {
+        const slugLower = ex.slug.toLowerCase();
+        const match = poolBySlug.get(slugLower);
+        if (!match) {
+          Sentry.captureMessage("weekly_plan_fallback_ai_exercise_not_in_pool", {
+            tags: { fallback_type: "ai_exercise_not_in_pool" },
+            extra: {
+              slug: ex.slug,
+              name: ex.name,
+              environment: args.finalEnvironment,
+              poolSize: pool.length,
+              allowlistSize: allowlist.length,
+            },
+          });
+          return null;
+        }
+        if (!promptAllowSlugs.has(slugLower)) {
+          outsidePromptAllowlistCount += 1;
+        }
+        if (!seen.has(slugLower)) {
+          seen.add(slugLower);
+          exercisesToUpsert.push({
+            slug: match.slug,
+            name: match.name,
+            environment: match.environment,
+          });
+        }
+      }
+    }
+
+    if (outsidePromptAllowlistCount > 0) {
+      trackEvent("ai_slug_outside_prompt_allowlist", {
+        count: outsidePromptAllowlistCount,
+        environment: args.finalEnvironment,
+        allowlistSize: allowlist.length,
+        poolSize: pool.length,
+      });
+    }
+
     return {
-      training: result.training,
-      nutrition: result.nutrition,
-      exercisesToUpsert: result.exercisesUsed,
+      training: data.training,
+      nutrition: data.nutrition,
+      exercisesToUpsert,
     };
   } catch (error) {
     Sentry.captureException(error, {

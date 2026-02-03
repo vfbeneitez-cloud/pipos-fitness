@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { OpenAIProvider } from "@/src/server/ai/providers/openai";
 
 /**
  * Diagnóstico: indica si OPENAI_API_KEY está definida y qué provider se usará.
@@ -20,39 +21,27 @@ export async function GET(request: Request) {
     return NextResponse.json(base);
   }
 
-  const apiKey = process.env.OPENAI_API_KEY!.trim();
   try {
-    const res = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages: [{ role: "user", content: "Say ok" }],
-        max_tokens: 5,
-      }),
-    });
-    if (!res.ok) {
-      const text = await res.text();
-      return NextResponse.json(
+    const apiKey = process.env.OPENAI_API_KEY!.trim();
+    const provider = new OpenAIProvider(apiKey);
+    const r = await provider.chat(
+      [
         {
-          ...base,
-          ping: "error",
-          pingError: `OpenAI API error: ${res.status}`,
-          pingDetail: text.slice(0, 200),
+          role: "system",
+          content: 'Return ONLY valid JSON: {"ok":true}.',
         },
+        { role: "user", content: "ping" },
+      ],
+      { maxTokens: 20 },
+    );
+    const parsed = JSON.parse(r.content) as { ok?: boolean };
+    if (!parsed?.ok) {
+      return NextResponse.json(
+        { ...base, ping: "error", pingError: "OpenAI returned unexpected JSON" },
         { status: 502 },
       );
     }
-    const data = (await res.json()) as { choices?: Array<{ message?: { content?: string } }> };
-    const content = data.choices?.[0]?.message?.content ?? "";
-    return NextResponse.json({
-      ...base,
-      ping: "ok",
-      pingContent: content.slice(0, 50),
-    });
+    return NextResponse.json({ ...base, ping: "ok" });
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     return NextResponse.json(

@@ -9,27 +9,32 @@ export class MockProvider implements AIProvider {
     const lastUser = messages.filter((m) => m.role === "user").pop();
     const content = lastUser?.content ?? "";
 
-    if (
-      content.includes("red flag") ||
-      content.includes("dolor agudo") ||
-      content.includes("mareos")
-    ) {
-      return {
-        content:
-          "Detecté señales que requieren atención profesional. Recomiendo consultar con un profesional sanitario antes de continuar. Mientras tanto, propongo ajustes conservadores: reducir días de entrenamiento y simplificar nutrición.",
-      };
-    }
+    const redFlag =
+      content.includes("red flag") || content.includes("dolor agudo") || content.includes("mareos");
 
-    if (content.includes("baja adherencia") || content.includes("pocas sesiones")) {
-      return {
-        content:
-          "Veo que la adherencia ha sido baja esta semana. Propongo reducir a 2 días por semana y simplificar las comidas para facilitar el cumplimiento.",
-      };
-    }
+    const payload = redFlag
+      ? {
+          rationale:
+            "Detecté señales que requieren atención profesional. Recomiendo consultar con un profesional sanitario antes de continuar.",
+          adjustments: {
+            daysPerWeek: 2,
+            sessionMinutes: 30,
+            environment: null,
+            mealsPerDay: null,
+            cookingTime: "MIN_10",
+          },
+        }
+      : {
+          rationale: "Ajustes aplicados según adherencia y perfil.",
+          adjustments: {
+            daysPerWeek: null,
+            sessionMinutes: null,
+            environment: null,
+            mealsPerDay: null,
+            cookingTime: null,
+          },
+        };
 
-    return {
-      content:
-        "He revisado tu perfil y logs. Propongo mantener el plan actual con ajustes menores: mantener días por semana y ajustar ligeramente la nutrición según tus preferencias.",
-    };
+    return { content: JSON.stringify(payload) };
   }
 }
