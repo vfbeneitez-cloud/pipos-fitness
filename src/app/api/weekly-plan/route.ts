@@ -5,6 +5,9 @@ import { requireAuth } from "@/src/server/lib/requireAuth";
 import { badRequestBody } from "@/src/server/api/errorResponse";
 import { trackEvent } from "@/src/server/lib/events";
 
+// Vercel: 60s max (requires Pro plan, Hobby = 10s)
+export const maxDuration = 60;
+
 export async function GET(req: Request) {
   return withSensitiveRoute(req, async () => {
     const authResult = await requireAuth();

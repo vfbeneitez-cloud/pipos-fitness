@@ -4,6 +4,9 @@ import { withSensitiveRoute } from "@/src/server/lib/withSensitiveRoute";
 import { requireAuth } from "@/src/server/lib/requireAuth";
 import { badRequest } from "@/src/server/api/errorResponse";
 
+// Vercel: 60s max (requires Pro plan, Hobby = 10s)
+export const maxDuration = 60;
+
 export async function GET() {
   return NextResponse.json({
     hint: 'Use POST with body: { weekStart: "YYYY-MM-DD" }. Requires auth.',
