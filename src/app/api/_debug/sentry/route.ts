@@ -20,13 +20,23 @@ export async function GET() {
     return NextResponse.json({ error: "Not found" }, { status: 404, headers: NO_STORE_HEADERS });
   }
 
+  // Test log
+  Sentry.logger.info("User triggered test log", { log_source: "sentry_test" });
+
+  // Test exception
   const err = new Error("[SENTRY_DEBUG] Server-side test event");
   Sentry.captureException(err);
+
+  // Test message
+  Sentry.captureMessage("Sentry debug test message", {
+    level: "warning",
+    tags: { test_type: "debug_endpoint" },
+  });
 
   return NextResponse.json(
     {
       ok: true,
-      message: "Test exception sent to Sentry (check Issues)",
+      message: "Test log, exception, and message sent to Sentry (check Issues and Logs)",
     },
     { headers: NO_STORE_HEADERS },
   );
