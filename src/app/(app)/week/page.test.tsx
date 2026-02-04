@@ -38,6 +38,57 @@ describe("GET /week", () => {
               }),
           });
         }
+        if (url.includes("/api/adherence/snapshot") && !url.includes("recompute")) {
+          return Promise.resolve({
+            ok: false,
+            status: 404,
+            json: () =>
+              Promise.resolve({
+                error_code: "SNAPSHOT_NOT_FOUND",
+                message: "Snapshot no encontrado.",
+              }),
+          });
+        }
+        if (url.includes("/api/adherence/weekly")) {
+          return Promise.resolve({
+            ok: true,
+            json: () =>
+              Promise.resolve({
+                training: { planned: 0, completed: 0, percent: 0 },
+                nutrition: { planned: 0, completed: 0, percent: 0 },
+                totalPercent: 0,
+              }),
+          });
+        }
+        if (url.includes("/api/adherence/summary")) {
+          return Promise.resolve({
+            ok: true,
+            json: () =>
+              Promise.resolve({
+                goalPercent: 70,
+                streak: { currentStreakWeeks: 0, goalPercent: 70 },
+                nudge: {
+                  type: "BEHIND_GOAL",
+                  severity: "medium",
+                  title: "Por debajo del objetivo",
+                  detail: "0% vs objetivo 70%.",
+                },
+                trend: { items: [], missing: [] },
+                alerts: [],
+              }),
+          });
+        }
+        if (url.includes("/api/adherence/insights-ai")) {
+          return Promise.resolve({
+            ok: true,
+            json: () =>
+              Promise.resolve({
+                insights: [],
+                nextAction: { type: "KEEP_GOING", title: "Sigue así", detail: "Mantén el ritmo." },
+                coach: null,
+              }),
+          });
+        }
         return Promise.reject(new Error("unknown url"));
       }),
     );

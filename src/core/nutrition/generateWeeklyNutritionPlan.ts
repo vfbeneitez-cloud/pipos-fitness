@@ -15,7 +15,10 @@ export type NutritionDay = {
   meals: Meal[];
 };
 
+export const NUTRITION_SCHEMA_VERSION = 1;
+
 export type WeeklyNutritionPlan = {
+  schemaVersion?: number;
   mealsPerDay: number;
   cookingTime: CookingTime;
   dietaryStyle?: string | null;
@@ -162,6 +165,7 @@ export function generateWeeklyNutritionPlan(args: {
   });
 
   return {
+    schemaVersion: NUTRITION_SCHEMA_VERSION,
     mealsPerDay,
     cookingTime: args.cookingTime,
     dietaryStyle: args.dietaryStyle ?? null,
@@ -197,5 +201,9 @@ export function repairDuplicateTitlesInPlan(plan: WeeklyNutritionPlan): WeeklyNu
     return { dayIndex: day.dayIndex, meals };
   });
 
-  return { ...plan, days };
+  return {
+    ...plan,
+    schemaVersion: (plan as { schemaVersion?: number }).schemaVersion ?? NUTRITION_SCHEMA_VERSION,
+    days,
+  };
 }

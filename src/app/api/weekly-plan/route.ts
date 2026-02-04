@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { createWeeklyPlan, getWeeklyPlan } from "@/src/server/api/weeklyPlan/route";
 import { withSensitiveRoute } from "@/src/server/lib/withSensitiveRoute";
 import { requireAuth } from "@/src/server/lib/requireAuth";
-import { badRequestBody } from "@/src/server/api/errorResponse";
+import { badRequestBody, toNextResponse } from "@/src/server/api/errorResponse";
 import { trackEvent } from "@/src/server/lib/events";
 
 // Vercel: 60s max (requires Pro plan, Hobby = 10s)
@@ -18,13 +18,9 @@ export async function GET(req: Request) {
     const { userId } = authResult;
     try {
       const result = await getWeeklyPlan(req.url, userId);
-      if (result.status === 400) {
-        trackEvent("weekly_plan_get_badRequest", { status: 400 });
-        const errBody = result.body as { error?: string };
-        return NextResponse.json(badRequestBody(errBody.error ?? "INVALID_QUERY"), { status: 400 });
-      }
-      trackEvent("weekly_plan_get_success", { status: 200 });
-      return NextResponse.json(result.body, { status: result.status });
+      if (result.status === 400) trackEvent("weekly_plan_get_badRequest", { status: 400 });
+      if (result.status === 200) trackEvent("weekly_plan_get_success", { status: 200 });
+      return toNextResponse(result);
     } catch (e) {
       trackEvent("weekly_plan_get_error", { status: 500 }, { sentry: true });
       throw e;
@@ -48,6 +44,6 @@ export async function POST(req: Request) {
       const errBody = result.body as { error?: string };
       return NextResponse.json(badRequestBody(errBody.error ?? "INVALID_INPUT"), { status: 400 });
     }
-    return NextResponse.json(result.body, { status: result.status });
+    return toNextResponse(result);
   });
 }

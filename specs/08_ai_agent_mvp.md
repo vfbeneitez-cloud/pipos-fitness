@@ -67,8 +67,7 @@ POST `/api/agent/weekly-plan`
 
 ## Provider
 
-- Mock provider por defecto (determinista, sin clave).
-- Si existe `OPENAI_API_KEY`, usar OpenAI provider (opcional).
+- Mock provider (determinista, sin API externa).
 - Interface abstracta para cambiar provider fácilmente.
 
 ## Tests

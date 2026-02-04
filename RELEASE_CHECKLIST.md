@@ -1,5 +1,19 @@
 # Release Checklist
 
+## Security Regression Checklist
+
+Antes de cada release, verificar:
+
+- [ ] **DEMO_MODE**: `false` en producción; fail-fast activo (si `DEMO_MODE=true` en prod, la app lanza al arranque).
+- [ ] **CRON_SECRET**: Rotación documentada; no loguear ni incluir en respuestas; no commitear en repos.
+- [ ] **AUTH_SECRET / AUTH_URL**: Definidos en producción (ver § Environment Variables).
+- [ ] **Ownership checks**: Recursos por id (p. ej. `planId` en TrainingLog) validan que el recurso pertenece al `userId` de la sesión; 403 si no.
+- [ ] **Rate limit /api/exercises**: Pendiente Fase 1 si no se aplica en este release; documentar decisión (público vs auth vs 60/min).
+
+**Fase 1 backlog (TODO):** Rate limit GET `/api/exercises` (60/min + cache); `schemaVersion` en WeeklyPlan JSON; refactor `agentWeeklyPlan` en capas (prompts, providers, planAdjuster, persistence, audit).
+
+---
+
 ## Pre-Release (Local)
 
 ### 1. Code Quality
@@ -21,6 +35,7 @@
 ### 4. Demo Mode
 
 - [ ] `DEMO_MODE=false` en producción; `NEXT_PUBLIC_DEMO_MODE=false`
+- [ ] **Fail-fast**: Si `DEMO_MODE=true` en producción, la app lanza al arranque (`getSession`). Nunca crear usuario demo en prod.
 - No hay endpoints `/api/demo` en este repo. `DEMO_MODE` solo afecta comportamiento interno/UI (p. ej. `requireAuth` devuelve userId demo cuando `DEMO_MODE=true`).
 
 ---

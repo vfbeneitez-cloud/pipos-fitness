@@ -1,0 +1,182 @@
+# Ejercicios por entorno
+
+## GYM
+
+- Leg Press
+- Prensa de piernas (leg press)
+- Bench Press
+- Press de pecho con mancuernas (banco plano)
+- Press inclinado con mancuernas
+- Press de banca con barra
+- Deadlift
+- Dumbbell Row
+- Remo con barra
+- Remo con mancuerna a una mano (banco)
+- Squat
+- Sentadilla goblet
+- Sentadilla trasera con barra
+- Overhead Press
+- Press de hombros con mancuernas (sentado)
+- Press militar con barra
+- Lat Pulldown
+- Jalón al pecho (lat pulldown)
+- Dominadas asistidas en máquina
+- Remo sentado en polea (seated cable row)
+- Face pull en polea
+- Cable Fly
+- Aperturas en máquina (peck deck)
+- Leg Curl
+- Curl femoral sentado (máquina)
+- Calf Raise
+- Abducción de cadera en máquina (hip abductor)
+- Barbell Row
+- Incline Press
+- Tricep Pushdown
+- Extensión de tríceps en polea (pushdown)
+- Bicep Curl
+- Curl de bíceps con barra Z
+- Leg Extension
+- Extensión de cuádriceps en máquina (leg extension)
+- Chest Press
+- Seated Row
+- Lateral Raise
+- Elevaciones laterales con mancuernas
+- Romanian Deadlift
+- Peso muerto rumano (RDL)
+- Peso muerto rumano (barra)
+- Hack Squat
+- Hip thrust con barra
+
+## HOME
+
+- Push-up
+- Bodyweight Squat
+- Plank
+- Lunges
+- Glute Bridge
+- Mountain Climber
+- Burpee
+- Jumping Jack
+- Squat Jump
+- Wall Sit
+- Crunches
+- Bicycle Crunch
+- Superman
+- Bird Dog
+- Dead Bug
+- Hip Thrust
+- Step-up
+- Inchworm
+- Bear Crawl
+- High Knees
+- Burpee (sin salto)
+- Sentadilla contra la pared (Wall sit)
+- Press Pallof con banda (anti-rotación)
+- Remo con banda elástica
+- Press de hombros con banda (overhead press)
+- Superman (extensión de espalda en el suelo)
+- Press de pecho con banda (de pie)
+- Flexiones en pared (Wall push-up)
+- Elevación de rodillas sentado (seated knee lift)
+- Abducción de cadera de pie (standing hip abduction)
+- Deslizamiento de talón (heel slide)
+- Abducción de cadera tumbado (side-lying hip abduction)
+- Estiramiento de pecho en puerta (doorway chest stretch)
+- Estiramiento de pantorrilla en pared (calf stretch)
+- Estiramiento de isquios sentado (seated hamstring stretch)
+- Estiramiento de cuádriceps de pie (standing quad stretch)
+- Estiramiento de espalda (manos al frente)
+- Estiramiento de tríceps por encima de la cabeza (overhead triceps stretch)
+- Gato-vaca (cat-cow)
+- Press de pecho en el suelo con mancuernas (floor press)
+- Extensión de rodilla sentado (knee extension / LAQ)
+- Curl abdominal parcial (abdominal curl / curl-up)
+- Marcha en el sitio (marching in place)
+- Paso lateral sin salto (step touch)
+- Elevación de puntas de pie (toe raises / dorsiflexión)
+- Equilibrio a una pierna (stork stand)
+
+## CALISTHENICS
+
+- Flexiones (push-up)
+- Pull-up
+- Remo invertido (inverted row)
+- Push-up
+- Dip
+- Fondos en paralelas (dips)
+- L-Sit
+- Handstand
+- Muscle-up
+- Pistol Squat
+- Front Lever
+- Planche
+- Back Lever
+- Hanging Leg Raise
+- Diamond Push-up
+- Archer Push-up
+- Chin-up
+- Pike Push-up
+- Hollow Hold
+- Skin the Cat
+- Human Flag
+- Front Roll
+- Back Roll
+
+## POOL
+
+- Freestyle
+- Backstroke
+- Breaststroke
+- Butterfly
+- Kickboard
+- Water Tread
+- Pool Run
+- Aqua Jog
+- Sculling
+- Streamline
+- Flip Turn
+- Open Turn
+- Side Stroke
+- Elementary Back
+- Water Polo Drill
+- Lap Swim
+- Sprint
+- Drill Set
+- Cool Down
+- Warm Up Swim
+
+## MIXED
+
+- Elevación de talones (calf raises)
+- Peso muerto rumano (RDL)
+- Sentadilla (peso corporal)
+- Plancha frontal (plank)
+- Plancha lateral (side plank)
+- Zancada (lunge)
+- Puente de glúteos (glute bridge)
+- Bird-dog (extensión alterna brazo/pierna)
+- Step-up (subida a cajón/escalón)
+- Circuit A
+- Circuit B
+- HIIT Block
+- Tabata
+- AMRAP
+- EMOM
+- Chipper
+- Metcon
+- WOD
+- Finisher
+- Warm-up Set
+- Cool-down Set
+- Mobility Block
+- Stretch Sequence
+- Recovery Run
+- Cross Train
+- Combo Session
+- Hybrid
+- Fusion Workout
+- Mixed Block
+- Paseo del granjero (Farmer carry)
+- Swing con pesa rusa (kettlebell swing)
+- Curl de bíceps con mancuernas (de pie)
+

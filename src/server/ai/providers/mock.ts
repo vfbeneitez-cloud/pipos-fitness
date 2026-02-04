@@ -4,6 +4,9 @@ import type { AIProvider, AgentMessage, AgentResponse } from "../provider";
  * Mock provider determinista para desarrollo y tests. No requiere clave API.
  */
 export class MockProvider implements AIProvider {
+  id = "mock";
+  model = "mock";
+
   async chat(messages: AgentMessage[], options?: { maxTokens?: number }): Promise<AgentResponse> {
     void options; // interface requires param; mock ignores
     const lastUser = messages.filter((m) => m.role === "user").pop();

@@ -238,7 +238,7 @@ describe("generatePlanFromApi - guardrails regresión", () => {
     });
 
     expect(res?.ok).toBe(false);
-    expect(res?.reason).toBe("exercise_not_in_pool");
+    expect(res && !res.ok && "reason" in res ? res.reason : undefined).toBe("exercise_not_in_pool");
     expect(Sentry.captureMessage).toHaveBeenCalledWith(
       "weekly_plan_fallback_ai_exercise_not_in_pool",
       expect.any(Object),

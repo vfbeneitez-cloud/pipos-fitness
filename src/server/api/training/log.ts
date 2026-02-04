@@ -22,9 +22,19 @@ export async function createTrainingLog(body: unknown, userId: string) {
     parsed.data;
 
   if (planId) {
-    const plan = await prisma.weeklyPlan.findUnique({ where: { id: planId } });
+    const plan = await prisma.weeklyPlan.findFirst({
+      where: { id: planId, userId },
+      select: { id: true },
+    });
     if (!plan) {
-      return { status: 404, body: { error: "PLAN_NOT_FOUND" } };
+      return {
+        status: 404,
+        body: {
+          error: "PLAN_NOT_FOUND",
+          error_code: "PLAN_NOT_FOUND",
+          message: "Plan no encontrado.",
+        },
+      };
     }
   }
 

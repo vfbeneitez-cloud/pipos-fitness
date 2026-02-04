@@ -1,7 +1,7 @@
 import * as Sentry from "@sentry/nextjs";
 import { z } from "zod";
 import { trackEvent } from "@/src/server/lib/events";
-import { logInfo, logError } from "@/src/server/lib/logger";
+import { logError } from "@/src/server/lib/logger";
 import { prisma } from "@/src/server/db/prisma";
 import { trackAiPlanAudit } from "@/src/server/ai/aiAudit";
 import { getProvider } from "./getProvider";
@@ -11,12 +11,22 @@ import {
   generateWeeklyTrainingPlan,
   type WeeklyTrainingPlan,
 } from "@/src/core/training/generateWeeklyTrainingPlan";
+import { generateWeeklyNutritionPlan } from "@/src/core/nutrition/generateWeeklyNutritionPlan";
 import {
-  generateWeeklyNutritionPlan,
-  repairDuplicateTitlesInPlan,
-} from "@/src/core/nutrition/generateWeeklyNutritionPlan";
-import { validateNutritionBeforePersist } from "@/src/server/plan/validateWeeklyPlan";
+  validateNutritionBeforePersist,
+  validateTrainingBeforePersist,
+} from "@/src/server/plan/validateWeeklyPlan";
 import type { Prisma } from "@prisma/client";
+import { getCreatePlanSystemPrompt } from "./prompts/createPlan";
+import { getAdjustSystemPrompt, getAdjustUserPrompt } from "./prompts/adjustPlan";
+import { detectRedFlags } from "./planAdjuster/redFlags";
+import { calculateAdherence } from "./planAdjuster/adherence";
+import {
+  parseAdjustmentResponse,
+  applyAdjustmentsToFinalParams,
+} from "./planAdjuster/parseAdjustments";
+import { upsertWeeklyPlan } from "./persistence/upsertWeeklyPlan";
+import { badRequestBody } from "@/src/server/api/errorResponse";
 
 const ALLOWED_EXERCISES_MAX = 160;
 
@@ -46,38 +56,6 @@ function pickTrainingDayIndices(daysPerWeek: number): number[] {
     7: [0, 1, 2, 3, 4, 5, 6],
   };
   return patterns[Math.min(7, Math.max(1, daysPerWeek))] ?? [0, 2, 4];
-}
-
-type RedFlag = {
-  detected: boolean;
-  message?: string;
-};
-
-function detectRedFlags(logs: Array<{ pain: boolean; painNotes: string | null }>): RedFlag {
-  const hasPain = logs.some((l) => l.pain);
-  const painNotes = logs
-    .filter((l) => l.pain && l.painNotes)
-    .map((l) => l.painNotes?.toLowerCase() ?? "")
-    .join(" ");
-  const redFlagKeywords = [
-    "agudo",
-    "mareos",
-    "dificultad respiratoria",
-    "lesión",
-    "lesion",
-    "grave",
-    "intenso",
-  ];
-
-  if (hasPain && redFlagKeywords.some((kw) => painNotes.includes(kw))) {
-    return {
-      detected: true,
-      message:
-        "He detectado señales que requieren atención profesional. Recomiendo consultar con un profesional sanitario antes de continuar.",
-    };
-  }
-
-  return { detected: false };
 }
 
 /**
@@ -191,67 +169,7 @@ async function generatePlanFromApi(
     }
 
     const trainingDayIndices = pickTrainingDayIndices(args.finalDaysPerWeek);
-    const systemPrompt = `Eres un asistente experto en fitness y nutrición.
-
-Devuelve SOLO JSON válido (sin markdown, sin texto adicional).
-
-Debes devolver EXACTAMENTE este shape:
-{
-  "training": {
-    "environment": "GYM|HOME|CALISTHENICS|POOL|MIXED|ESTIRAMIENTOS",
-    "daysPerWeek": number,
-    "sessionMinutes": number,
-    "sessions": [
-      {
-        "dayIndex": number,
-        "name": string,
-        "exercises": [
-          { "slug": string, "name": string, "sets": number, "reps": string, "restSec": number }
-        ]
-      }
-    ]
-  },
-  "nutrition": {
-    "mealsPerDay": number,
-    "cookingTime": "MIN_10|MIN_20|MIN_40|FLEXIBLE",
-    "dietaryStyle": string|null,
-    "allergies": string|null,
-    "dislikes": string|null,
-    "days": [
-      {
-        "dayIndex": number,
-        "meals": [
-          {
-            "slot": "breakfast|lunch|dinner|snack",
-            "title": string,
-            "minutes": number,
-            "tags": string[],
-            "ingredients": string[],
-            "instructions": string,
-            "substitutions": [{ "title": string, "minutes": number }]
-          }
-        ]
-      }
-    ]
-  }
-}
-
-REGLAS OBLIGATORIAS:
-- training.environment == finalEnvironment; training.daysPerWeek == finalDaysPerWeek; training.sessionMinutes == finalSessionMinutes.
-- training.sessions.length == finalDaysPerWeek.
-- Usa EXACTAMENTE los dayIndex indicados en trainingDayIndices (uno por sesión, sin repetir).
-- Usa SOLO ejercicios de allowedExercises (match por slug exacto). No inventes slugs.
-- nutrition.mealsPerDay == finalMealsPerDay; nutrition.cookingTime == finalCookingTime.
-- nutrition.days.length == 7 con dayIndex 0..6 sin repetir.
-- En cada día: meals.length == mealsPerDay y no repitas slot.
-- title descriptivo (>=10 chars), ingredients >=2, instructions >=20 chars, substitutions >=1.
-
-SALIDA COMPACTA (OBLIGATORIO):
-- tags: [] (vacío) salvo que sea realmente necesario.
-- ingredients: EXACTAMENTE 2 strings cortos por comida.
-- instructions: 20-40 caracteres (una frase corta).
-- substitutions: EXACTAMENTE 1 item por comida con title corto y minutes <= 20.
-- training: 1-3 ejercicios por sesión (evita listas largas).`;
+    const systemPrompt = getCreatePlanSystemPrompt();
     const userPayload = {
       profile: args.profile,
       finalEnvironment: args.finalEnvironment,
@@ -333,7 +251,11 @@ SALIDA COMPACTA (OBLIGATORIO):
           },
         },
       });
-      return null;
+      return {
+        ok: false,
+        reason: "ai_constraints_mismatch",
+        detail: "Training/nutrition constraints did not match request",
+      };
     }
 
     const gotIdx = data.training.sessions.map((s) => s.dayIndex).sort((a, b) => a - b);
@@ -405,8 +327,8 @@ SALIDA COMPACTA (OBLIGATORIO):
 
     return {
       ok: true as const,
-      training: data.training,
-      nutrition: data.nutrition,
+      training: { ...data.training, schemaVersion: 1 },
+      nutrition: { ...data.nutrition, schemaVersion: 1 },
       exercisesToUpsert,
     };
   } catch (error) {
@@ -510,21 +432,6 @@ export function mapAiTrainingToExistingExercises(
   };
 }
 
-function calculateAdherence(
-  trainingLogs: Array<{ completed: boolean }>,
-  nutritionLogs: Array<{ followedPlan: boolean }>,
-): { training: number; nutrition: number } {
-  const trainingAdherence =
-    trainingLogs.length > 0
-      ? trainingLogs.filter((l) => l.completed).length / trainingLogs.length
-      : 1;
-  const nutritionAdherence =
-    nutritionLogs.length > 0
-      ? nutritionLogs.filter((l) => l.followedPlan).length / nutritionLogs.length
-      : 1;
-  return { training: trainingAdherence, nutrition: nutritionAdherence };
-}
-
 export async function adjustWeeklyPlan(body: unknown, userId: string) {
   const parsed = BodySchema.safeParse(body);
   if (!parsed.success) {
@@ -557,54 +464,17 @@ export async function adjustWeeklyPlan(body: unknown, userId: string) {
   const adherence = calculateAdherence(trainingLogs, nutritionLogs);
 
   const provider = getProvider();
-  const systemPrompt = `Eres un asistente de entrenamiento y nutrición. Analiza el perfil del usuario y sus logs recientes para proponer ajustes seguros al plan semanal.
+  const systemPrompt = getAdjustSystemPrompt();
+  const userPrompt = getAdjustUserPrompt({
+    profile: profile ?? null,
+    trainingCompleted: trainingLogs.filter((l) => l.completed).length,
+    trainingTotal: trainingLogs.length,
+    nutritionFollowed: nutritionLogs.filter((l) => l.followedPlan).length,
+    nutritionTotal: nutritionLogs.length,
+    redFlag,
+    currentPlanExists: !!currentPlan,
+  });
 
-Reglas:
-- NO hagas diagnóstico médico.
-- Si detectas red flags (dolor agudo, mareos, síntomas serios), recomienda consultar profesional sanitario y propón ajustes conservadores.
-- No sugieras dietas extremas ni volúmenes peligrosos.
-- Si la adherencia es baja, reduce complejidad gradualmente.
-- Mantén un tono prudente y sin promesas de resultados garantizados.
-
-Responde SOLO con un JSON válido:
-{
-  "rationale": "explicación breve sin PII ni diagnóstico médico",
-  "adjustments": {
-    "daysPerWeek": número (1-7) o null si mantener,
-    "sessionMinutes": número (15-180) o null si mantener,
-    "environment": "GYM|HOME|CALISTHENICS|POOL|MIXED" o null si mantener,
-    "mealsPerDay": número (2-4) o null si mantener,
-    "cookingTime": "MIN_10|MIN_20|MIN_40|FLEXIBLE" o null si mantener
-  }
-}`;
-
-  const userPrompt = `Perfil:
-- Nivel: ${profile?.level ?? "BEGINNER"}
-- Días/semana actuales: ${profile?.daysPerWeek ?? 3}
-- Minutos/sesión: ${profile?.sessionMinutes ?? 45}
-- Entorno: ${profile?.environment ?? "GYM"}
-- Comidas/día: ${profile?.mealsPerDay ?? 3}
-- Tiempo cocina: ${profile?.cookingTime ?? "MIN_20"}
-
-Logs últimos 7 días:
-- Sesiones completadas: ${trainingLogs.filter((l) => l.completed).length}/${trainingLogs.length}
-- Comidas según plan: ${nutritionLogs.filter((l) => l.followedPlan).length}/${nutritionLogs.length}
-${redFlag.detected ? `- RED FLAG: ${redFlag.message}` : ""}
-
-Plan actual: ${currentPlan ? "existe" : "no existe"}
-
-Propón ajustes seguros basados en adherencia y perfil.`;
-
-  /**
-   * Adjustment rules (MVP)
-   * - Based on 7-day trends only
-   * - Apply at most ONE category of change per regeneration:
-   *   training volume OR training intensity OR nutrition simplicity
-   * - Never adjust if data is insufficient
-   * - Pain signals override adherence
-   * See specs/08_ai_agent_mvp.md for the decision table
-   */
-  let adjustmentApplied = false;
   let rationale = "";
   let fallbackType: "red_flag" | "parse_error" | "provider_error" | "none" = "none";
   let adjustments: {
@@ -626,76 +496,20 @@ Propón ajustes seguros basados en adherencia y perfil.`;
       { role: "user", content: userPrompt },
     ]);
     console.log("[AI response - adjust plan]", response.content);
-    if (process.env.OPENAI_API_KEY) {
-      logInfo("agent", "Weekly plan generated with OpenAI");
-    }
 
-    if (redFlag.detected) {
-      fallbackType = "red_flag";
-      Sentry.captureMessage("weekly_plan_fallback_red_flag", {
-        tags: { fallback_type: "red_flag" },
-        extra: { trainingScore: adherence.training, nutritionScore: adherence.nutrition },
-      });
-      rationale = `${redFlag.message} He aplicado ajustes conservadores al plan.`;
-      adjustments = {
-        daysPerWeek: Math.max(1, (profile?.daysPerWeek ?? 3) - 1),
-        sessionMinutes: Math.max(15, (profile?.sessionMinutes ?? 45) - 15),
-        mealsPerDay: profile?.mealsPerDay ?? 3,
-        cookingTime: profile?.cookingTime ?? "MIN_20",
-      };
-      adjustmentApplied = true;
-    } else {
-      try {
-        const parsed = JSON.parse(response.content) as {
-          rationale?: string;
-          adjustments?: typeof adjustments;
-        };
-        rationale = parsed.rationale ?? "Ajustes aplicados según adherencia y perfil.";
-        const raw = parsed.adjustments ?? {};
-        const hasTraining =
-          raw.daysPerWeek != null || raw.sessionMinutes != null || raw.environment != null;
-        if (hasTraining && !adjustmentApplied) {
-          adjustments = {
-            daysPerWeek: raw.daysPerWeek ?? undefined,
-            sessionMinutes: raw.sessionMinutes ?? undefined,
-            environment: raw.environment ?? undefined,
-          };
-          adjustmentApplied = true;
-        } else if (!adjustmentApplied) {
-          const hasNutrition = raw.mealsPerDay != null || raw.cookingTime != null;
-          if (hasNutrition) {
-            adjustments = {
-              mealsPerDay: raw.mealsPerDay ?? undefined,
-              cookingTime: raw.cookingTime ?? undefined,
-            };
-            adjustmentApplied = true;
-          }
-        }
-      } catch {
-        fallbackType = "parse_error";
-        Sentry.captureMessage("weekly_plan_fallback_parse_error", {
-          tags: { fallback_type: "parse_error" },
-          extra: { trainingScore: adherence.training, nutritionScore: adherence.nutrition },
-        });
-        rationale =
-          adherence.training < 0.5 || adherence.nutrition < 0.5
-            ? "He reducido la complejidad del plan para que sea más fácil de seguir esta semana."
-            : "He aplicado ajustes menores basados en tu progreso.";
-        if (!adjustmentApplied && adherence.training < 0.5) {
-          adjustments.daysPerWeek = Math.max(1, (profile?.daysPerWeek ?? 3) - 1);
-          adjustmentApplied = true;
-        }
-        if (!adjustmentApplied && adherence.nutrition < 0.5) {
-          adjustments.mealsPerDay = Math.max(2, (profile?.mealsPerDay ?? 3) - 1);
-          adjustments.cookingTime = "MIN_10";
-          adjustmentApplied = true;
-        }
-      }
-    }
+    const parsed = parseAdjustmentResponse({
+      content: response.content,
+      redFlag,
+      adherence,
+      profile: profile ?? null,
+    });
+    rationale = parsed.rationale;
+    fallbackType = parsed.fallbackType;
+    adjustments = parsed.adjustments;
   } catch (error) {
     const errMsg = error instanceof Error ? error.message : String(error);
     const errName = error instanceof Error ? error.name : "Error";
-    logError("agent", "OpenAI provider failed", { error: errMsg });
+    logError("agent", "AI provider failed", { error: errMsg });
     Sentry.captureException(error, {
       tags: { fallback_type: "provider_error" },
     });
@@ -717,105 +531,39 @@ Propón ajustes seguros basados en adherencia y perfil.`;
     },
   );
 
-  const finalDaysPerWeek = adjustments.daysPerWeek ?? profile?.daysPerWeek ?? 3;
-  const finalSessionMinutes = adjustments.sessionMinutes ?? profile?.sessionMinutes ?? 45;
-  const finalEnvironment =
-    (adjustments.environment as
-      | "GYM"
-      | "HOME"
-      | "CALISTHENICS"
-      | "POOL"
-      | "MIXED"
-      | "ESTIRAMIENTOS"
-      | undefined) ??
-    profile?.environment ??
-    "GYM";
-  const finalMealsPerDay = adjustments.mealsPerDay ?? profile?.mealsPerDay ?? 3;
-  const finalCookingTime =
-    (adjustments.cookingTime as "MIN_10" | "MIN_20" | "MIN_40" | "FLEXIBLE" | undefined) ??
-    profile?.cookingTime ??
-    "MIN_20";
+  const finalParams = applyAdjustmentsToFinalParams({
+    adjustments,
+    profile: profile ?? null,
+  });
+  const {
+    finalDaysPerWeek,
+    finalSessionMinutes,
+    finalEnvironment,
+    finalMealsPerDay,
+    finalCookingTime,
+  } = finalParams;
 
   const t0 = Date.now();
-  const providerName = process.env.OPENAI_API_KEY ? "openai" : "mock";
-  const useApiForPlan = Boolean(process.env.OPENAI_API_KEY);
+  const providerName = "mock";
 
-  let training: ReturnType<typeof generateWeeklyTrainingPlan>;
-  let nutrition: ReturnType<typeof generateWeeklyNutritionPlan>;
-  let unmatchedCountForAudit: number | undefined;
-  let poolSizeForAudit = 0;
-
-  if (useApiForPlan) {
-    const exercisePool = await prisma.exercise.findMany({
-      where: { ...(finalEnvironment === "MIXED" ? {} : { environment: finalEnvironment }) },
-      select: { slug: true, name: true, environment: true, primaryMuscle: true },
-    });
-    poolSizeForAudit = exercisePool.length;
-    if (exercisePool.length === 0) {
-      trackAiPlanAudit(
-        { kind: "fallback", fallbackType: "no_exercises_available" },
-        {
-          context: "adjustWeeklyPlan",
-          provider: providerName as "openai" | "mock",
-          environment: finalEnvironment,
-          daysPerWeek: finalDaysPerWeek,
-          sessionMinutes: finalSessionMinutes,
-          mealsPerDay: finalMealsPerDay,
-          cookingTime: finalCookingTime,
-          poolSize: exercisePool.length,
-          durationMs: Date.now() - t0,
-        },
-      );
-    }
-    const planResult = await generatePlanFromApi(provider, {
-      profile,
-      finalEnvironment,
-      finalDaysPerWeek,
-      finalSessionMinutes,
-      finalMealsPerDay,
-      finalCookingTime,
-      allowedExercises: exercisePool,
-    });
-    if (!planResult.ok) {
-      return {
-        status: 502,
-        body: {
-          error: "AI_PLAN_FAILED",
-          reason: planResult.reason,
-          detail: planResult.detail,
-        },
-      };
-    }
-    const { training: mappedTraining, unmatchedCount } = mapAiTrainingToExistingExercises(
-      planResult.training,
-      exercisePool,
-    );
-    training = mappedTraining as WeeklyTrainingPlan;
-    nutrition = repairDuplicateTitlesInPlan(planResult.nutrition);
-    unmatchedCountForAudit = unmatchedCount;
-    if (unmatchedCount > 0) {
-      trackEvent("ai_exercise_unmatched", { count: unmatchedCount });
-    }
-  } else {
-    const exercisePool = await prisma.exercise.findMany({
-      where: { ...(finalEnvironment === "MIXED" ? {} : { environment: finalEnvironment }) },
-      select: { slug: true, name: true },
-    });
-    poolSizeForAudit = exercisePool.length;
-    training = generateWeeklyTrainingPlan({
-      environment: finalEnvironment,
-      daysPerWeek: finalDaysPerWeek,
-      sessionMinutes: finalSessionMinutes,
-      exercisePool,
-    });
-    nutrition = generateWeeklyNutritionPlan({
-      mealsPerDay: finalMealsPerDay,
-      cookingTime: finalCookingTime,
-      dietaryStyle: profile?.dietaryStyle ?? null,
-      allergies: profile?.allergies ?? null,
-      dislikes: profile?.dislikes ?? null,
-    });
-  }
+  const exercisePool = await prisma.exercise.findMany({
+    where: { ...(finalEnvironment === "MIXED" ? {} : { environment: finalEnvironment }) },
+    select: { slug: true, name: true },
+  });
+  const poolSizeForAudit = exercisePool.length;
+  const training = generateWeeklyTrainingPlan({
+    environment: finalEnvironment,
+    daysPerWeek: finalDaysPerWeek,
+    sessionMinutes: finalSessionMinutes,
+    exercisePool,
+  });
+  let nutrition = generateWeeklyNutritionPlan({
+    mealsPerDay: finalMealsPerDay,
+    cookingTime: finalCookingTime,
+    dietaryStyle: profile?.dietaryStyle ?? null,
+    allergies: profile?.allergies ?? null,
+    dislikes: profile?.dislikes ?? null,
+  });
 
   const sessionsCount = training?.sessions?.length ?? null;
   const totalExercises = Array.isArray(training?.sessions)
@@ -825,7 +573,7 @@ Propón ajustes seguros basados en adherencia y perfil.`;
     { kind: "success" },
     {
       context: "adjustWeeklyPlan",
-      provider: providerName as "openai" | "mock",
+      provider: providerName,
       environment: finalEnvironment,
       daysPerWeek: finalDaysPerWeek,
       sessionMinutes: finalSessionMinutes,
@@ -834,7 +582,7 @@ Propón ajustes seguros basados en adherencia y perfil.`;
       poolSize: poolSizeForAudit,
       sessionsCount: sessionsCount ?? undefined,
       totalExercises: totalExercises ?? undefined,
-      unmatchedCount: unmatchedCountForAudit,
+      unmatchedCount: undefined,
       durationMs: Date.now() - t0,
     },
   );
@@ -843,7 +591,7 @@ Propón ajustes seguros basados en adherencia y perfil.`;
   const rationaleStr = rationale.trim();
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const v = validateNutritionBeforePersist(nutrition as any);
+  let v = validateNutritionBeforePersist(nutrition as any);
   if (!v.ok) {
     trackEvent(
       "weekly_plan_invalid_before_persist",
@@ -857,26 +605,32 @@ Propón ajustes seguros basados en adherencia y perfil.`;
       allergies: profile?.allergies ?? null,
       dislikes: profile?.dislikes ?? null,
     });
+    v = validateNutritionBeforePersist(nutrition as any);
+  }
+  const vt = validateTrainingBeforePersist(training);
+  if (!vt.ok) {
+    return { status: 400, body: badRequestBody("INVALID_TRAINING_PLAN") };
   }
 
-  const plan = await prisma.weeklyPlan.upsert({
-    where: { userId_weekStart: { userId, weekStart: weekStartDate } },
-    update: {
-      trainingJson: training as unknown as Prisma.InputJsonValue,
-      nutritionJson: nutrition as unknown as Prisma.InputJsonValue,
-      status: "DRAFT",
-      lastRationale: rationaleStr,
-      lastGeneratedAt: now,
-    },
-    create: {
-      userId,
-      weekStart: weekStartDate,
-      status: "DRAFT",
-      trainingJson: training as unknown as Prisma.InputJsonValue,
-      nutritionJson: nutrition as unknown as Prisma.InputJsonValue,
-      lastRationale: rationaleStr,
-      lastGeneratedAt: now,
-    },
+  const metadata = {
+    generatedBy: "agent",
+    promptVersion: "adjustPlan@2026-02-04",
+    model: providerName,
+    generatedAt: now.toISOString(),
+  };
+  const trainingForJson = { ...vt.normalized, metadata };
+  const nutritionForJson = {
+    ...(v.ok ? v.normalized : nutrition),
+    metadata,
+  };
+
+  const plan = await upsertWeeklyPlan({
+    userId,
+    weekStart: weekStartDate,
+    trainingJson: trainingForJson as unknown as Prisma.InputJsonValue,
+    nutritionJson: nutritionForJson as unknown as Prisma.InputJsonValue,
+    lastRationale: rationaleStr,
+    lastGeneratedAt: now,
   });
 
   return {

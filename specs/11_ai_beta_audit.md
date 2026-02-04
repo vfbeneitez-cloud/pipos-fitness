@@ -1,11 +1,11 @@
 # AI Beta – Auditoría rápida del cambio (AI-0)
 
-## 1) Rutas que llaman a OpenAI
+## 1) Rutas que usan el agente (provider mock)
 
-| Ruta / función                                              | Condición                                                   | Llamada LLM                                                                                                                                                            |
-| ----------------------------------------------------------- | ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **createWeeklyPlan** (`src/server/api/weeklyPlan/route.ts`) | `process.env.OPENAI_API_KEY` definido                       | `generatePlanFromApi(provider, ...)` → `provider.chat()` (1 llamada)                                                                                                   |
-| **adjustWeeklyPlan** (`src/server/ai/agentWeeklyPlan.ts`)   | Siempre usa `getProvider()` (OpenAI si hay key, si no Mock) | 1) `provider.chat()` para ajustes (rationale + adjustments). 2) Si `OPENAI_API_KEY`: `generatePlanFromApi(provider, ...)` para plan completo (2 llamadas con API real) |
+| Ruta / función                                              | Provider | Llamada LLM |
+| ----------------------------------------------------------- | -------- | ----------- |
+| **createWeeklyPlan** (`src/server/api/weeklyPlan/route.ts`) | mock     | Ninguna (plan determinista con `generateWeeklyTrainingPlan` + `generateWeeklyNutritionPlan`). |
+| **adjustWeeklyPlan** (`src/server/ai/agentWeeklyPlan.ts`)   | mock     | `provider.chat()` para ajustes (rationale + adjustments). Plan regenerado con generadores deterministas. |
 
 - **HTTP:** POST `/api/weekly-plan` → `createWeeklyPlan`.
 - **HTTP:** POST `/api/agent/weekly-plan` y POST `/api/cron/weekly-regenerate` → `adjustWeeklyPlan`.
@@ -14,11 +14,11 @@
 
 ## 2) Datos que entran al prompt
 
-### createWeeklyPlan → generatePlanFromApi (plan semanal)
+### createWeeklyPlan (plan semanal determinista)
 
 - **Perfil (UserProfile):** `level`, `goal`, `injuryNotes`, `equipmentNotes`, `dietaryStyle`, `allergies`, `dislikes`.
-- **Parámetros de request/plan:** `finalEnvironment`, `finalDaysPerWeek`, `finalSessionMinutes`, `finalMealsPerDay`, `finalCookingTime`.
-- **Prompt de usuario:** texto con "Perfil: nivel X, objetivo Y, entorno Z, N días/semana, M min/sesión" + "Nutrición: K comidas/día, tiempo cocina, dieta, alergias, dislikes" + opcional "Notas lesiones" + opcional "Equipamiento".
+- **Parámetros de request/plan:** `environment`, `daysPerWeek`, `sessionMinutes`, `finalMealsPerDay`, `finalCookingTime`.
+- Plan generado con `generateWeeklyTrainingPlan` y `generateWeeklyNutritionPlan` (sin LLM).
 
 ### adjustWeeklyPlan (ajustes)
 
@@ -86,7 +86,7 @@
 | Acción                         | Tabla                                              | Ubicación                                                                                                                                                                                                                                                                                                 |
 | ------------------------------ | -------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Plan semanal                   | **WeeklyPlan** (upsert por `userId` + `weekStart`) | `createWeeklyPlan`: `prisma.weeklyPlan.upsert` (trainingJson, nutritionJson, status). `adjustWeeklyPlan`: mismo upsert + `lastRationale`, `lastGeneratedAt`.                                                                                                                                              |
-| Ejercicios nuevos/actualizados | **Exercise**                                       | `createWeeklyPlan`: tras `generatePlanFromApi`, `prisma.exercise.upsert` por cada `planResult.exercisesToUpsert` (where: slug; update/create: slug, name, environment). `adjustWeeklyPlan`: mismo bloque de `exercisesToUpsert` y `prisma.exercise.upsert` cuando `useApiForPlan` y `planResult` no null. |
+| Ejercicios nuevos/actualizados | **Exercise** | No se crean ejercicios desde el agente; se usan solo los existentes en DB. |
 
 - **Exercise:** solo se tocan `slug`, `name`, `environment`. No se escriben `primaryMuscle`, `description`, `cues`, etc., desde el agente.
 

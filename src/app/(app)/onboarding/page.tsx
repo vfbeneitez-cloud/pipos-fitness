@@ -12,6 +12,7 @@ const ENVIRONMENTS = [
   { value: "CALISTHENICS", label: "Calistenia" },
   { value: "POOL", label: "Piscina" },
   { value: "MIXED", label: "Mixto" },
+  { value: "ESTIRAMIENTOS", label: "Estiramientos" },
 ] as const;
 
 const LEVELS = [

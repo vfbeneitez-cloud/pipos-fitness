@@ -38,8 +38,42 @@ type Plan = {
   lastGeneratedAt?: string | null;
 };
 
+type AdherenceData = {
+  training: { planned: number; completed: number; percent: number };
+  nutrition: { planned: number; completed: number; percent: number };
+  totalPercent: number;
+};
+
+type InsightData = {
+  type: string;
+  severity: string;
+  title: string;
+  detail: string;
+};
+
+type NextActionData = {
+  type: string;
+  title: string;
+  detail: string;
+};
+
+type CoachData = {
+  summary: string;
+  bullets: string[];
+  nextActionTitle: string;
+  nextActionSteps: string[];
+};
+
+type InsightsData = {
+  insights: InsightData[];
+  nextAction: NextActionData;
+  coach?: CoachData | null;
+};
+
 export default function WeekPage() {
   const [plan, setPlan] = useState<Plan | null | undefined>(undefined);
+  const [adherence, setAdherence] = useState<AdherenceData | null | undefined>(undefined);
+  const [insights, setInsights] = useState<InsightsData | null | undefined>(undefined);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [regenLoading, setRegenLoading] = useState(false);
@@ -94,6 +128,133 @@ export default function WeekPage() {
     fetchPlan();
   }, [fetchPlan]);
 
+  const [adherenceComputedAt, setAdherenceComputedAt] = useState<string | null>(null);
+  const [recomputeLoading, setRecomputeLoading] = useState(false);
+  const [recomputeError, setRecomputeError] = useState<string | null>(null);
+  const [nudge, setNudge] = useState<
+    { type: string; severity: string; title: string; detail: string } | null | undefined
+  >(undefined);
+
+  const fetchAdherence = useCallback(async () => {
+    if (!plan) return;
+    setAdherence(undefined);
+    setAdherenceComputedAt(null);
+    try {
+      const snapshotRes = await fetch(`/api/adherence/snapshot?weekStart=${weekStart}`);
+      const snapshotData = (await snapshotRes.json()) as
+        | {
+            weekStart: string;
+            computedAt: string;
+            breakdown: {
+              training: { planned: number; completed: number; percent: number };
+              nutrition: { planned: number; completed: number; percent: number };
+              totalPercent: number;
+            };
+          }
+        | { error_code?: string };
+      if (snapshotRes.ok && !("error_code" in snapshotData)) {
+        const s = snapshotData as {
+          breakdown: { training: unknown; nutrition: unknown; totalPercent: number };
+        };
+        setAdherence({
+          training: s.breakdown.training as AdherenceData["training"],
+          nutrition: s.breakdown.nutrition as AdherenceData["nutrition"],
+          totalPercent: s.breakdown.totalPercent,
+        });
+        setAdherenceComputedAt((snapshotData as { computedAt: string }).computedAt);
+        return;
+      }
+      if (
+        snapshotRes.status === 404 &&
+        (snapshotData as { error_code?: string }).error_code === "SNAPSHOT_NOT_FOUND"
+      ) {
+        const weeklyRes = await fetch(`/api/adherence/weekly?weekStart=${weekStart}`);
+        const weeklyData = (await weeklyRes.json()) as AdherenceData | { error_code?: string };
+        if (!weeklyRes.ok) {
+          setAdherence(null);
+          return;
+        }
+        setAdherence(weeklyData as AdherenceData);
+        setAdherenceComputedAt(null);
+        return;
+      }
+      setAdherence(null);
+    } catch {
+      setAdherence(null);
+    }
+  }, [plan, weekStart]);
+
+  const fetchNudge = useCallback(async () => {
+    try {
+      const res = await fetch(`/api/adherence/summary?weeks=2&weekStart=${weekStart}`);
+      const data = (await res.json()) as
+        | { nudge?: { type: string; severity: string; title: string; detail: string } }
+        | { error_code?: string };
+      if (res.ok && data.nudge) {
+        setNudge(data.nudge);
+      } else {
+        setNudge(null);
+      }
+    } catch {
+      setNudge(null);
+    }
+  }, [weekStart]);
+
+  const handleRecomputeAdherence = useCallback(async () => {
+    if (recomputeLoading) return;
+    setRecomputeLoading(true);
+    setRecomputeError(null);
+    try {
+      const res = await fetch(`/api/adherence/snapshot/recompute?weekStart=${weekStart}`, {
+        method: "POST",
+      });
+      if (res.ok) {
+        setRecomputeError(null);
+        await fetchAdherence();
+        await fetchNudge();
+      } else if (res.status === 429) {
+        setRecomputeError("Espera un minuto antes de volver a intentar.");
+      } else {
+        const data = (await res.json()) as { message?: string };
+        setRecomputeError(data.message ?? "Error al actualizar.");
+      }
+    } catch {
+      setRecomputeError("Error de red. Reintenta.");
+    } finally {
+      setRecomputeLoading(false);
+    }
+  }, [weekStart, fetchAdherence, fetchNudge, recomputeLoading]);
+
+  useEffect(() => {
+    fetchAdherence();
+  }, [fetchAdherence]);
+
+  const fetchInsights = useCallback(async () => {
+    if (!plan) return;
+    setInsights(undefined);
+    try {
+      const res = await fetch(`/api/adherence/insights-ai?weekStart=${weekStart}`);
+      const data = (await res.json()) as
+        | { insights: InsightData[]; nextAction: NextActionData; coach?: CoachData | null }
+        | { error_code?: string };
+      if (!res.ok) {
+        setInsights(null);
+        return;
+      }
+      setInsights(data as InsightsData);
+    } catch {
+      setInsights(null);
+    }
+  }, [plan, weekStart]);
+
+  useEffect(() => {
+    fetchInsights();
+  }, [fetchInsights]);
+
+  useEffect(() => {
+    fetchNudge();
+  }, [fetchNudge]);
+
   if (plan === undefined && loading) {
     return (
       <main className="mx-auto max-w-lg px-4 py-8">
@@ -127,6 +288,21 @@ export default function WeekPage() {
             Generar plan
           </Link>
         </div>
+      )}
+
+      {nudge && (
+        <section
+          className={`mb-6 rounded-lg border p-4 ${
+            nudge.severity === "high"
+              ? "border-amber-300 bg-amber-50 dark:border-amber-800 dark:bg-amber-900/20"
+              : nudge.severity === "medium"
+                ? "border-zinc-300 bg-white dark:border-zinc-600 dark:bg-zinc-800/50"
+                : "border-green-200 bg-green-50/50 dark:border-green-800/50 dark:bg-green-900/10"
+          }`}
+        >
+          <p className="font-medium text-zinc-900 dark:text-zinc-100">{nudge.title}</p>
+          <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">{nudge.detail}</p>
+        </section>
       )}
 
       {plan && (
@@ -171,6 +347,14 @@ export default function WeekPage() {
               </section>
             );
           })()}
+          <AdherenceCard
+            adherence={adherence}
+            computedAt={adherenceComputedAt}
+            onRecompute={handleRecomputeAdherence}
+            recomputeLoading={recomputeLoading}
+            recomputeError={recomputeError}
+          />
+          <InsightsCard insights={insights} />
           {plan.lastRationale != null && plan.lastRationale !== "" && (
             <RationalePanel rationale={plan.lastRationale} generatedAt={plan.lastGeneratedAt} />
           )}
@@ -232,6 +416,189 @@ export default function WeekPage() {
         </>
       )}
     </main>
+  );
+}
+
+function AdherenceCard({
+  adherence,
+  computedAt,
+  onRecompute,
+  recomputeLoading,
+  recomputeError,
+}: {
+  adherence: AdherenceData | null | undefined;
+  computedAt?: string | null;
+  onRecompute?: () => void;
+  recomputeLoading?: boolean;
+  recomputeError?: string | null;
+}) {
+  if (adherence === undefined) {
+    return (
+      <section
+        className="mb-6 rounded-lg border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-700 dark:bg-zinc-800/50"
+        aria-labelledby="adherence-heading"
+      >
+        <h2 id="adherence-heading" className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          Adherencia
+        </h2>
+        <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">Cargando…</p>
+      </section>
+    );
+  }
+  if (adherence === null) {
+    return (
+      <section
+        className="mb-6 rounded-lg border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-700 dark:bg-zinc-800/50"
+        aria-labelledby="adherence-heading"
+      >
+        <h2 id="adherence-heading" className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          Adherencia
+        </h2>
+        <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">Adherencia: —</p>
+      </section>
+    );
+  }
+  return (
+    <section
+      className="mb-6 rounded-lg border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-700 dark:bg-zinc-800/50"
+      aria-labelledby="adherence-heading"
+    >
+      <h2 id="adherence-heading" className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+        Adherencia semanal
+      </h2>
+      <p className="mt-2 text-2xl font-semibold text-zinc-900 dark:text-zinc-100">
+        {adherence.totalPercent}%
+      </p>
+      <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+        Entrenamiento: {adherence.training.percent}% ({adherence.training.completed}/
+        {adherence.training.planned}) · Nutrición: {adherence.nutrition.percent}% (
+        {adherence.nutrition.completed}/{adherence.nutrition.planned})
+      </p>
+      {computedAt && (
+        <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+          Actualizado: {formatComputedAt(computedAt)}
+        </p>
+      )}
+      {recomputeError && (
+        <p className="mt-1 text-xs text-amber-600 dark:text-amber-400">{recomputeError}</p>
+      )}
+      {onRecompute && (
+        <button
+          type="button"
+          onClick={onRecompute}
+          disabled={recomputeLoading}
+          className="mt-2 text-xs text-zinc-600 underline hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200 disabled:opacity-50"
+        >
+          {recomputeLoading ? "Actualizando…" : "Actualizar adherencia"}
+        </button>
+      )}
+    </section>
+  );
+}
+
+function formatComputedAt(iso: string): string {
+  try {
+    const d = new Date(iso);
+    return d.toLocaleString("es-ES", {
+      dateStyle: "medium",
+      timeStyle: "short",
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    });
+  } catch {
+    return "";
+  }
+}
+
+function InsightsCard({ insights: insightsData }: { insights: InsightsData | null | undefined }) {
+  if (insightsData === undefined) {
+    return (
+      <section
+        className="mb-6 rounded-lg border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-700 dark:bg-zinc-800/50"
+        aria-labelledby="insights-heading"
+      >
+        <h2 id="insights-heading" className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          Insights
+        </h2>
+        <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">Cargando…</p>
+      </section>
+    );
+  }
+  if (insightsData === null) return null;
+  const { insights, nextAction, coach } = insightsData;
+
+  if (coach) {
+    return (
+      <section
+        className="mb-6 rounded-lg border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-700 dark:bg-zinc-800/50"
+        aria-labelledby="insights-heading"
+      >
+        <h2
+          id="insights-heading"
+          className="mb-3 text-sm font-medium text-zinc-700 dark:text-zinc-300"
+        >
+          Insights de adherencia
+        </h2>
+        <p className="mb-3 text-sm text-zinc-700 dark:text-zinc-300">{coach.summary}</p>
+        {coach.bullets.length > 0 && (
+          <ul className="mb-4 list-inside list-disc space-y-1 text-sm text-zinc-700 dark:text-zinc-300">
+            {coach.bullets.map((b, idx) => (
+              <li key={idx}>{b}</li>
+            ))}
+          </ul>
+        )}
+        <div
+          className="rounded border border-zinc-200 bg-white p-3 dark:border-zinc-600 dark:bg-zinc-900/50"
+          aria-label="Plan de acción"
+        >
+          <p className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+            Plan de acción
+          </p>
+          <p className="mt-1 font-medium text-zinc-900 dark:text-zinc-100">
+            {coach.nextActionTitle}
+          </p>
+          {coach.nextActionSteps.length > 0 && (
+            <ol className="mt-2 list-inside list-decimal space-y-1 text-sm text-zinc-600 dark:text-zinc-400">
+              {coach.nextActionSteps.map((s, idx) => (
+                <li key={idx}>{s}</li>
+              ))}
+            </ol>
+          )}
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section
+      className="mb-6 rounded-lg border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-700 dark:bg-zinc-800/50"
+      aria-labelledby="insights-heading"
+    >
+      <h2
+        id="insights-heading"
+        className="mb-3 text-sm font-medium text-zinc-700 dark:text-zinc-300"
+      >
+        Insights de adherencia
+      </h2>
+      {insights.length > 0 && (
+        <ul className="mb-4 list-inside list-disc space-y-1 text-sm text-zinc-700 dark:text-zinc-300">
+          {insights.map((i, idx) => (
+            <li key={idx}>
+              <span className="font-medium">{i.title}</span> — {i.detail}
+            </li>
+          ))}
+        </ul>
+      )}
+      <div
+        className="rounded border border-zinc-200 bg-white p-3 dark:border-zinc-600 dark:bg-zinc-900/50"
+        aria-label="Siguiente acción"
+      >
+        <p className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+          Siguiente acción
+        </p>
+        <p className="mt-1 font-medium text-zinc-900 dark:text-zinc-100">{nextAction.title}</p>
+        <p className="mt-0.5 text-sm text-zinc-600 dark:text-zinc-400">{nextAction.detail}</p>
+      </div>
+    </section>
   );
 }
 

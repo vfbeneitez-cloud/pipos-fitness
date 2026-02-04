@@ -1,3 +1,7 @@
+import { z } from "zod";
+import { TRAINING_SCHEMA_VERSION } from "@/src/core/training/generateWeeklyTrainingPlan";
+import { NUTRITION_SCHEMA_VERSION } from "@/src/core/nutrition/generateWeeklyNutritionPlan";
+
 type MealSlot = "breakfast" | "lunch" | "dinner" | "snack";
 
 type Meal = {
@@ -20,11 +24,83 @@ function isPlaceholderTitle(raw: string): boolean {
   return raw.trim().length < 8;
 }
 
-export function validateNutritionBeforePersist(nutrition: {
+export const SUPPORTED_NUTRITION_SCHEMA_VERSION = NUTRITION_SCHEMA_VERSION;
+export const SUPPORTED_TRAINING_SCHEMA_VERSION = TRAINING_SCHEMA_VERSION;
+
+const TrainingExerciseZ = z
+  .object({
+    slug: z.string().min(1),
+    sets: z.number().int().min(1),
+  })
+  .passthrough();
+
+const TrainingSessionZ = z
+  .object({
+    dayIndex: z.number().int().min(0).max(6),
+    name: z.string().min(1),
+    exercises: z.array(TrainingExerciseZ).min(1),
+  })
+  .passthrough();
+
+const TrainingPersistZ = z
+  .object({
+    schemaVersion: z.number().int().optional(),
+    sessions: z.array(TrainingSessionZ).min(1),
+  })
+  .passthrough();
+
+export type TrainingNormalized = z.infer<typeof TrainingPersistZ> & {
+  schemaVersion: number;
+};
+
+export function validateTrainingBeforePersist(
+  training: unknown,
+):
+  | { ok: true; normalized: TrainingNormalized }
+  | { ok: false; reason: "invalid_shape" | "unsupported_schema_version" } {
+  const parsed = TrainingPersistZ.safeParse(training);
+  if (!parsed.success) {
+    return { ok: false, reason: "invalid_shape" };
+  }
+
+  const sv = parsed.data.schemaVersion;
+  if (sv !== undefined && sv !== SUPPORTED_TRAINING_SCHEMA_VERSION) {
+    return { ok: false, reason: "unsupported_schema_version" };
+  }
+
+  return {
+    ok: true,
+    normalized: {
+      ...parsed.data,
+      schemaVersion: SUPPORTED_TRAINING_SCHEMA_VERSION,
+    },
+  };
+}
+
+export type NutritionNormalized = {
+  schemaVersion: number;
   mealsPerDay: number;
   cookingTime: string;
   days: NutritionDay[];
-}): { ok: true } | { ok: false; reason: string } {
+  [key: string]: unknown;
+};
+
+export function validateNutritionBeforePersist(nutrition: {
+  schemaVersion?: number;
+  mealsPerDay: number;
+  cookingTime: string;
+  days: NutritionDay[];
+}): { ok: true; normalized: NutritionNormalized } | { ok: false; reason: string } {
+  // schemaVersion: if present must be supported; if missing treat as legacy (compat)
+  if (nutrition.schemaVersion !== undefined) {
+    if (
+      !Number.isInteger(nutrition.schemaVersion) ||
+      nutrition.schemaVersion !== SUPPORTED_NUTRITION_SCHEMA_VERSION
+    ) {
+      return { ok: false, reason: "unsupported_schema_version" };
+    }
+  }
+
   if (
     !Number.isInteger(nutrition.mealsPerDay) ||
     nutrition.mealsPerDay < 2 ||
@@ -61,5 +137,11 @@ export function validateNutritionBeforePersist(nutrition: {
     }
   }
 
-  return { ok: true };
+  return {
+    ok: true,
+    normalized: {
+      ...nutrition,
+      schemaVersion: SUPPORTED_NUTRITION_SCHEMA_VERSION,
+    } as NutritionNormalized,
+  };
 }

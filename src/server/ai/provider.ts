@@ -16,5 +16,7 @@ export type ChatOptions = {
 };
 
 export interface AIProvider {
+  id: string;
+  model?: string;
   chat(messages: AgentMessage[], options?: ChatOptions): Promise<AgentResponse>;
 }

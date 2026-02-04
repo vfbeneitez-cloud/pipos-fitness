@@ -28,6 +28,7 @@ const ENV_LABELS: Record<string, string> = {
   GYM: "Gimnasio",
   HOME: "Casa",
   CALISTHENICS: "Calistenia",
+  ESTIRAMIENTOS: "Estiramientos",
   POOL: "Piscina",
   MIXED: "Mixto",
 };

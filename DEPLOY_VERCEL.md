@@ -110,11 +110,7 @@ En Vercel: **Settings → Environment Variables**
 
 6. **Email**: No aplica. Este proyecto usa solo Google OAuth; no se usan `EMAIL_SERVER` ni `EMAIL_FROM` (magic links).
 
-7. **`OPENAI_API_KEY`** (opcional)
-   - Valor: Tu API key de OpenAI (solo si usas provider real)
-   - Environment: ✅ Production
-
-8. **Sentry** (opcional, monitoreo de errores)
+7. **Sentry** (opcional, monitoreo de errores)
    - `SENTRY_DSN` y `NEXT_PUBLIC_SENTRY_DSN`: DSN del proyecto en [Sentry.io](https://sentry.io)
    - En API routes, para errores 500: `Sentry.captureException(error);`
    - Ver RELEASE_CHECKLIST.md → Production Monitoring (Sentry + Uptime + Vercel)

@@ -1,6 +1,13 @@
 import { z } from "zod";
 
-const TrainingEnvironmentSchema = z.enum(["GYM", "HOME", "CALISTHENICS", "POOL", "MIXED"]);
+const TrainingEnvironmentSchema = z.enum([
+  "GYM",
+  "HOME",
+  "CALISTHENICS",
+  "POOL",
+  "MIXED",
+  "ESTIRAMIENTOS",
+]);
 const ActivityLevelSchema = z.enum(["BEGINNER", "INTERMEDIATE", "ADVANCED"]);
 const CookingTimeSchema = z.enum(["MIN_10", "MIN_20", "MIN_40", "FLEXIBLE"]);
 

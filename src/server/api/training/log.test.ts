@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { prisma } from "@/src/server/db/prisma";
+import { expectApiError } from "../__tests__/helpers/expectApiError";
 import { createTrainingLog } from "./log";
 
 const TEST_USER_ID = "test-user-id";
@@ -91,6 +92,41 @@ describe("POST /api/training/log", () => {
 
     expect(result.status).toBe(404);
     expect((result.body as { error: string }).error).toBe("PLAN_NOT_FOUND");
+  });
+
+  it("returns 404 when planId does not belong to user (ownership)", async () => {
+    const userBId = "test-user-b-id";
+    await prisma.user.upsert({
+      where: { id: userBId },
+      update: {},
+      create: { id: userBId, email: "userb@local.test" },
+    });
+    // Use week 2026-02-09 so we don't pollute 2026-02-02 used by weeklyPlan/nutrition "non-existent plan" tests
+    const planForA = await prisma.weeklyPlan.upsert({
+      where: {
+        userId_weekStart: {
+          userId: TEST_USER_ID,
+          weekStart: new Date("2026-02-09T00:00:00.000Z"),
+        },
+      },
+      update: {},
+      create: {
+        userId: TEST_USER_ID,
+        weekStart: new Date("2026-02-09T00:00:00.000Z"),
+        status: "DRAFT",
+        trainingJson: {},
+        nutritionJson: {},
+      },
+    });
+    const result = await createTrainingLog(
+      {
+        planId: planForA.id,
+        completed: true,
+        pain: false,
+      },
+      userBId,
+    );
+    expectApiError(result, { status: 404, code: "PLAN_NOT_FOUND" });
   });
 
   it("creates log for day without session (Entrenamiento libre)", async () => {

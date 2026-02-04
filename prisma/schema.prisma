@@ -12,6 +12,7 @@ enum TrainingEnvironment {
   CALISTHENICS
   POOL
   MIXED
+  ESTIRAMIENTOS
 }
 
 enum Sex {
@@ -51,9 +52,12 @@ model User {
   accounts      Account[]
   sessions      Session[]
   profile       UserProfile?
-  plans         WeeklyPlan[]
-  trainingLogs  TrainingLog[]
-  nutritionLogs NutritionLog[]
+  plans                   WeeklyPlan[]
+  trainingLogs            TrainingLog[]
+  nutritionLogs           NutritionLog[]
+  weeklyAdherenceSnapshots WeeklyAdherenceSnapshot[]
+  notifications           Notification[]
+  pushSubscriptions       PushSubscription[]
 }
 
 model Account {
@@ -115,6 +119,16 @@ model UserProfile {
   dislikes     String?
   cookingTime  CookingTime @default(MIN_20)
   mealsPerDay  Int         @default(3)
+  adherenceGoalPercent Int @default(70)
+
+  // Notifications email preferences
+  emailNotificationsEnabled Boolean @default(false)
+  emailNotificationHourUtc  Int     @default(9) // 0..23, preferred hour UTC (v1 simple)
+
+  // Notifications push preferences
+  pushNotificationsEnabled Boolean @default(false)
+  pushQuietHoursStartUtc   Int     @default(22) // 0..23
+  pushQuietHoursEndUtc     Int     @default(7)  // 0..23
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -193,6 +207,26 @@ model TrainingLog {
   detailsJson Json?
 
   createdAt DateTime @default(now())
+
+  @@index([userId, occurredAt])
+}
+
+model WeeklyAdherenceSnapshot {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  weekStart  DateTime
+  computedAt DateTime @default(now())
+
+  trainingPercent  Int
+  nutritionPercent Int
+  totalPercent     Int
+
+  breakdownJson Json
+
+  @@unique([userId, weekStart])
+  @@index([userId, weekStart])
 }
 
 model NutritionLog {
@@ -208,4 +242,54 @@ model NutritionLog {
   detailsJson  Json?
 
   createdAt DateTime @default(now())
+
+  @@index([userId, occurredAt])
+}
+
+model Notification {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  type      String
+  scopeKey  String
+  title     String
+  message   String
+
+  dataJson  Json?
+
+  // Email delivery
+  emailStatus   String?   // "PENDING"|"SENT"|"FAILED"
+  emailSentAt   DateTime?
+  emailError    String?   // max ~200 chars
+  emailAttemptCount Int   @default(0)
+
+  // Push delivery
+  pushStatus       String?
+  pushSentAt       DateTime?
+  pushError        String?
+  pushAttemptCount Int     @default(0)
+
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@unique([userId, type, scopeKey])
+  @@index([userId, createdAt])
+  @@index([userId, readAt])
+}
+
+model PushSubscription {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+
+  userAgent String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, createdAt])
 }

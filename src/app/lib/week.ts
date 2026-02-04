@@ -1,3 +1,8 @@
+/** YYYY-MM-DD in UTC (for scopeKey day:...). */
+export function formatUtcDayKey(date: Date): string {
+  return date.toISOString().slice(0, 10);
+}
+
 export function getWeekStart(date: Date): string {
   const d = new Date(date);
   const day = d.getUTCDay();

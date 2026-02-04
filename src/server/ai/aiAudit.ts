@@ -7,7 +7,7 @@ type AiAuditResult =
 
 type AiAuditContext = {
   context: "createWeeklyPlan" | "adjustWeeklyPlan" | "weeklyCron";
-  provider: "openai" | "mock";
+  provider: "mock";
   environment: string;
   daysPerWeek: number;
   sessionMinutes: number;

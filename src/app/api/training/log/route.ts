@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { createTrainingLog } from "@/src/server/api/training/log";
 import { withSensitiveRoute } from "@/src/server/lib/withSensitiveRoute";
 import { requireAuth } from "@/src/server/lib/requireAuth";
-import { badRequestBody } from "@/src/server/api/errorResponse";
+import { badRequestBody, toNextResponse } from "@/src/server/api/errorResponse";
 import { trackEvent } from "@/src/server/lib/events";
 
 export async function POST(req: Request) {
@@ -26,7 +26,12 @@ export async function POST(req: Request) {
       const errBody = result.body as { error?: string };
       return NextResponse.json(badRequestBody(errBody.error ?? "INVALID_INPUT"), { status: 400 });
     }
-    trackEvent("training_log_post_success", { status: 200 });
-    return NextResponse.json(result.body, { status: result.status });
+    if (result.status === 404) {
+      trackEvent("training_log_plan_not_found");
+    }
+    if (result.status === 200) {
+      trackEvent("training_log_post_success", { status: 200 });
+    }
+    return toNextResponse(result);
   });
 }

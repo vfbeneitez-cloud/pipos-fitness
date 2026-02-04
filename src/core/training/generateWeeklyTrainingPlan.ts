@@ -1,4 +1,10 @@
-export type TrainingEnvironment = "GYM" | "HOME" | "CALISTHENICS" | "POOL" | "MIXED";
+export type TrainingEnvironment =
+  | "GYM"
+  | "HOME"
+  | "CALISTHENICS"
+  | "POOL"
+  | "MIXED"
+  | "ESTIRAMIENTOS";
 
 export type TrainingSession = {
   dayIndex: number; // 0..6
@@ -12,7 +18,10 @@ export type TrainingSession = {
   }>;
 };
 
+export const TRAINING_SCHEMA_VERSION = 1;
+
 export type WeeklyTrainingPlan = {
+  schemaVersion: number;
   environment: TrainingEnvironment;
   daysPerWeek: number;
   sessionMinutes: number;
@@ -51,7 +60,13 @@ export function generateWeeklyTrainingPlan(args: {
     };
   });
 
-  return { environment, daysPerWeek, sessionMinutes, sessions };
+  return {
+    schemaVersion: TRAINING_SCHEMA_VERSION,
+    environment,
+    daysPerWeek,
+    sessionMinutes,
+    sessions,
+  };
 }
 
 function filterPoolByEnvironment(

@@ -68,4 +68,15 @@ describe("generateWeeklyTrainingPlan", () => {
     expect(plan.sessions[0].name).toBe("Session 1");
     expect(plan.sessions[1].name).toBe("Session 2");
   });
+
+  it("returns plan with schemaVersion 1", () => {
+    const pool = makePool(6, "ex");
+    const plan = generateWeeklyTrainingPlan({
+      environment: "GYM",
+      daysPerWeek: 2,
+      sessionMinutes: 45,
+      exercisePool: pool,
+    });
+    expect(plan.schemaVersion).toBe(1);
+  });
 });

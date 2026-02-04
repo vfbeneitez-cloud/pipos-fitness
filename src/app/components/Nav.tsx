@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { NotificationBadge } from "./NotificationBadge";
 
 const links = [
   { href: "/week", label: "Semana" },
+  { href: "/insights", label: "Tendencia" },
   { href: "/profile", label: "Perfil" },
 ];
 
@@ -31,6 +33,7 @@ export function Nav() {
             </Link>
           </li>
         ))}
+        <NotificationBadge />
       </ul>
     </nav>
   );

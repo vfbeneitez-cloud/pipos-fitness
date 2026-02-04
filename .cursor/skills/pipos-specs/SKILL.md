@@ -11,7 +11,7 @@ When working in **pipos_fitness** (weekly plan, AI, exercises, auth, errors, cop
 
 | Task                                                 | Spec                                                                                                           |
 | ---------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| AI / weekly plan / OpenAI routes, prompts, DB writes | [specs/11_ai_beta_audit.md](specs/11_ai_beta_audit.md)                                                         |
+| AI / weekly plan routes, prompts, DB writes          | [specs/11_ai_beta_audit.md](specs/11_ai_beta_audit.md)                                                         |
 | Daily QA, issues, evidence, labels                   | [specs/11_beta_daily_qa.md](specs/11_beta_daily_qa.md)                                                         |
 | Data model, Prisma                                   | [specs/02_data_model.md](specs/02_data_model.md)                                                               |
 | API contracts                                        | [specs/03_api_contracts.md](specs/03_api_contracts.md), [specs/02_api_exercises.md](specs/02_api_exercises.md) |

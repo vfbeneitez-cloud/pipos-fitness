@@ -24,24 +24,6 @@ export async function main() {
     items = JSON.parse(raw) as SeedExercise[];
   }
 
-  const pruneExercises = process.env.PRUNE_EXERCISES === "true";
-  if (pruneExercises && items.length > 0) {
-    if (process.env.NODE_ENV === "production") {
-      throw new Error("Refusing to prune exercises in production");
-    }
-    const seedSlugs = items.map((i) => i.slug);
-    const toPrune = await prisma.exercise.findMany({
-      where: { slug: { notIn: seedSlugs } },
-      select: { id: true },
-    });
-    const ids = toPrune.map((e) => e.id);
-    if (ids.length > 0) {
-      await prisma.mediaAsset.deleteMany({ where: { exerciseId: { in: ids } } });
-      await prisma.exercise.deleteMany({ where: { id: { in: ids } } });
-    }
-    console.log("Pruned:", ids.length);
-  }
-
   if (items.length === 0) {
     const defaults: SeedExercise[] = [
       {
@@ -105,7 +87,13 @@ export async function main() {
       where: { slug: ex.slug },
       update: {
         name: data.name,
-        environment: data.environment as "GYM" | "HOME" | "CALISTHENICS" | "POOL" | "MIXED",
+        environment: data.environment as
+          | "GYM"
+          | "HOME"
+          | "CALISTHENICS"
+          | "POOL"
+          | "MIXED"
+          | "ESTIRAMIENTOS",
         primaryMuscle: data.primaryMuscle ?? null,
         description: data.description ?? null,
         cues: data.cues ?? null,
@@ -116,7 +104,13 @@ export async function main() {
       create: {
         slug: data.slug,
         name: data.name,
-        environment: data.environment as "GYM" | "HOME" | "CALISTHENICS" | "POOL" | "MIXED",
+        environment: data.environment as
+          | "GYM"
+          | "HOME"
+          | "CALISTHENICS"
+          | "POOL"
+          | "MIXED"
+          | "ESTIRAMIENTOS",
         primaryMuscle: data.primaryMuscle ?? null,
         description: data.description ?? null,
         cues: data.cues ?? null,
@@ -143,6 +137,27 @@ export async function main() {
   }
 
   console.log("Seed completed.", "Exercises:", exerciseCount, "Media:", mediaCount);
+
+  const PRUNE = process.env.PRUNE_EXERCISES === "true";
+  if (PRUNE && process.env.NODE_ENV !== "production") {
+    const seedSlugs = new Set(items.map((e) => e.slug));
+    const toDelete = await prisma.exercise.findMany({
+      where: { slug: { notIn: Array.from(seedSlugs) } },
+      select: { id: true, slug: true },
+    });
+
+    const sample = toDelete.slice(0, 50).map((x) => x.slug);
+    if (sample.length) console.log("Prune sample slugs:", sample);
+
+    if (toDelete.length > 0) {
+      const ids = toDelete.map((x) => x.id);
+      await prisma.mediaAsset.deleteMany({ where: { exerciseId: { in: ids } } });
+      await prisma.exercise.deleteMany({ where: { id: { in: ids } } });
+      console.log("Prune completed. Removed exercises:", toDelete.length);
+    }
+  } else if (PRUNE && process.env.NODE_ENV === "production") {
+    console.log("PRUNE_EXERCISES ignored in production.");
+  }
 }
 
 main()

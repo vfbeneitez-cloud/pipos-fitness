@@ -113,10 +113,10 @@ describe("POST /api/nutrition/swap", () => {
   });
 
   it("returns 404 for non-existent plan", async () => {
-    // Use a different weekStart to ensure no plan exists
+    // Use a week no other test creates to avoid pollution
     const result = await swapMeal(
       {
-        weekStart: "2026-02-02",
+        weekStart: "2030-01-06",
         dayIndex: 0,
         mealSlot: "lunch",
       },

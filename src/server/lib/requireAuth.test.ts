@@ -8,12 +8,14 @@ vi.mock("@/src/server/auth", () => ({
   auth: () => mockAuth(),
 }));
 
+const runDbTests = process.env.RUN_DB_TESTS === "true";
+
 describe("getUserIdFromSession", () => {
   beforeEach(async () => {
     vi.clearAllMocks();
   });
 
-  it("returns demo user in DEMO_MODE when no session", async () => {
+  (runDbTests ? it : it.skip)("returns demo user in DEMO_MODE when no session", async () => {
     process.env.DEMO_MODE = "true";
     mockAuth.mockResolvedValue(null);
 
